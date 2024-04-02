@@ -1,0 +1,189 @@
+<div class="header-container">
+  <div class="filter-container">
+    <mat-form-field>
+      <input matInput [(ngModel)]="searchCampaign" (input)="applyFilterset()">
+      <mat-label>Filter</mat-label>
+    </mat-form-field>
+  </div>
+
+  <div class="datepicker-container">
+    <mat-form-field class="start-date-field">
+      <input matInput [matDatepicker]="picker" placeholder="start date" (dateChange)="onStartDateSelected($event)">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field class="end-date-field">
+      <input matInput [matDatepicker]="picker2" placeholder="end date" (dateChange)="onEndDateSelected($event)">
+      <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+      <mat-datepicker #picker2></mat-datepicker>
+    </mat-form-field>
+  </div>  
+  
+  <ng-container *ngIf="selectedStartDate && selectedEndDate">
+    <!-- <div class="selected-date-range">Selected Date Range: {{ selectedStartDate | date }} - {{ selectedEndDate | date }}</div> -->
+  </ng-container>
+</div>
+
+<ng-container >
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Sets 
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    </mat-expansion-panel>
+    </ng-container>
+
+<ng-container *ngFor="let data of facebookset; let i = index">
+  <mat-expansion-panel>
+
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Set {{i + 1}} (
+        StartDate: {{ getFormattedStartDate(i) }}
+        EndDate:{{ data.campaignSets[0]?.docDate ? getFormattedDate(data.campaignSets[0].docDate) : 'N/A' }})
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    
+    
+    <button mat-raised-button (click)="openLeadDialog(i)">Lead</button>
+    <!-- <div class="filter">
+      <mat-form-field>
+        <mat-label>Select Account</mat-label>
+        <mat-select [(ngModel)]="selectedAccount" (selectionChange)="applyFilteraccount()">
+          <mat-option [value]="'All'">All</mat-option>
+          <mat-option [value]="'Magnetic_Marketing'">Magnetic_Marketing</mat-option>
+          <mat-option [value]="'Branding_Brilliance'">Branding_Brilliance</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div> -->
+    <div #TABLE class="table-container" [style.width]="clickedAd ? '75%' : '100%'">
+      
+      <table mat-table  *ngIf="data && data.campaignSets"[dataSource]="data.campaignSets" id="exampleTable" class="mat-elevation-z8">
+    <!-- //position -->
+    <ng-container matColumnDef="position">
+      <th mat-header-cell *matHeaderCellDef> No </th>
+      <td mat-cell *matCellDef="let element; let i = index">{{ getPosition(i) }}</td>
+    </ng-container>
+    <ng-container matColumnDef="Adaccount">
+      <th mat-header-cell *matHeaderCellDef> Adaccount </th>
+      <td mat-cell *matCellDef="let element"> {{element.adaccount}} </td>
+    </ng-container>
+<!-- Daterange -->
+<ng-container matColumnDef="daterange">
+  <th mat-header-cell class="daterange" *matHeaderCellDef> Date Range </th>
+  <td mat-cell *matCellDef="let element"> 
+    <div *ngIf="element.adsets.length > 0">
+      <ng-container *ngFor="let adset of element.adsets; let firstAdset = first">
+        <ng-container *ngFor="let ad of adset.ads; let firstAd = first">
+          <ng-container *ngFor="let insight of ad.insights; let firstInsight = first">
+            <ng-container *ngIf="firstAdset && firstAd && firstInsight">
+              {{ getFormattedDate(element.createdTime) }} - {{ insight.dateStop }}
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </div>
+  </td>
+</ng-container>
+
+    <!-- // campaign Name -->
+    <ng-container matColumnDef="campaignname">
+      <th mat-header-cell *matHeaderCellDef> Campaign Name </th>
+      <td mat-cell *matCellDef="let element"> {{element.campaignName}} </td>
+    </ng-container>
+    <!-- // campaign Budget -->
+    <ng-container matColumnDef="campaignbudget">
+      <th mat-header-cell *matHeaderCellDef> Campaign Budget </th>
+      <td mat-cell *matCellDef="let element"> {{element.campaignBudget}} </td>
+    </ng-container>
+    <!-- //campaign objective -->
+    <ng-container matColumnDef="campaignobjective">
+      <th mat-header-cell *matHeaderCellDef> Campaign Objective </th>
+      <td mat-cell *matCellDef="let element"> {{element.campaignObjective}} </td>
+    </ng-container>
+    <!-- //campaignactive -->
+    <ng-container matColumnDef="campaignactive">
+      <th mat-header-cell *matHeaderCellDef> Campaign Active </th>
+      <td mat-cell *matCellDef="let element"> {{element.campaignActive}} </td>
+    </ng-container>
+    <!-- adset Budget -->
+    <ng-container matColumnDef="adsetbudget">
+      <th mat-header-cell *matHeaderCellDef>Adset Budget</th>
+      <td mat-cell *matCellDef="let element">
+        <div *ngFor="let adset of element.adsets; let last = last">
+          {{ adset.adsetBudget }}
+          <div *ngIf="element.adsets.length > 0 && !last" [style.margin-bottom.px]="(adset.ads.length + 2) * 10"></div>
+        </div>
+      </td>
+    </ng-container>
+    <!-- //adset&ads -->
+    <ng-container matColumnDef="adsetAds">
+    <th mat-header-cell *matHeaderCellDef class="adsetAds"> Adset & Ads </th>
+    <td mat-cell *matCellDef="let element">
+      <div *ngFor="let adset of element.adsets" class="adset-container">
+        <div class="adset-name">
+          <strong>{{ adset.adsetName }}</strong>
+        </div>
+        <div class="ads-container">
+          <div *ngFor="let ad of adset.ads">
+            <div *ngFor="let insight of ad.insights">
+              <ng-container *ngIf="insight.reach !== undefined">
+                <div class="example-sidenav-content">
+                  <div (click)="toggleAdDetails(ad)">{{ ad.adName }}</div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+    </td>
+    </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <ng-container *ngIf="row.campaignActive !== 0">
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </ng-container>
+    
+      </table>
+
+      <!-- <div class="paginator-container">
+        <mat-paginator #paginator  [pageSizeOptions]="getPageSizeOptions(data.campaignSets)"></mat-paginator>
+      </div> -->
+    </div>
+
+    <div class="sidenav" *ngIf="showDetails">
+      <strong><p>Ad Details</p></strong>
+      <div *ngIf="clickedAd">
+        <p>Ad Name: {{ clickedAd.adName }}</p>
+        <p>Ad id: {{ clickedAd.adId}}</p>
+        <p>Spend: {{ clickedAd.insights[0].amountSpend }}</p>
+        <p>Frequency: {{ clickedAd.insights[0].frequency }}</p>
+        <p>Impressions: {{ clickedAd.insights[0].impressions }}</p>
+        <p>Reach: {{ clickedAd.insights[0].reach }}</p>
+        <p>VideoPlays25%: {{ clickedAd.insights[0].videoPlays25 }}</p>
+        <p>VideoPlays50%: {{ clickedAd.insights[0].videoPlays50 }}</p>
+        <p>VideoPlays75%: {{ clickedAd.insights[0].videoPlays75 }}</p>
+        <p>VideoPlays100%: {{ clickedAd.insights[0].videoPlays100 }}</p>
+        <p>VideoPlayActions: {{ clickedAd.insights[0].videoPlayActions }}</p>
+        <p>Pixel:</p>
+        <ng-container *ngFor="let websiteurl of adwebsiteurl | async;">
+          <ng-container *ngFor="let adset of websiteurl.adsets">
+            <ng-container *ngFor="let ad of adset.ads">
+              <ng-container *ngIf="ad.adId === clickedAd.adId">
+                <div *ngFor="let adcreative of ad.adcreatives">
+                  <div *ngIf="adcreative.object_story_spec && adcreative.object_story_spec.link_data">
+                    {{ adcreative.object_story_spec.link_data.call_to_action?.link || adcreative.object_story_spec.link_data.link || '' }}
+                  </div>
+                  <div *ngIf="adcreative.object_story_spec && adcreative.object_story_spec.video_data">
+                    {{ adcreative.object_story_spec.video_data?.call_to_action?.value?.link || '' }}
+                  </div>
+                </div>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </mat-expansion-panel>
+</ng-container>

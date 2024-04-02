@@ -1,0 +1,19 @@
+<h2>Lead Details</h2>
+<div mat-dialog-content>
+  <p>Total Leads: {{ data.entries[0].entries.length }}</p>
+  <ul>
+    <li *ngFor="let entry of data.entries[0].entries">
+      <strong>Name:</strong> {{ entry.leadname }}<br>
+      <strong>Email:</strong> {{ entry.email }}<br>
+      <strong>Created at:</strong> {{ entry.createddate }}<br>
+      <strong>CampaignName:</strong> {{ entry.campaignname}}<br>
+      <ng-container *ngIf="isLeadMatching(entry)">
+        <strong>Converted To:</strong> {{ getJourneyName(entry) }}<br>
+        <strong>Converted at:</strong> {{ getCreatedDate(entry) }}<br>
+      </ng-container>
+      <br>
+    </li>
+  </ul>
+</div>
+
+<button mat-button (click)="closeDialog()">Close</button>

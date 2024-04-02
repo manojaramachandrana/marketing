@@ -1,0 +1,36 @@
+<div class="login-container">
+    <img src="assets/img/AH-Logo-Black-Trans.png" alt="Logo" class="logo-image">
+    <h1>Login</h1>
+    <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)">
+        <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" id="email" name="email" required [(ngModel)]="user.email">
+            <mat-error *ngIf="loginForm.controls.email?.hasError('required')">
+                Email is required.
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Password</mat-label>
+            <input matInput type="{{ passwordHidden ? 'password' : 'text' }}" id="password" name="password" required [(ngModel)]="user.password">
+            <mat-icon matSuffix (click)="togglePasswordVisibility()">
+                {{ passwordHidden ? 'visibility' : 'visibility_off' }}
+            </mat-icon>
+            <mat-error *ngIf="loginForm.controls.password?.hasError('required')">
+                Password is required.
+            </mat-error>
+        </mat-form-field>
+
+        <button mat-raised-button type="submit">Login</button>
+        <div *ngIf="loginError" class="error-message">
+            {{ loginError }}
+          </div>
+    </form>
+
+    <div class="additional-links">
+        <a routerLink="/reset-password">Forgot Password?</a>
+        <span class="separator"> | </span>
+        <a routerLink="/register">Register Here</a>
+      </div>
+      
+</div>

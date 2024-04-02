@@ -1,0 +1,38 @@
+<ng-container *ngIf="shouldDisplayToolbar(); else loginRegisterTemplate">
+  <mat-toolbar color="orange" *ngIf="shouldDisplayToolbar()">
+    <button mat-icon-button (click)="sidenav.toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <span class="example-spacer"></span>
+    ANALYTICS
+    <div class="right"><span class="example-spacer"></span>
+    Hello {{ getUserName() }}</div>
+  </mat-toolbar>
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #sidenav mode="side" opened="true">
+      <mat-nav-list>
+        <br>
+        <br>
+        <a mat-list-item routerLink="/fb-data" >
+          <span> Ads Campaign Sets</span>
+        </a>
+        <a mat-list-item routerLink="/fbadsdata" >
+          <span>Sales Conversion Cycle</span>
+        </a>
+        <a mat-list-item routerLink="/fbga" >
+          <span> Daily Leads & Sales</span>
+        </a>
+      </mat-nav-list>
+    </mat-sidenav>
+    <router-outlet></router-outlet>
+  </mat-sidenav-container>
+</ng-container>
+
+<ng-template #loginRegisterTemplate>
+  <app-login *ngIf="displayLogin"></app-login>
+
+  <app-register *ngIf="displayRegister">switchtoregister()</app-register>
+
+  <app-reset-password *ngIf="displayResetPassword"></app-reset-password>
+</ng-template>
+

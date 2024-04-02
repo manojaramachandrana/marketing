@@ -1,0 +1,38 @@
+.center-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: whitesmoke;
+  }
+  
+  .center-container hr {
+    width: 50%;
+    margin: 10px 0;
+  }
+
+  .sidenav-container {
+    height: 100%;
+    /* color: brown; */
+  }
+  
+  .mat-sidenav {
+    width: 200px;
+  }
+
+  .right{
+    margin-left: 85%;
+  }
+
+  /* .mat-sidenav-container {
+    display: flex;
+  }
+  
+  .mat-nav-list {
+    margin-left: auto; 
+  } */
+  
+
+  
+  

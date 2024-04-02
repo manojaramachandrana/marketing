@@ -1,0 +1,81 @@
+<div class="register-container">
+  <img src="assets/img/AH-Logo-Black-Trans.png" alt="Logo" class="logo-image">
+    <h2>Register</h2>
+    <form #registerForm="ngForm" (ngSubmit)="onSubmit(registerForm)">
+      <mat-form-field appearance="outline">
+        <mat-label>Name</mat-label>
+        <input matInput type="text" id="name" name="name" required [(ngModel)]="user.name"
+               (blur)="registerForm.controls['name'].markAsTouched()">
+        <mat-error *ngIf="registerForm.controls['name']?.hasError('required') && registerForm.controls['name']?.touched">
+          Name is required.
+        </mat-error>
+      </mat-form-field>
+  
+      <div class="phone-container">
+        <div class="country-code-container">
+          <mat-form-field appearance="outline">
+            <mat-label>Code</mat-label>
+            <input matInput type="text" id="countryCode" name="countryCode" value="+91" readonly>
+          </mat-form-field>
+        </div>
+  
+        <mat-form-field appearance="outline">
+          <mat-label>Phone Number</mat-label>
+          <input matInput type="text" id="phone" name="phone" required [(ngModel)]="user.phone" pattern="[0-9]{10}"
+                 (blur)="registerForm.controls['phone'].markAsTouched()">
+          <mat-error *ngIf="registerForm.controls['phone']?.hasError('required') && registerForm.controls['phone']?.touched">
+            Phone number is required.
+          </mat-error>
+          <mat-error *ngIf="registerForm.controls['phone']?.hasError('pattern') && registerForm.controls['phone']?.touched">
+            Phone number must have 10 digits and contain only numbers.
+          </mat-error>
+        </mat-form-field>
+        </div>
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" id="email" name="email" [(ngModel)]="user.email" required
+                 (blur)="registerForm.controls['email'].markAsTouched()">
+          <mat-error *ngIf="registerForm.controls['email']?.hasError('required') && registerForm.controls['email']?.touched">
+            Email is required.
+          </mat-error>
+          <mat-error *ngIf="registerForm.controls['email']?.hasError('pattern') && registerForm.controls['email']?.touched">
+            Enter a valid email address.
+          </mat-error>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
+          <input matInput type="{{ passwordHidden ? 'password' : 'text' }}" id="password" name="password" [(ngModel)]="user.password" #password="ngModel" required minlength="8"
+                 (blur)="password.control.markAsTouched()"> 
+          <mat-icon matSuffix (click)="togglePasswordVisibility()"> {{ passwordHidden ? 'visibility' : 'visibility_off' }} </mat-icon>
+          <mat-error *ngIf="password.errors?.required && password.touched">
+            Password is required.
+          </mat-error>
+          <mat-error *ngIf="password.errors?.minlength && password.touched">
+            Password must have at least 8 characters.
+          </mat-error>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Confirm Password</mat-label>
+          <input matInput type="{{ confirmPasswordHidden ? 'password' : 'text' }}" id="confirmPassword" name="confirmPassword" required [(ngModel)]="user.confirmPassword"
+                (blur)="registerForm.controls['confirmPassword'].markAsTouched()">
+          <mat-icon matSuffix (click)="toggleConfirmPasswordVisibility()"> {{ confirmPasswordHidden ? 'visibility' : 'visibility_off' }} </mat-icon>
+          <mat-error *ngIf="registerForm.controls['confirmPassword']?.hasError('mismatch') && registerForm.controls['confirmPassword']?.touched">
+              Passwords do not match.
+          </mat-error>
+          <mat-error *ngIf="registerForm.controls['confirmPassword']?.hasError('required') && registerForm.controls['confirmPassword']?.touched">
+              Confirm Password is required.
+          </mat-error>
+        </mat-form-field>
+
+        
+  
+      <button mat-raised-button type="submit">Register</button>
+    </form>
+    <br /><br />
+  
+    <p>Already have an account? <a routerLink="/login">Login here</a></p>
+  </div>
+  

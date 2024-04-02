@@ -1,0 +1,52 @@
+    .mat-header-cell {
+      justify-content: space-between;
+      padding: 10px;
+      text-align: left;
+      font-size: 100%;
+      font-weight: bold;
+    }
+  
+    .mat-cell {
+      padding: 10px;
+      text-align: left;
+      font-size: 100%;
+      font-weight: lighter;
+    }
+
+    .sidenav {
+      top: 9.3%;
+      bottom: 100%;
+      position: absolute;
+      right: 0;
+      width: 38%;
+      height: 100%;
+      padding: 10px;
+      background-color: white;
+      border: 1px solid #ccc;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      overflow: auto;
+    }
+
+    .filter-container {
+      display: flex;
+      align-items: center; 
+      justify-content: space-between; 
+      flex-wrap: wrap;
+      margin-left: 3rem;
+    }
+
+    h1 {
+        text-align: center;
+        margin: auto;
+        font-family: fantasy;
+      }
+
+      .table {
+        width: 60%;
+        margin-left: 2rem;
+        margin-right: 20rem;
+      }
+      
+      .mat-table {
+        width: 100%;
+      }

@@ -1,0 +1,45 @@
+.mat-header-cell {
+  justify-content: space-between;
+    padding: 5px;
+    text-align: left;
+    font-size: 100%;
+    font-weight: bold;
+  }
+
+  .mat-cell {
+    padding: 10px;
+    text-align: left;
+    font-size: 100%;
+    font-weight: lighter;
+  }
+
+  .filter-container {
+    display: flex;
+    align-items: center; 
+    justify-content: space-between; 
+    flex-wrap: wrap;
+  }
+  
+  .filter-container form {
+    flex-grow: 1; 
+    margin-left: 2rem;
+  }
+  
+  .export-excel-btn {
+    margin-right: 5rem;
+  }
+
+  h1 {
+    text-align: center;
+    margin: auto;
+    font-family: fantasy;
+  }
+
+  .table {
+    width: 95%;
+    margin-left: 2rem;
+  }
+  
+  .mat-table {
+    width: 100%;
+  }

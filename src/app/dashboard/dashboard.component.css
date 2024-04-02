@@ -1,0 +1,45 @@
+.dashboard-container {
+  display: flex;
+  align-items: top;
+  justify-content: center;
+  border-color: black;
+  margin-top: 150px;
+  height: 100vh; 
+}
+
+.top{
+  color: black;
+  font-size: x-large;
+  background-color: #1f99b8;
+  border: 2px;
+  border-color: black;
+  margin-bottom: 10px;
+  padding: 30px; 
+  width: 350px;
+  cursor: pointer;
+}
+
+.container {
+  text-align: center;
+}
+
+.button-container {
+  display: flex;
+  margin-top: 10px;
+  flex-direction: column;
+  align-items: center;
+}
+
+.button {
+  width: 350px; 
+  margin-bottom: 10px;
+  font-size: large;
+  padding: 30px; 
+  background-color: whitesmoke; 
+  color: black; 
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: whitesmoke; 
+}

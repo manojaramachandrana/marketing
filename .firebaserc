@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "analytics-af469": {
+      "hosting": {
+        "analytics-screen": [
+          "analytics-af469"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "analytics-af469"
+  }
+}

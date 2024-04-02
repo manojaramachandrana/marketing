@@ -1,0 +1,15 @@
+.container {
+  max-height: 400px; 
+  overflow-y: auto;
+}
+
+.lead-details-container {
+  max-height: 400px; 
+  overflow-y: auto;
+}
+
+/* leaddialog.component.css */
+.mat-dialog-container {
+  overflow-y: auto;
+}
+
