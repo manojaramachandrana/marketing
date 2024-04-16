@@ -1,9 +1,15 @@
 <div class="header-container">
   <div class="filter-container">
-    <mat-form-field>
-      <input matInput [(ngModel)]="searchCampaign" (input)="applyFilterset()">
-      <mat-label>Filter</mat-label>
-    </mat-form-field>
+    <mat-form-field >
+      <mat-select [(ngModel)]="selectedValue" (selectionChange)="applyaccountFilter()">
+        <mat-option [value]="'All'">All</mat-option>
+        <mat-option [value]="'Magnetic_Marketing'">Magnetic_Marketing</mat-option>
+        <mat-option [value]="'Branding_Brilliance'">Branding_Brilliance</mat-option>
+        <mat-option *ngFor="let adaccount of adaccounts" [value]="adaccount" >
+          {{ adaccount }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field> 
   </div>
 
   <div class="datepicker-container">
@@ -28,7 +34,7 @@
   <mat-expansion-panel>
     <mat-expansion-panel-header>
       <mat-panel-title>
-        Sets 
+        Sets
       </mat-panel-title>
     </mat-expansion-panel-header>
     </mat-expansion-panel>
@@ -45,18 +51,8 @@
       </mat-panel-title>
     </mat-expansion-panel-header>
     
-    
     <button mat-raised-button (click)="openLeadDialog(i)">Lead</button>
-    <!-- <div class="filter">
-      <mat-form-field>
-        <mat-label>Select Account</mat-label>
-        <mat-select [(ngModel)]="selectedAccount" (selectionChange)="applyFilteraccount()">
-          <mat-option [value]="'All'">All</mat-option>
-          <mat-option [value]="'Magnetic_Marketing'">Magnetic_Marketing</mat-option>
-          <mat-option [value]="'Branding_Brilliance'">Branding_Brilliance</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div> -->
+
     <div #TABLE class="table-container" [style.width]="clickedAd ? '75%' : '100%'">
       
       <table mat-table  *ngIf="data && data.campaignSets"[dataSource]="data.campaignSets" id="exampleTable" class="mat-elevation-z8">

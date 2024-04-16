@@ -23,6 +23,7 @@ export class FbadsdataComponent implements OnInit, OnDestroy {
   lylregistration: any[] = [];
   selectedMonth: string = '';
   months: string[] = []; 
+  emailarray: any[] = [];
 
   constructor(private firestore: AngularFirestore) {}
 
@@ -42,7 +43,7 @@ export class FbadsdataComponent implements OnInit, OnDestroy {
       return '0';
     }
   }
-  
+
   getLastMonth(): string {
     if (this.dataSource.data.length > 0) {
       return this.dataSource.data[this.dataSource.data.length - 1].month;
@@ -82,6 +83,7 @@ export class FbadsdataComponent implements OnInit, OnDestroy {
     ).subscribe(leads => {
       this.matchingLeads = [];
       leads.forEach(lead => {
+        if(lead.journeyname !== ''){
         const date = lead.converteddate.toDate();
         const selectedMonth = date.toLocaleString('en-us', { month: 'long' });
         const selectedYear = date.getFullYear();
@@ -90,6 +92,7 @@ export class FbadsdataComponent implements OnInit, OnDestroy {
         if (monthYear === month) {
           this.matchingLeads.push(lead);
         }
+      }
       });
     });
   }
@@ -179,6 +182,7 @@ export class FbadsdataComponent implements OnInit, OnDestroy {
       takeUntil(this.unsubscribe$)
     ).subscribe(leads => {
       leads.forEach(lead => {
+        if(lead.journeyname !== ''){
         const date = lead.converteddate.toDate();
         const month = date.toLocaleString('en-us', { month: 'long' });
         const year = date.getFullYear();
@@ -191,15 +195,21 @@ export class FbadsdataComponent implements OnInit, OnDestroy {
         if (!countsByMonth[monthYear].processedLeads.has(lead.email)) {
           countsByMonth[monthYear].processedLeads.add(lead.email);
         }
+      }
       });
     });
 
     setTimeout(() => {
       this.populateDataSource(countsByMonth);
-    }, 5000);
+    }, 700);
   }
 
 async  checkConversion(email: string, entryDate: Date, monthData: any) {
+  if (!this.emailarray.includes(email)) {
+    this.emailarray.push(email);
+    //console.log('emailarray',this.emailarray)
+  }
+
    await this.firestore.collection<any>('leads', ref => ref.where('email', '==', email)).valueChanges().pipe(
       takeUntil(this.unsubscribe$)
     ).subscribe(leads => {
@@ -211,6 +221,7 @@ async  checkConversion(email: string, entryDate: Date, monthData: any) {
           console.log('Conversion 30:', email);
         } else if (dateDifference <= 60) {
           monthData.conversion_60++;
+          console.log('conversion-60',email)
         } else if (dateDifference <= 90) {
           monthData.conversion_90++;
         } else if (dateDifference <= 120) {
@@ -223,6 +234,7 @@ async  checkConversion(email: string, entryDate: Date, monthData: any) {
       });
     });
   }
+
 
   populateDataSource(countsByMonth: { [key: string]: { leads: number, sales: number, conversion_30: number, conversion_60: number, conversion_90: number, conversion_120: number, conversion_240: number, conversion_360: number } }) {
     this.dataSource.data = [];

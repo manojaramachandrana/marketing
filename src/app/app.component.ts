@@ -62,6 +62,15 @@ export class AppComponent {
     }
   }
 
+  refreshPage() {
+    this.router.navigate(['/fbadsdata']);
+    setTimeout(
+      function(){ 
+      location.reload(); 
+      }, 100);
+    //window.location.reload();
+  }
+
   getUserName(): string {
     const currentUser = this.authService.getCurrentUser();
     return currentUser ? currentUser.name : '';

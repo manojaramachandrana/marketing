@@ -8,7 +8,7 @@
       <mat-option *ngFor="let month of months" [value]="month">{{ month }}</mat-option>
     </mat-select>
   </mat-form-field>
-</div>
+</div> 
 
 <div class="table"  [style.width]="selectedRow ? '60%' : '90%'">
   <table mat-table [dataSource]="dataSource"   id="exampleTable" class="mat-elevation-z8"  matSort>
@@ -35,7 +35,7 @@
 
     <ng-container matColumnDef="conversion_30">
       <th mat-header-cell *matHeaderCellDef  mat-sort-header>conversion_30</th>
-      <td mat-cell *matCellDef="let element">{{ element.conversion_30/2  }}</td>
+      <td mat-cell *matCellDef="let element">{{ element.conversion_30 }}</td>
     </ng-container>
 
     <ng-container matColumnDef="conversion_60">
@@ -45,22 +45,22 @@
 
     <ng-container matColumnDef="conversion_90">
       <th mat-header-cell *matHeaderCellDef  mat-sort-header>conversion_90</th>
-      <td mat-cell *matCellDef="let element">{{ element.conversion_90  }}</td>
+      <td mat-cell *matCellDef="let element">{{ element.conversion_90/2  }}</td>
     </ng-container>
 
     <ng-container matColumnDef="conversion_120">
       <th mat-header-cell *matHeaderCellDef  mat-sort-header>conversion_120</th>
-      <td mat-cell *matCellDef="let element">{{ element.conversion_120 }}</td>
+      <td mat-cell *matCellDef="let element">{{ element.conversion_120/2 }}</td>
     </ng-container>
 
     <ng-container matColumnDef="conversion_240">
       <th mat-header-cell *matHeaderCellDef  mat-sort-header>conversion_240</th>
-      <td mat-cell *matCellDef="let element">{{ element.conversion_240  }}</td>
+      <td mat-cell *matCellDef="let element">{{ element.conversion_240/2  }}</td>
     </ng-container>
 
     <ng-container matColumnDef="conversion_360">
       <th mat-header-cell *matHeaderCellDef  mat-sort-header>conversion_360</th>
-      <td mat-cell *matCellDef="let element">{{ element.conversion_360  }}</td>
+      <td mat-cell *matCellDef="let element">{{ element.conversion_360/2  }}</td>
     </ng-container>
 
     <ng-container matColumnDef="conversion ratio">

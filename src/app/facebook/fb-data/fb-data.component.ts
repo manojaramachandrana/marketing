@@ -81,6 +81,7 @@ interface Result {
   styleUrls: ['./fb-data.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
+
 export class FbDataComponent implements OnInit, OnDestroy{
   private ngUnsubscribe = new Subject();
   dataSource = new MatTableDataSource<FacebookData>();
@@ -109,6 +110,9 @@ export class FbDataComponent implements OnInit, OnDestroy{
   form!: FormGroup;
   selectedAccount: string = '';
   adaccounts: string[] = [];
+  selectedValue: any; 
+  originalset: any[]= this.facebookset; 
+  daterangeset: any[] = [];
 
   @ViewChild(MatPaginator, { static: true })
   paginator!: MatPaginator;
@@ -119,6 +123,7 @@ export class FbDataComponent implements OnInit, OnDestroy{
   maxDocument: any;
   spendDifference: number | undefined;
   filteredFacebookSet: { campaignSets: FacebookData[]; formattedDate: string; campaignName?: string | undefined; adsetName?: string | undefined; adname?: string | undefined; }[] | undefined;
+  FacebookSet: any;
 
   constructor(private firestore: AngularFirestore, private dialog: MatDialog,private fb: FormBuilder) {
     this.data$ = this.firestore.collection<FacebookData>('facebookadsdata').valueChanges();
@@ -144,15 +149,6 @@ export class FbDataComponent implements OnInit, OnDestroy{
   ngOnDestroy(): void {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
-  }
-
-  applyFilteraccount() {
-  
-    if (this.selectedAccount.trim().toLowerCase() === 'all') {
-      this.dataSource.filter = '';
-    } else if(this.selectedAccount.trim().toLowerCase() === 'Magnetic_Marketing'){
-      this.dataSource.filter = this.selectedAccount.trim().toLowerCase();
-    }
   }
 
   setupForm(): void {
@@ -194,7 +190,6 @@ export class FbDataComponent implements OnInit, OnDestroy{
         this.facebookset = this.facebookset.filter(set => {
             const setDate = new Date(set.formattedDate);
             //console.log('Event Date:', setDate);
-            // Adjust the setDate to include one day before the endDate
             const adjustedEndDate = new Date(endDate);
             adjustedEndDate.setDate(adjustedEndDate.getDate() + 1);
             const isInRange = setDate >= startDate && setDate <= adjustedEndDate;
@@ -204,58 +199,26 @@ export class FbDataComponent implements OnInit, OnDestroy{
         this.filteredFacebookSet = [];
     }
 }
-  
-  // applyDateRangeFilter(): void {
-  //   console.log('Start Date:', this.selectedStartDate);
-  //   console.log('End Date:', this.selectedEndDate);
-  
-  //   if (this.selectedStartDate && this.selectedEndDate) {
-  //     const formattedStartDate = this.getDate(this.selectedStartDate);
-  //     const formattedEndDate = this.getDate(this.selectedEndDate);
-  //     console.log('Formatted Start Date:', formattedStartDate);
-  //     console.log('Formatted End Date:', formattedEndDate);
-  
-  //     this.filteredFacebookSet = this.facebookset.filter(set => {
-  //       console.log('Set Formatted Date:', set.formattedDate);
-  //       console.log('start',formattedStartDate)
-  //       if(formattedStartDate == set.formattedDate){
-  //         console.log('success')
-  //       }
-  //       this.filteredFacebookSet = this.facebookset.filter(set => {
-  //         return set.formattedDate >= formattedStartDate && set.formattedDate <= formattedEndDate;
-  //       });
-        
-  //     });
-  //   } else {
-  //     this.filteredFacebookSet = [];
-  //   }
-  // }
-  
+ 
+applyaccountFilter() {
 
-  // applyFilter() {
-  //   this.filteredFacebookSet = this.facebookset.map((data, i) => {
-  //     return {
-  //       ...data,
-  //       campaignSets: data.campaignSets.filter(campaignSet =>
-  //         !this.selectedadaccounts[i] || campaignSet.adsets.some(adset => adset.adaccount === this.selectedadaccounts[i])
-  //       ),
-  //     };
-  //   });
-  // }
-  // getUniqueAdAccounts(): string[] {
-  //   const adAccountsSet = new Set<string>();
-  
-  //   this.data$.forEach(data => {
-  //     data.forEach(item => {
-  //       if (item.adaccount) {
-  //         adAccountsSet.add(item.adaccount);
-  //       }
-  //     });
-  //   });
-  
-  //   return Array.from(adAccountsSet);
-  // }
-  
+  if (this.selectedValue.trim().toLowerCase() === 'all') {
+    
+    this.facebookset = this.originalset;
+  }
+
+  else {
+    this.facebookset = this.originalset.map(facebookData => {
+      return {
+        ...facebookData,
+        campaignSets: facebookData.campaignSets.filter((campaignSet: { adaccount: string; }) =>
+          campaignSet.adaccount  && campaignSet.adaccount.toLowerCase() === this.selectedValue.trim().toLowerCase()
+        )
+      };
+    }).filter(facebookData => facebookData.campaignSets.length > 0); 
+  }
+}
+
   async setupDataFetch(): Promise<void> {
     try {
       const entriesData = await this.entries.pipe(takeUntil(this.ngUnsubscribe), take(1)).toPromise();
@@ -458,6 +421,9 @@ export class FbDataComponent implements OnInit, OnDestroy{
               foundMatchingSet = true;
               break;
             }else {
+              if (!nextCampaignSet.adaccount) {
+                nextCampaignSet.adaccount = "Magnetic_Marketing";
+              }
               //console.log("Sets not same:previous set", currentCampaignSet,"current set", nextCampaignSet); 
             }
           }
@@ -552,4 +518,5 @@ haveSameProperties(item1: FacebookData, item2: FacebookData): boolean {
  applyFilterset() {
     this.dataSource.filter = this.searchCampaign.trim().toLowerCase();
   }
+
 }
