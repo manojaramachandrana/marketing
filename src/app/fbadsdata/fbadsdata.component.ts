@@ -257,6 +257,7 @@ async  checkConversion(email: string, entryDate: Date, monthData: any) {
     });
 
     this.dataSource.data = [...this.dataSource.data];
+    console.log(this.dataSource)
   }
 
   applyFilter() {

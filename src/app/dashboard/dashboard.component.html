@@ -1,17 +1,281 @@
-<!-- <div class="dashboard-container">
-    <div class="container">
-      <div class="button-container">
-        <div class="top">
-           <div >Dashboard</div>
-        </div>
-        <div class="button" (click)="redirectToDashboard('fbadsdata')">Ad acoount</div>
-        <div class="button" (click)="redirectToDashboard('fbdata')">Sets Segmentation</div>
-      </div>
-    </div>
-  </div> -->
+<div *ngIf="loading" class="progress-container">
+    <mat-progress-spinner class="center-spinner" mode="indeterminate"></mat-progress-spinner>
+</div>
+<div *ngIf="loading" >
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  </div>
+<div *ngIf="!loading">
+<h1>Growth Metrics</h1><br><br>
+<h2>Average Order Value </h2><br>
+<div  class="table">
+    <table mat-table [dataSource]="dataSource" id="exampleTable" class="mat-elevation-z8" matSort>
+        <ng-container matColumnDef="currentweek">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Previous</th>
+            <td mat-cell *matCellDef="let element">{{ lastweektpv() }}</td>
+            <td mat-footer-cell *matFooterCellDef="let element"> {{lastmonthtpv()}} </td>
+        </ng-container>
+        <ng-container matColumnDef="lastweek">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Current</th>
+            <td mat-cell *matCellDef="let element">{{ currentweektpv() }}</td>
+            <td mat-footer-cell *matFooterCellDef="let element"> {{ currentmonthtpv()}} </td>
+        </ng-container>
+        <ng-container matColumnDef="no">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+            <td mat-cell *matCellDef="let element">Week</td>
+            <td mat-footer-cell *matFooterCellDef> month </td>
+        </ng-container>
+        <ng-container matColumnDef="metrics">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>metrics</th>
 
-  <!-- layout.component.html -->
+            <td mat-cell *matCellDef="let element">
+                <div *ngIf="weekorder() >= 0; else downArrow">
+                    {{ weekorder() }}% <span class="green-text"><mat-icon>arrow_upward</mat-icon></span>
+                </div>
+                <ng-template #downArrow>
+                    {{ weekorder() }}%<span class="red-text"> <mat-icon>arrow_downward</mat-icon></span>
+                </ng-template>
+              </td>
+              
+              <td mat-cell *matFooterCellDef="let element">
+                <div *ngIf="monthorder() >= 0; else downArrowFooter">
+                    {{ monthorder() }}% <span class="green-text"><mat-icon>arrow_upward</mat-icon></span>
+                </div>
+                <ng-template #downArrowFooter>
+                    {{ monthorder() }}% <span class="red-text"><mat-icon>arrow_downward</mat-icon></span>
+                </ng-template>
+              </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+    </table>
+</div><br>
+
+<h2>Average LifeTime Value </h2><br>
+<div  class="table">
+    <table mat-table [dataSource]="dataSource" id="exampleTable" class="mat-elevation-z8" matSort>
+        <ng-container matColumnDef="currentweek">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Previous</th>
+            <td mat-cell *matCellDef="let element">{{ lastweekltv() }}</td>
+            <td mat-footer-cell *matFooterCellDef="let element"> {{lastmonthltv()}} </td>
+        </ng-container>
+        <ng-container matColumnDef="lastweek">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Current</th>
+            <td mat-cell *matCellDef="let element">{{ currentweekltv() }}</td>
+            <td mat-footer-cell *matFooterCellDef="let element"> {{ currentmonthltv()}} </td>
+        </ng-container>
+        <ng-container matColumnDef="no">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+            <td mat-cell *matCellDef="let element">Week</td>
+            <td mat-footer-cell *matFooterCellDef> month </td>
+        </ng-container>
+        <ng-container matColumnDef="metrics">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>metrics</th>
+            <td mat-cell *matCellDef="let element">
+                <div *ngIf="weeklifetime() >= 0; else downArrow">
+                    {{ weeklifetime() }}% <span class="green-text"><mat-icon>arrow_upward</mat-icon></span>
+                </div>
+                <ng-template #downArrow>
+                    {{ weeklifetime() }}%<span class="red-text"> <mat-icon>arrow_downward</mat-icon></span>
+                </ng-template>
+              </td>
+              
+              <td mat-cell *matFooterCellDef="let element">
+                <div *ngIf="monthlifetime() >= 0; else downArrowFooter">
+                    {{ monthlifetime() }}% <span class="green-text"><mat-icon>arrow_upward</mat-icon></span>
+                </div>
+                <ng-template #downArrowFooter>
+                    {{ monthlifetime() }}% <span class="red-text"><mat-icon>arrow_downward</mat-icon></span>
+                </ng-template>
+              </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+    </table>
+</div><br>
+
+<h2>Increase in no of free to paid user </h2><br>
+<div  class="table">
+    <table mat-table [dataSource]="dataSource" id="exampleTable" class="mat-elevation-z8" matSort>
+        <ng-container matColumnDef="currentweek">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>previous</th>
+            <td mat-cell *matCellDef="let element">{{ lastweekfreetopaid() }}</td>
+            <td mat-footer-cell *matFooterCellDef="let element"> {{lastmonthfreetopaid()}} </td>
+        </ng-container>
+        <ng-container matColumnDef="lastweek">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>current</th>
+            <td mat-cell *matCellDef="let element">{{ currentweekfreetopaid() }}</td>
+            <td mat-footer-cell *matFooterCellDef="let element"> {{ currentmonthfreetopaid()}} </td>
+        </ng-container>
+        <ng-container matColumnDef="no">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+            <td mat-cell *matCellDef="let element">Week</td>
+            <td mat-footer-cell *matFooterCellDef> month </td>
+        </ng-container>
+        <ng-container matColumnDef="metrics">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>metrics</th>
+            <td mat-cell *matCellDef="let element">
+                <div *ngIf="weekfreetopaid() >= 0; else downArrow">
+                    {{ weekfreetopaid() }}% <span class="green-text"><mat-icon>arrow_upward</mat-icon></span>
+                </div>
+                <ng-template #downArrow>
+                    {{ weekfreetopaid() }}%<span class="red-text"> <mat-icon>arrow_downward</mat-icon></span>
+                </ng-template>
+              </td>
+              <td mat-cell *matFooterCellDef="let element">
+                <div *ngIf="monthfreetopaid() >= 0; else downArrowFooter">
+                    {{ monthfreetopaid() }}% <span class="green-text"><mat-icon>arrow_upward</mat-icon></span>
+                </div>
+                <ng-template #downArrowFooter>
+                    {{ monthfreetopaid() }}% <span class="red-text"><mat-icon>arrow_downward</mat-icon></span>
+                </ng-template>
+              </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+    </table>
+</div><br>
 
 
-  
-  
+<h2>Increase in number of paid users</h2><br>
+
+<div  class="table">
+    <table mat-table [dataSource]="dataSource" id="exampleTable" class="mat-elevation-z8" matSort>
+        <ng-container matColumnDef="currentweek">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Previous</th>
+            <td mat-cell *matCellDef="let element">{{ element.lastweek }}</td>
+            <td mat-footer-cell *matFooterCellDef="let element"> {{lastmonth()}} </td>
+        </ng-container>
+        <ng-container matColumnDef="lastweek">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Current</th>
+            <td mat-cell *matCellDef="let element">{{ element.currentweek }}</td>
+            <td mat-footer-cell *matFooterCellDef="let element"> {{ currentmonth()}} </td>
+        </ng-container>
+        <ng-container matColumnDef="no">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+            <td mat-cell *matCellDef="let element">Week</td>
+            <td mat-footer-cell *matFooterCellDef> month </td>
+        </ng-container>
+        <ng-container matColumnDef="metrics">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>metrics</th>
+            <td mat-cell *matCellDef="let element">
+                <div *ngIf="+weekpaiduser() >= 0; else downArrow">
+                    {{ weekpaiduser() }}% <span class="green-text"><mat-icon>arrow_upward</mat-icon></span>
+                </div>
+                <ng-template #downArrow>
+                    {{ weekpaiduser() }}%<span class="red-text"> <mat-icon>arrow_downward</mat-icon></span>
+                </ng-template>
+              </td>
+              
+              <td mat-cell *matFooterCellDef="let element">
+                <div *ngIf="+monthpaiduser() >= 0; else downArrowFooter">
+                    {{ monthpaiduser() }}% <span class="green-text"><mat-icon>arrow_upward</mat-icon></span>
+                </div>
+                <ng-template #downArrowFooter>
+                    {{ monthpaiduser() }}% <span class="red-text"><mat-icon>arrow_downward</mat-icon></span>
+                </ng-template>
+              </td>
+              
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+    </table>
+</div><br>
+
+<h2>Increase in number of people in subscription of ecosystem product</h2><br>
+<div class="table">
+    <table mat-table [dataSource]="dataSource" id="exampleTable" class="mat-elevation-z8" matSort>
+        <ng-container matColumnDef="currentweek">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Previous</th>
+            <td mat-cell *matCellDef="let element">{{ element.lastweekecosystem }}</td>
+            <td mat-footer-cell *matFooterCellDef="let element"> {{lastmonthecosystem()}} </td>
+        </ng-container>
+        <ng-container matColumnDef="lastweek">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Current</th>
+            <td mat-cell *matCellDef="let element">{{ element.currentweekecosystem }}</td>
+            <td mat-footer-cell *matFooterCellDef="let element"> {{ currentmonthecosystem()}} </td>
+        </ng-container>
+        <ng-container matColumnDef="no">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+            <td mat-cell *matCellDef="let element">Week</td>
+            <td mat-footer-cell *matFooterCellDef> month </td>
+        </ng-container>
+        <ng-container matColumnDef="metrics">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>metrics</th>
+            <td mat-cell *matCellDef="let element">
+                <div *ngIf="+weekecosystem() >= 0; else downArrow">
+                    {{ weekecosystem() }}% <span class="green-text"><mat-icon>arrow_upward</mat-icon></span>
+                </div>
+                <ng-template #downArrow>
+                    {{ weekecosystem() }}%<span class="red-text"> <mat-icon>arrow_downward</mat-icon></span>
+                </ng-template>
+              </td>
+              
+              <td mat-cell *matFooterCellDef="let element">
+                <div *ngIf="+monthecosystem() >= 0; else downArrowFooter">
+                    {{ monthecosystem() }}% <span class="green-text"><mat-icon>arrow_upward</mat-icon></span>
+                </div>
+                <ng-template #downArrowFooter>
+                    {{ monthecosystem() }}% <span class="red-text"><mat-icon>arrow_downward</mat-icon></span>
+                </ng-template>
+              </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+    </table>
+</div><br>
+
+<h2>Increase in number of active participant in EMI </h2><br>
+<div  class="table">
+    <table mat-table [dataSource]="dataSource" id="exampleTable" class="mat-elevation-z8" matSort>
+        <ng-container matColumnDef="currentweek">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Previous</th>
+            <td mat-cell *matCellDef="let element">{{ element.lastweekemiecosystem }}</td>
+            <td mat-footer-cell *matFooterCellDef="let element"> {{lastmonthemiecosystem()}} </td>
+        </ng-container>
+        <ng-container matColumnDef="lastweek">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Current</th>
+            <td mat-cell *matCellDef="let element">{{ element.currentweekemiecosystem }}</td>
+            <td mat-footer-cell *matFooterCellDef="let element"> {{ currentmonthemiecosystem()}} </td>
+        </ng-container>
+        <ng-container matColumnDef="no">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+            <td mat-cell *matCellDef="let element">Week</td>
+            <td mat-footer-cell *matFooterCellDef> month </td>
+        </ng-container>
+        <ng-container matColumnDef="metrics">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>metrics</th>
+            <td mat-cell *matCellDef="let element">
+                <div *ngIf="+weekemiecosystem() >= 0; else downArrow">
+                    {{ weekemiecosystem() }}% <span class="green-text"><mat-icon>arrow_upward</mat-icon></span>
+                </div>
+                <ng-template #downArrow>
+                    {{ weekemiecosystem() }}%<span class="red-text"> <mat-icon>arrow_downward</mat-icon></span>
+                </ng-template>
+              </td>
+              
+              <td mat-cell *matFooterCellDef="let element">
+                <div *ngIf="+monthemiecosystem() >= 0; else downArrowFooter">
+                    {{ monthemiecosystem() }}% <span class="green-text"><mat-icon>arrow_upward</mat-icon></span>
+                </div>
+                <ng-template #downArrowFooter>
+                    {{ monthemiecosystem() }}% <span class="red-text"><mat-icon>arrow_downward</mat-icon></span>
+                </ng-template>
+              </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+    </table>
+</div><br>
+</div>

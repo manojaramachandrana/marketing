@@ -176,6 +176,7 @@ export class FbgaComponent implements OnInit, OnDestroy {
   fetchAndProcessEntries() {
     const startDate = new Date('2024-03-1');
     startDate.setHours(0, 0, 0, 0);
+    console.log('dateee',startDate)
     const endDate = new Date();
     endDate.setHours(23, 59, 59, 999);
     const campaigns = [

@@ -61,7 +61,7 @@ export class AuthService {
       const result = await this.auth.signInWithEmailAndPassword(email, password);
 
       if (result.user) {
-        this.router.navigate(['/fb-data']);
+        this.router.navigate(['/dashboard']);
       } else {
         throw new Error('Authentication failed.');
       }

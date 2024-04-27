@@ -21,6 +21,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { A11yModule} from '@angular/cdk/a11y';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -78,6 +80,8 @@ import { ResetPasswordComponent } from './register/reset-password/reset-password
     MatExpansionModule,
     A11yModule,
     MatMenuModule,
+    MatProgressBarModule,
+    MatProgressSpinnerModule
   ],
   providers: [
     DataService,

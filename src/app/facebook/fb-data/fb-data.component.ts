@@ -203,7 +203,6 @@ export class FbDataComponent implements OnInit, OnDestroy{
 applyaccountFilter() {
 
   if (this.selectedValue.trim().toLowerCase() === 'all') {
-    
     this.facebookset = this.originalset;
   }
 
