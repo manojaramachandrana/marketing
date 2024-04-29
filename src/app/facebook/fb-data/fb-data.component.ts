@@ -87,6 +87,7 @@ export class FbDataComponent implements OnInit, OnDestroy{
   dataSource = new MatTableDataSource<FacebookData>();
   data$: Observable<FacebookData[]>;
   entries: Observable<any[]>;
+  lylregistration: Observable<any[]>;
   adwebsiteurl: Observable<any[]>
   displayedColumns: string[] = ['position','Adaccount', 'daterange', 'campaignname', 'campaignbudget', 'campaignobjective', 'campaignactive', 'adsetbudget', 'adsetAds'];
   searchCampaign: string = '';
@@ -128,6 +129,7 @@ export class FbDataComponent implements OnInit, OnDestroy{
   constructor(private firestore: AngularFirestore, private dialog: MatDialog,private fb: FormBuilder) {
     this.data$ = this.firestore.collection<FacebookData>('facebookadsdata').valueChanges();
     this.entries = this.firestore.collection<any>('entries').valueChanges();
+    this.lylregistration = this.firestore.collection<any>('lylregistration').valueChanges();
     this.adwebsiteurl = this.firestore.collection<any>('adwebsiteurl').valueChanges();
   }
 
@@ -220,8 +222,11 @@ applyaccountFilter() {
 
   async setupDataFetch(): Promise<void> {
     try {
-      const entriesData = await this.entries.pipe(takeUntil(this.ngUnsubscribe), take(1)).toPromise();
+      const data =await this.lylregistration.pipe(takeUntil(this.ngUnsubscribe), take(1)).toPromise()
+      const data1 =await this.entries.pipe(takeUntil(this.ngUnsubscribe), take(1)).toPromise() ;
+      const entriesData = [...data, ...data1];
       const facebookAdsData = await this.data$.pipe(takeUntil(this.ngUnsubscribe), take(1)).toPromise();
+      //console.log('data',entriesData)
 
       this.processEntriesAndData(entriesData, facebookAdsData);
 
@@ -249,21 +254,40 @@ applyaccountFilter() {
 
     this.checkAndAddNewEntry(entriesData);
   }
+  // processEntry(entry: any): void {
+  //   if ((entry.createddate) && ( typeof entry.createddate.seconds === 'number') && (typeof entry.createddate.nanoseconds === 'number')) {
+  //     const entryDate = new Date(entry.createddate.seconds * 1000 + entry.createddate.nanoseconds / 1e6);
+  //     const formattedEntryDate = entryDate.toISOString().split('T')[0];
+
+  //     const matchingSet = this.findMatchingSet(entry, formattedEntryDate);
+
+  //     if (matchingSet) {
+  //       this.addEntryToMatchingSet(matchingSet, entry, formattedEntryDate);
+  //     }
+  //   } else {
+  //     console.error('Entry does not have a valid createddate:', entry);
+  //   }
+  // }
 
   processEntry(entry: any): void {
-    if (entry.createddate && typeof entry.createddate.seconds === 'number' && typeof entry.createddate.nanoseconds === 'number') {
-      const entryDate = new Date(entry.createddate.seconds * 1000 + entry.createddate.nanoseconds / 1e6);
+    if ((entry.createddate && typeof entry.createddate.seconds === 'number' && typeof entry.createddate.nanoseconds === 'number') ||
+        (entry.entrydata && typeof entry.entrydata.seconds === 'number' && typeof entry.entrydata.nanoseconds === 'number')) {
+  
+      const entryDate = entry.createddate ? new Date(entry.createddate.seconds * 1000 + entry.createddate.nanoseconds / 1e6) :
+                                           new Date(entry.entrydata.seconds * 1000 + entry.entrydata.nanoseconds / 1e6);
+  
       const formattedEntryDate = entryDate.toISOString().split('T')[0];
-
+  
       const matchingSet = this.findMatchingSet(entry, formattedEntryDate);
-
+  
       if (matchingSet) {
         this.addEntryToMatchingSet(matchingSet, entry, formattedEntryDate);
       }
     } else {
-      console.error('Entry does not have a valid createddate:', entry);
+      console.error('Entry does not have a valid createddate or entrydata:', entry);
     }
   }
+  
 
   findMatchingSet(entry: any, formattedEntryDate: string): FacebookSet | undefined {
     return this.facebookset.find((set, index) => {
@@ -288,19 +312,33 @@ applyaccountFilter() {
       );
     } else if (entry.url) {
       const utmMediumFromUrl = this.extractUtmMediumFromUrl(entry.url);
+      const utmCampaignFromUrl = this.extractUtmCampaignFromUrl(entry.url);
       const formattedUtmMediumFromUrl = utmMediumFromUrl.replace(/\s/g, '');
+      const formattedUtmCampaignFromUrl = utmCampaignFromUrl ? utmCampaignFromUrl.replace(/\+/g, '') : '';
+  
       return set.campaignSets.some(campaignSet =>
         campaignSet.adsets.some(adset =>
           adset.ads.some(ad => {
             const formattedCampaignName = campaignSet.campaignName.replace(/\s/g, '');
-            return formattedCampaignName === formattedUtmMediumFromUrl;
+            return formattedCampaignName === formattedUtmMediumFromUrl || formattedCampaignName === formattedUtmCampaignFromUrl;
           })
         )
       );
     }
-
+  
     return false;
   }
+  
+  extractUtmCampaignFromUrl(url: string): string | null {
+    const matches = url.match(/[?&]utm_campaign=([^&]+)/);
+    return matches ? matches[1] : '';
+  }
+  extractUtmMediumFromUrl(url: string): string {
+    const matches = url.match(/[?&]utm_medium=([^&]+)/);
+    return matches ? matches[1] : '';
+  }
+  
+  
  addEntryToMatchingSet(matchingSet: FacebookSet, entry: any, formattedEntryDate: string): void {
     let matchingSetGroup = this.groupedEntries.find(group => this.areMatchingSetsEqual(group[0]?.matchingSet, matchingSet));
 
@@ -313,7 +351,7 @@ applyaccountFilter() {
     matchingSetGroup[0].entries.push({
       leadname: entry.name,
       email: entry.email,
-      campaignname: entry.utmmedium,
+      campaignname: entry.utmmedium ,
       url:entry.url,
       adsetname: entry.utmcampaign,
       adname: entry.utmcontent,
@@ -321,17 +359,21 @@ applyaccountFilter() {
     });
   }
 
- checkAndAddNewEntry(entriesData: any[]): void {
+  checkAndAddNewEntry(entriesData: any[]): void {
     const latestEntryDate = entriesData.reduce((latestDate, entry) => {
-      if (entry.createddate && typeof entry.createddate.seconds === 'number' && typeof entry.createddate.nanoseconds === 'number') {
-        const entryDate = new Date(entry.createddate.seconds * 1000 + entry.createddate.nanoseconds / 1e6);
+      if ((entry.createddate || entry.entrydata) &&
+          (entry.createddate && typeof entry.createddate.seconds === 'number' && typeof entry.createddate.nanoseconds === 'number') ||
+          (entry.entrydata && typeof entry.entrydata.seconds === 'number' && typeof entry.entrydata.nanoseconds === 'number')) {
+  
+        const entryDate = entry.createddate ? new Date(entry.createddate.seconds * 1000 + entry.createddate.nanoseconds / 1e6) :
+                                               new Date(entry.entrydata.seconds * 1000 + entry.entrydata.nanoseconds / 1e6);
         return entryDate > latestDate ? entryDate : latestDate;
       }
       return latestDate;
     }, this.todayDate);
-
+  
     const latestFormattedDate = this.getFormattedDate(new firebase.firestore.Timestamp(latestEntryDate.getTime() / 1000, 0));
-
+  
     if (!this.facebookset.some(set => set.formattedDate === latestFormattedDate)) {
       this.facebookset.push({
         formattedDate: latestFormattedDate,
@@ -339,11 +381,7 @@ applyaccountFilter() {
       });
     }
   }
-
-  extractUtmMediumFromUrl(url: string): string {
-    const matches = url.match(/[?&]utm_medium=([^&]+)/);
-    return matches ? matches[1] : '';
-  }
+  
 
   openLeadDialog(index: number): void {
     if (this.groupedEntries.length > index) {

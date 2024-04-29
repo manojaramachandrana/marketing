@@ -1,10 +1,11 @@
 <ng-container *ngIf="shouldDisplayToolbar(); else loginRegisterTemplate">
-  <mat-toolbar color="orange" *ngIf="shouldDisplayToolbar()">
+  <mat-toolbar *ngIf="shouldDisplayToolbar()" class ="toolbar">
     <button mat-icon-button (click)="sidenav.toggle()">
       <mat-icon>menu</mat-icon>
     </button>
     <span class="example-spacer"></span>
     ANALYTICS
+    <span class="title">{{ pageTitle }}</span>
     <div class="right"><span class="example-spacer"></span>
     Hello {{ getUserName() }}</div>
   </mat-toolbar>

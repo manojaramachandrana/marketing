@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router, NavigationEnd,ActivatedRoute } from '@angular/router';
 import { AuthService } from './service/auth.service';
 import { filter } from 'rxjs/operators';
 
@@ -8,19 +8,41 @@ import { filter } from 'rxjs/operators';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit{
   title = 'analytics-screen';
   displayLogin: boolean = true;
   displayRegister: boolean = false;
   displayResetPassword: boolean = false;
+  pageTitle: string = ''; 
 
-  constructor(private router: Router, private authService: AuthService) {
+  constructor(private router: Router, private authService: AuthService,private activatedRoute: ActivatedRoute) {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
       this.updateDisplayFlags();
     });
   }
+  ngOnInit(): void {
+    this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
+      let route = this.activatedRoute;
+      while (route.firstChild) {
+        route = route.firstChild;
+      }
+      this.pageTitle = route.snapshot.data.title || route.snapshot.routeConfig?.path;
+      if (this.pageTitle === 'dashboard'){
+        this.pageTitle = 'Growth Metrics';
+      } else if ( this.pageTitle === 'fb-data'){
+        this.pageTitle = 'Ads Campaign Sets'
+      } else if ( this.pageTitle === 'fbga'){
+        this.pageTitle = 'Daily Leads & Sales'
+      } else if ( this.pageTitle === 'fbadsdata'){
+        this.pageTitle = ' Sales Conversion Cycle'
+      }else {
+        this.pageTitle = ''
+      }
+    });
+  }
+
 
   shouldDisplayToolbar(): boolean {
     const currentRoute = this.router.url;

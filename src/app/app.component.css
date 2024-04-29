@@ -14,24 +14,60 @@
 
   .sidenav-container {
     height: 100%;
-    /* color: brown; */
+    /* background-color: white; */
+    /* color: midnightblue ; */
+    font-family: 'Times New Roman', Times, serif;
   }
   
   .mat-sidenav {
-    width: 200px;
+    width: 250px;
+    background-color: #3b3b3b ;
+    color: white;
+    font-family: 'Times New Roman', Times, serif;
   }
 
   .right{
-    margin-left: 85%;
+    margin-left: 15%;
   }
 
-  /* .mat-sidenav-container {
+  .toolbar{
+    background-color: black;
+    color: white;
+    height: 75px;
+    font-family: 'Times New Roman', Times, serif;
     display: flex;
+    justify-content: space-between; 
+    align-items: center; 
+  }
+
+  .mat-list-item{
+    color: white;
+    font-size: 20px;
+    font-family: 'Times New Roman', Times, serif;
+  }
+
+  .parent-container {
+    display: flex; 
+    height: 100vh; 
   }
   
-  .mat-nav-list {
-    margin-left: auto; 
+  .title {
+    flex: 10; 
+    text-align: center;
+    font-family: 'Times New Roman', Times, serif;
+    width: 100%;
+    margin-right: -10%;
+    font-size: x-large;
+  }
+
+   /* .mat-sidenav-container {
+    color: white;
+    display: flex;
   } */
+  
+  /* .mat-nav-list {
+    margin-left: auto; 
+  }  */
   
 
   
