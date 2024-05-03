@@ -6,9 +6,8 @@
   </div>
 <div *ngIf="!loading">
 <!-- <h1>Growth Metrics</h1> -->
-<br><br> 
-
-<h2>Average Order Value </h2><br><br>   
+<br><br>
+<h2>Average Order Value </h2><br><br>
 <div  class="table">
     <table mat-table [dataSource]="dataSource" id="exampleTable" class="mat-elevation-z8" matSort>
         <ng-container matColumnDef="currentweek">
@@ -59,13 +58,13 @@
     <table mat-table [dataSource]="dataSource" id="exampleTable" class="mat-elevation-z8" matSort>
         <ng-container matColumnDef="currentweek">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Previous</th>
-            <td mat-cell *matCellDef="let element">{{ lastweekltv() }}</td>
-            <td mat-footer-cell *matFooterCellDef="let element"> {{lastmonthltv()}} </td>
+            <td mat-cell *matCellDef="let element">{{ lastweeklt() }}</td>
+            <td mat-footer-cell *matFooterCellDef="let element"> {{lastmonthlt()}} </td>
         </ng-container>
         <ng-container matColumnDef="lastweek">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Current</th>
-            <td mat-cell *matCellDef="let element">{{ currentweekltv() }}</td>
-            <td mat-footer-cell *matFooterCellDef="let element"> {{ currentmonthltv()}} </td>
+            <td mat-cell *matCellDef="let element">{{ currentweeklt() }}</td>
+            <td mat-footer-cell *matFooterCellDef="let element"> {{ currentmonthlt()}} </td>
         </ng-container>
         <ng-container matColumnDef="no">
             <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
@@ -150,12 +149,12 @@
     <table mat-table [dataSource]="dataSource" id="exampleTable" class="mat-elevation-z8" matSort>
         <ng-container matColumnDef="currentweek">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Previous</th>
-            <td mat-cell *matCellDef="let element">{{ element.lastweek }}</td>
+            <td mat-cell *matCellDef="let element">{{ element.lastweekwou }}</td>
             <td mat-footer-cell *matFooterCellDef="let element"> {{lastmonth()}} </td>
         </ng-container>
         <ng-container matColumnDef="lastweek">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Current</th>
-            <td mat-cell *matCellDef="let element">{{ element.currentweek }}</td>
+            <td mat-cell *matCellDef="let element">{{ element.currentweekwou }}</td>
             <td mat-footer-cell *matFooterCellDef="let element"> {{ currentmonth()}} </td>
         </ng-container>
         <ng-container matColumnDef="no">

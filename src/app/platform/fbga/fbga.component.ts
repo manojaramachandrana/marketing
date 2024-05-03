@@ -215,8 +215,9 @@ export class FbgaComponent implements OnInit, OnDestroy {
         const count = countsByDate[date] || 0;
 
         const totalPurchaseValue = await this.getTotalPurchaseValueForDate(date, campaignName);
-        const liquidity = await this.getamountreturn(date,campaignName)
-        const spendmm = await this.getamountspend(date,campaignName)
+        const liquidity = await this.getamountreturn(date,campaignName);
+        const spendmm = await this.getamountspend(date,campaignName);
+        const lylentry = await this.getlylentry(date,campaignName);
 
         const existingDataIndex = this.dataSource.data.findIndex(d => d.date === date);
         if (existingDataIndex !== -1) {
@@ -225,7 +226,7 @@ export class FbgaComponent implements OnInit, OnDestroy {
             } else if (campaignName === 'adsinsight') {
               this.dataSource.data[existingDataIndex]['spend_MM'] = spendmm;
             } else if (campaignName === 'lylregistration') {
-                this.dataSource.data[existingDataIndex]['lylreg'] = count;
+                this.dataSource.data[existingDataIndex]['lylreg'] = lylentry;
             } else if (campaignName === 'lylwebinarattended') {
                 this.dataSource.data[existingDataIndex]['lylattended'] = count;
             } else if (campaignName === 'lylwebcompletewatch') {
@@ -243,7 +244,7 @@ export class FbgaComponent implements OnInit, OnDestroy {
             }
         } else {
             const newDataItem = {
-                date,homepage: campaignName === 'entries' ? count : 0,lylreg: campaignName === 'lylregistration' ? count : 0,lylattended: campaignName === 'lylwebinarattended' ? count : 0,lylcomwatch: campaignName === 'lylwebcompletewatch' ? count : 0,lylapplied: campaignName === 'lylapplied' ? count : 0,loghot: campaignName === 'loghot' ? count : 0,superopportunity: campaignName === 'superhotopportunities' ? count : 0,sales: campaignName === 'leads' ? count : 0,sales_total: campaignName === 'leads' ? totalPurchaseValue : 0, amountreturn : campaignName === 'leads' ? liquidity:0, spend_MM: campaignName === 'adsinsight' ? spendmm:0};
+                date,homepage: campaignName === 'entries' ? count : 0,lylreg: campaignName === 'lylregistration' ? lylentry : 0,lylattended: campaignName === 'lylwebinarattended' ? count : 0,lylcomwatch: campaignName === 'lylwebcompletewatch' ? count : 0,lylapplied: campaignName === 'lylapplied' ? count : 0,loghot: campaignName === 'loghot' ? count : 0,superopportunity: campaignName === 'superhotopportunities' ? count : 0,sales: campaignName === 'leads' ? count : 0,sales_total: campaignName === 'leads' ? totalPurchaseValue : 0, amountreturn : campaignName === 'leads' ? liquidity:0, spend_MM: campaignName === 'adsinsight' ? spendmm:0};
                 this.dataSource.data.push(newDataItem);
         }
     }
@@ -305,6 +306,30 @@ async getamountreturn(date: string, campaignName: string): Promise<number> {
             liquidity = liquidity + (entry.initialpayment || 0) ;
           });
           resolve(liquidity);
+      }, error => {
+          reject(error);
+      });
+  });
+}
+
+async getlylentry(date: string, campaignName: string): Promise<number> {
+  const [day, month, year] = date.split("-").map(Number);
+  const dateObject = new Date(year, month - 1, day);
+  dateObject.setHours(0, 0, 0, 0);
+  const startTimestamp = firebase.firestore.Timestamp.fromDate(dateObject);
+  dateObject.setHours(23, 59, 59, 999);
+  const endTimestamp = firebase.firestore.Timestamp.fromDate(dateObject);
+  return new Promise<number>((resolve, reject) => {
+      let count = 0;
+      this.firestore.collection<any>(campaignName, ref => ref.where('entrydata', '>=', startTimestamp)
+          .where('entrydata', '<=', endTimestamp)
+      ).valueChanges().pipe(takeUntil(this.unsubscribe$)).subscribe(entries => {
+          entries.forEach(entry => {
+            if (entry.event == 'lylregistration'){
+            count +=1  ;
+            }
+          });
+          resolve(count);
       }, error => {
           reject(error);
       });
