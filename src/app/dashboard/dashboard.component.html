@@ -10,6 +10,11 @@
 <h2>Average Order Value </h2><br><br>
 <div  class="table">
     <table mat-table [dataSource]="dataSource" id="exampleTable" class="mat-elevation-z8" matSort>
+        <ng-container matColumnDef="lastlastweek">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Penultimate</th>
+            <td mat-cell *matCellDef="let element">{{ lastlastweektpv() }}</td>
+            <td mat-footer-cell *matFooterCellDef="let element"> {{lastlastmonthtpv()}} </td>
+        </ng-container>
         <ng-container matColumnDef="currentweek">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Previous</th>
             <td mat-cell *matCellDef="let element">{{ lastweektpv() }}</td>
@@ -47,9 +52,9 @@
               </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+        <tr mat-header-row *matHeaderRowDef="displayedColumn"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumn;"></tr>
+        <tr mat-footer-row *matFooterRowDef="displayedColumn"></tr>
     </table>
 </div><br><br>
 
@@ -147,6 +152,11 @@
 
 <div  class="table">
     <table mat-table [dataSource]="dataSource" id="exampleTable" class="mat-elevation-z8" matSort>
+        <ng-container matColumnDef="lastlastweek">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Penultimate</th>
+            <td mat-cell *matCellDef="let element">{{ element.lastlastweekwou }}</td>
+            <td mat-footer-cell *matFooterCellDef="let element"> {{lastlastmonth()}} </td>
+        </ng-container>
         <ng-container matColumnDef="currentweek">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Previous</th>
             <td mat-cell *matCellDef="let element">{{ element.lastweekwou }}</td>
@@ -184,15 +194,20 @@
               
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+        <tr mat-header-row *matHeaderRowDef="displayedColumn"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumn;"></tr>
+        <tr mat-footer-row *matFooterRowDef="displayedColumn"></tr>
     </table>
 </div><br><br>
 
 <h2>Increase in Number of People in Subscription of Ecosystem Product</h2><br><br>
 <div class="table">
     <table mat-table [dataSource]="dataSource" id="exampleTable" class="mat-elevation-z8" matSort>
+        <ng-container matColumnDef="lastlastweek">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Penultimate</th>
+            <td mat-cell *matCellDef="let element">{{ element.lastlastweekecosystem }}</td>
+            <td mat-footer-cell *matFooterCellDef="let element"> {{lastlastmonthecosystem()}} </td>
+        </ng-container>
         <ng-container matColumnDef="currentweek">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Previous</th>
             <td mat-cell *matCellDef="let element">{{ element.lastweekecosystem }}</td>
@@ -229,15 +244,20 @@
               </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+        <tr mat-header-row *matHeaderRowDef="displayedColumn"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumn;"></tr>
+        <tr mat-footer-row *matFooterRowDef="displayedColumn"></tr>
     </table>
 </div><br><br>
 
 <h2>Increase in Number of Active Participant in EMI </h2><br><br>
 <div  class="table">
     <table mat-table [dataSource]="dataSource" id="exampleTable" class="mat-elevation-z8" matSort>
+        <ng-container matColumnDef="lastlastweek">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Penultimate</th>
+            <td mat-cell *matCellDef="let element">{{ element.lastlastweekemiecosystem }}</td>
+            <td mat-footer-cell *matFooterCellDef="let element"> {{lastlastmonthemiecosystem()}} </td>
+        </ng-container>
         <ng-container matColumnDef="currentweek">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Previous</th>
             <td mat-cell *matCellDef="let element">{{ element.lastweekemiecosystem }}</td>
@@ -274,9 +294,9 @@
               </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+        <tr mat-header-row *matHeaderRowDef="displayedColumn"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumn;"></tr>
+        <tr mat-footer-row *matFooterRowDef="displayedColumn"></tr>
     </table>
 </div><br><br><br>
 </div>

@@ -24,16 +24,20 @@ export class FbadsdataComponent implements OnInit, OnDestroy {
   selectedMonth: string = '';
   months: string[] = []; 
   emailarray: any[] = [];
+  monthlyLeadDetails: { [key: string]: any[] } = {};
+  leadDetailsMay2024Conversion30 :any = '';
 
-  constructor(private firestore: AngularFirestore) {}
-
-  ngOnInit(): void {
+  constructor(private firestore: AngularFirestore) {
     this.fetchAndProcessEntries();
     this.fetchEntries();
     this.fetchLylRegistration();
     if (this.months.length > 0) {
       this.selectedMonth = this.months[this.months.length - 1];
     }
+  }
+
+  ngOnInit(): void {
+  
   }
 
   conversionRatio(element: any): string {
@@ -56,7 +60,7 @@ export class FbadsdataComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  toggleAdDetails(row: any): void {
+  toggleAdDetails(row: any, column: string): void {
     if (this.selectedRow === row) {
       this.showDetails = !this.showDetails;
       if (this.showDetails) {
@@ -67,17 +71,19 @@ export class FbadsdataComponent implements OnInit, OnDestroy {
     } else {
       this.showDetails = true;
       this.selectedRow = row;
-      this.fetchLeadData(row);
+        this.fetchLeadData(row, column);
+
     }
   }
 
-  fetchLeadData(row: any): void {
+  fetchLeadData(row: any, column: string): void {
     const month = row.month;
     if (!month) {
       console.error('Month is undefined or null in the selected row:', row);
       return;
     }
 
+   if( column === 'sales'){
     this.firestore.collection<any>('leads').valueChanges().pipe(
       takeUntil(this.unsubscribe$)
     ).subscribe(leads => {
@@ -91,11 +97,30 @@ export class FbadsdataComponent implements OnInit, OnDestroy {
 
         if (monthYear === month) {
           this.matchingLeads.push(lead);
+          //console.log('lon',this.matchingLeads)
         }
       }
       });
     });
+  }else {
+    console.log('month', month);
+    let selectedmonth = month;
+    let selectedcolumn = column;
+    this.matchingLeads = [];
+    //console.log('monthlyLeadDetails:', this.monthlyLeadDetails);
+    this.leadDetailsMay2024Conversion30 = this.monthlyLeadDetails[selectedmonth]
+       ?.filter(details => details.conversionPeriod === selectedcolumn);
+  
+    if (this.leadDetailsMay2024Conversion30) {
+      this.leadDetailsMay2024Conversion30.forEach((detail: { lead: any; }) => {
+        //console.log('Lead:', detail.lead);
+        this.matchingLeads.push(detail.lead);
+      });
+    } else {
+      console.log('leadDetailsMay2024Conversion30 is null or undefined');
+    }
   }
+}
 
   getDayDifference(start: Date, end: Date): number {
     const millisecondsPerDay = 24 * 60 * 60 * 1000;
@@ -201,46 +226,78 @@ export class FbadsdataComponent implements OnInit, OnDestroy {
 
     setTimeout(() => {
       this.populateDataSource(countsByMonth);
-    }, 700);
+    }, 1750);
   }
 
-async  checkConversion(email: string, entryDate: Date, monthData: any) {
-  if (!this.emailarray.includes(email)) {
-    this.emailarray.push(email);
-    //console.log('emailarray',this.emailarray)
-  }
-
-   await this.firestore.collection<any>('leads', ref => ref.where('email', '==', email)).valueChanges().pipe(
+  async checkConversion(email: string, entryDate: Date, monthData: any) {
+    if (!this.emailarray.includes(email)) {
+      this.emailarray.push(email);
+    }
+  
+    await this.firestore.collection<any>('leads', ref => ref.where('email', '==', email)).valueChanges().pipe(
       takeUntil(this.unsubscribe$)
     ).subscribe(leads => {
+      const monthYear = `${entryDate.toLocaleString('en-us', { month: 'long' })} ${entryDate.getFullYear()}`;
+      if (!this.monthlyLeadDetails[monthYear]) {
+        this.monthlyLeadDetails[monthYear] = [];
+      }
+  
       leads.forEach(lead => {
         const leadDate = lead.converteddate.toDate();
         const dateDifference = Math.abs(entryDate.getTime() - leadDate.getTime()) / (1000 * 60 * 60 * 24);
+        let conversionPeriod: string = '';
         if (dateDifference <= 30) {
           monthData.conversion_30++;
-          console.log('Conversion 30:', email);
+          conversionPeriod = 'Conversion_30';
+          console.log(email)
         } else if (dateDifference <= 60) {
           monthData.conversion_60++;
-          console.log('conversion-60',email)
+          conversionPeriod = 'Conversion_60';
         } else if (dateDifference <= 90) {
           monthData.conversion_90++;
+          conversionPeriod = 'Conversion_90';
         } else if (dateDifference <= 120) {
           monthData.conversion_120++;
+          conversionPeriod = 'Conversion_120';
         } else if (dateDifference <= 240) {
           monthData.conversion_240++;
+          conversionPeriod = 'Conversion_240';
         } else if (dateDifference <= 360) {
           monthData.conversion_360++;
+          conversionPeriod = 'Conversion_360';
+        }
+  
+        const leadDetails = { email, lead, conversionPeriod };
+  
+        if (!this.monthlyLeadDetails[monthYear].some(existingLead => existingLead.email === email)) {
+          this.monthlyLeadDetails[monthYear].push(leadDetails);
         }
       });
+  
+    console.log('leads', this.monthlyLeadDetails);
     });
   }
 
-
   populateDataSource(countsByMonth: { [key: string]: { leads: number, sales: number, conversion_30: number, conversion_60: number, conversion_90: number, conversion_120: number, conversion_240: number, conversion_360: number } }) {
     this.dataSource.data = [];
-
-    Object.keys(countsByMonth).forEach(month => {
-      const newDataItem = { month, leads: countsByMonth[month].leads, sales: countsByMonth[month].sales, conversion_30: countsByMonth[month].conversion_30, conversion_60: countsByMonth[month].conversion_60, conversion_90: countsByMonth[month].conversion_90, conversion_120: countsByMonth[month].conversion_120, conversion_240: countsByMonth[month].conversion_240, conversion_360: countsByMonth[month].conversion_360 };
+  
+    const months = Object.keys(countsByMonth);
+  
+    months.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+  
+    months.forEach(month => {
+      const newDataItem = { 
+        month, 
+        leads: countsByMonth[month].leads, 
+        sales: countsByMonth[month].sales, 
+        conversion_30: countsByMonth[month].conversion_30, 
+        conversion_60: countsByMonth[month].conversion_60, 
+        conversion_90: countsByMonth[month].conversion_90, 
+        conversion_120: countsByMonth[month].conversion_120, 
+        conversion_240: countsByMonth[month].conversion_240, 
+        conversion_360: countsByMonth[month].conversion_360 
+      };
+  
       const existingMonthIndex = this.dataSource.data.findIndex(item => item.month === month);
       if (existingMonthIndex !== -1) {
         this.dataSource.data[existingMonthIndex].leads += newDataItem.leads;
@@ -255,10 +312,36 @@ async  checkConversion(email: string, entryDate: Date, monthData: any) {
         this.dataSource.data.push(newDataItem);
       }
     });
-
+  
+    this.dataSource.data.sort((a, b) => new Date(a.month).getTime() - new Date(b.month).getTime());
+  
     this.dataSource.data = [...this.dataSource.data];
-    console.log(this.dataSource)
   }
+  
+  
+  // populateDataSource(countsByMonth: { [key: string]: { leads: number, sales: number, conversion_30: number, conversion_60: number, conversion_90: number, conversion_120: number, conversion_240: number, conversion_360: number } }) {
+  //   this.dataSource.data = [];
+
+  //   Object.keys(countsByMonth).forEach(month => {
+  //     const newDataItem = { month, leads: countsByMonth[month].leads, sales: countsByMonth[month].sales, conversion_30: countsByMonth[month].conversion_30, conversion_60: countsByMonth[month].conversion_60, conversion_90: countsByMonth[month].conversion_90, conversion_120: countsByMonth[month].conversion_120, conversion_240: countsByMonth[month].conversion_240, conversion_360: countsByMonth[month].conversion_360 };
+  //     const existingMonthIndex = this.dataSource.data.findIndex(item => item.month === month);
+  //     if (existingMonthIndex !== -1) {
+  //       this.dataSource.data[existingMonthIndex].leads += newDataItem.leads;
+  //       this.dataSource.data[existingMonthIndex].sales += newDataItem.sales;
+  //       this.dataSource.data[existingMonthIndex].conversion_30 += newDataItem.conversion_30;
+  //       this.dataSource.data[existingMonthIndex].conversion_60 += newDataItem.conversion_60;
+  //       this.dataSource.data[existingMonthIndex].conversion_90 += newDataItem.conversion_90;
+  //       this.dataSource.data[existingMonthIndex].conversion_120 += newDataItem.conversion_120;
+  //       this.dataSource.data[existingMonthIndex].conversion_240 += newDataItem.conversion_240;
+  //       this.dataSource.data[existingMonthIndex].conversion_360 += newDataItem.conversion_360;
+  //     } else {
+  //       this.dataSource.data.push(newDataItem);
+  //     }
+  //   });
+
+  //   this.dataSource.data = [...this.dataSource.data];
+  //   //console.log(this.dataSource)
+  // }
 
   applyFilter() {
   

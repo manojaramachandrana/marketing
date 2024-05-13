@@ -31,8 +31,9 @@ export class DashboardComponent implements OnInit {
   private lastmonthFunnelMCEmails = new Set<string>();
 
   constructor( private firestore: AngularFirestore) {}
-  dataSource = new MatTableDataSource< { date: string,currentweek: number,lastweek: number,currentmonth: number,lastmonth: number,currentweeklead: number, currentmonthlead: number, lastweeklead: number, lastmonthlead: number, currentweektpv: number, lastweektpv: number, currentmonthtpv: number, lastmonthtpv: number, currentweekecosystem:number, lastweekecosystem: number, currentmonthecosystem: number, lastmonthecosystem: number, currentweekemiecosystem: number, lastweekemiecosystem: number, currentmonthemiecosystem: number, lastmonthemiecosystem: number, currentweekparticipant: number, lastweekparticipant: number, currentmonthparticipant:number, lastmonthparticipant: number, currentweekfreetopaid: number, lastweekfreetopaid: number, currentmonthfreetopaid: number, lastmonthfreetopaid: number, lastmonthltv: number, currentmonthltv: number, lastweekltv:number,currentweekltv:number, currentweekwou:number,currentmonthwou:number,lastweekwou:number,lastmonthwou:number }>(); 
+  dataSource = new MatTableDataSource< { date: string,currentweek: number,lastweek: number,lastlastweek:number,currentmonth: number,lastmonth: number,lastlastmonth:number,currentweeklead: number,lastlastweeklead:number, currentmonthlead: number,lastlastmonthlead:number, lastweeklead: number, lastmonthlead: number, currentweektpv: number, lastweektpv: number,lastlastweektpv: number,lastlastmonthtpv:number, currentmonthtpv: number, lastmonthtpv: number, currentweekecosystem:number,lastlastweekecosystem:number,lastlastmonthecosystem:number, lastweekecosystem: number, currentmonthecosystem: number, lastmonthecosystem: number, currentweekemiecosystem: number,lastlastweekemiecosystem:number,lastlastmonthemiecosystem: number, lastweekemiecosystem: number, currentmonthemiecosystem: number, lastmonthemiecosystem: number, currentweekparticipant: number,lastlastweekparticipant: number,lastlastmonthparticipant:number, lastweekparticipant: number, currentmonthparticipant:number, lastmonthparticipant: number, currentweekfreetopaid: number,lastlastweekfreetopaid: number,lastlastmonthfreetopaid: number, lastweekfreetopaid: number, currentmonthfreetopaid: number, lastmonthfreetopaid: number, lastmonthltv: number,lastlastmonthltv: number,lastlastweekltv: number, currentmonthltv: number, lastweekltv:number,currentweekltv:number, currentweekwou:number,lastlastweekwou:number,currentmonthwou:number,lastlastmonthwou:number, lastweekwou:number,lastmonthwou:number }>(); 
   displayedColumns: string[] = ['no', 'currentweek', 'lastweek','metrics'];
+  displayedColumn: string[] = ['no','lastlastweek', 'currentweek', 'lastweek','metrics'];
   //displayedColumns: string[] = [ 'date', 'currentweek', 'lastweek', 'currentmonth', 'lastmonth', 'currentweeklead', 'lastweeklead', 'currentmonthlead', 'lastmonthlead', 'currentweektpv', 'lastweektpv', 'currentmonthtpv', 'lastmonthtpv', 'currentweekecosystem', 'lastweekecosystem', 'currentmonthecosystem', 'lastmonthecosystem', 'currentweekemiecosystem', 'lastweekemiecosystem', 'currentmonthemiecosystem', 'lastmonthemiecosystem', 'currentweekparticipant', 'lastweekparticipant', 'currentmonthparticipant', 'lastmonthparticipant', 'currentweekfreetopaid', 'lastweekfreetopaid', 'currentmonthfreetopaid', 'lastmonthfreetopaid'];
 
   ngOnInit(): void {
@@ -64,14 +65,14 @@ export class DashboardComponent implements OnInit {
     this.unsubscribe$.complete();
   }
   weekpaiduser() {
-    const lastWeekTotal = this.dataSource.data.reduce((total, item) => total + item.lastweek, 0);
-    const currentWeekTotal = this.dataSource.data.reduce((total, item) => total + item.currentweek, 0);
+    const lastWeekTotal = this.dataSource.data.reduce((total, item) => total + item.currentweek, 0);
+    const currentWeekTotal = this.dataSource.data.reduce((total, item) => total + item.lastlastweek, 0);
     const percentageChange = ((currentWeekTotal - lastWeekTotal ) / lastWeekTotal) * 100;
     return percentageChange.toFixed(0);
   }
   monthpaiduser() {
-    let currentMonthTotal: any = this.currentmonth();
-    let lastMonthTotal: any = this.lastmonth();
+    let currentMonthTotal: any = this.lastmonth();
+    let lastMonthTotal: any = this.lastlastmonth();
     if (lastMonthTotal === 0) {
         return 0;
     }
@@ -79,14 +80,14 @@ export class DashboardComponent implements OnInit {
     return percentageChange.toFixed(0);
   }
   weekecosystem() {
-    const lastWeekTotal = this.dataSource.data.reduce((total, item) => total + item.lastweekecosystem, 0);
-    const currentWeekTotal = this.dataSource.data.reduce((total, item) => total + item.currentweekecosystem, 0);
+    const lastWeekTotal = this.dataSource.data.reduce((total, item) => total + item.lastlastweekecosystem, 0);
+    const currentWeekTotal = this.dataSource.data.reduce((total, item) => total + item.lastweekecosystem, 0);
     const percentageChange = ((currentWeekTotal - lastWeekTotal ) / lastWeekTotal) * 100;
     return percentageChange.toFixed(0);
   }
   monthecosystem() {
-    let currentMonthTotal: any = this.currentmonthecosystem();
-    let lastMonthTotal: any = this.lastmonthecosystem();
+    let currentMonthTotal: any = this.lastmonthecosystem();
+    let lastMonthTotal: any = this.lastlastmonthecosystem();
     if (lastMonthTotal === 0) {
         return 0;
     }
@@ -94,14 +95,14 @@ export class DashboardComponent implements OnInit {
     return percentageChange.toFixed(0);
   }
   weekemiecosystem() {
-    const lastWeekTotal = this.dataSource.data.reduce((total, item) => total + item.lastweekemiecosystem, 0);
-    const currentWeekTotal = this.dataSource.data.reduce((total, item) => total + item.currentweekemiecosystem, 0);
+    const lastWeekTotal = this.dataSource.data.reduce((total, item) => total + item.lastlastweekemiecosystem, 0);
+    const currentWeekTotal = this.dataSource.data.reduce((total, item) => total + item.lastweekemiecosystem, 0);
     const percentageChange = ((currentWeekTotal - lastWeekTotal ) / lastWeekTotal) * 100;
     return percentageChange.toFixed(0);
   }
   monthemiecosystem() {
-    let currentMonthTotal: any = this.currentmonthemiecosystem();
-    let lastMonthTotal: any = this.lastmonthemiecosystem();
+    let currentMonthTotal: any = this.lastmonthemiecosystem();
+    let lastMonthTotal: any = this.lastlastmonthemiecosystem();
     if (lastMonthTotal === 0) {
         return 0;
     }
@@ -109,8 +110,8 @@ export class DashboardComponent implements OnInit {
     return percentageChange.toFixed(0);
   }
   weekorder() {
-    let currentMonthTotal: any = this.currentweektpv();
-    let lastMonthTotal: any = this.lastweektpv();
+    let currentMonthTotal: any = this.lastweektpv();
+    let lastMonthTotal: any = this.lastlastweektpv();
     if (lastMonthTotal === 0) {
         return 0;
     }
@@ -118,8 +119,8 @@ export class DashboardComponent implements OnInit {
     return percentageChange.toFixed(0);
   }
   monthorder() {
-    let currentMonthTotal: any = this.currentmonthtpv();
-    let lastMonthTotal: any = this.lastmonthtpv();
+    let currentMonthTotal: any = this.lastmonthtpv();
+    let lastMonthTotal: any = this.lastlastmonthtpv();
     if (lastMonthTotal === 0) {
         return 0;
     }
@@ -212,12 +213,14 @@ weekfreetopaid() {
     }
 }
 
-
   currentmonth() {
     return this.dataSource.data.map(t => t.currentmonthwou);
   }
   lastmonth() {
     return this.dataSource.data.map(t => t.lastmonthwou);
+  }
+  lastlastmonth() {
+    return this.dataSource.data.map(t => t.lastlastmonthwou);
   }
   currentmonthecosystem() {
     return this.dataSource.data.map(t => t.currentmonthecosystem);
@@ -225,11 +228,17 @@ weekfreetopaid() {
   lastmonthecosystem() {
     return this.dataSource.data.map(t => t.lastmonthecosystem);
   }
+  lastlastmonthecosystem() {
+    return this.dataSource.data.map(t => t.lastlastmonthecosystem);
+  }
   currentmonthemiecosystem() {
     return this.dataSource.data.map(t => t.currentmonthemiecosystem);
   }
   lastmonthemiecosystem() {
     return this.dataSource.data.map(t => t.lastmonthemiecosystem);
+  }
+  lastlastmonthemiecosystem() {
+    return this.dataSource.data.map(t => t.lastlastmonthemiecosystem);
   }
   currentweektpv() {
     const totalTPV = this.dataSource.data.reduce((sum, entry) => sum + entry.currentweektpv, 0);
@@ -243,6 +252,12 @@ weekfreetopaid() {
     const averageTPV = totalCount !== 0 ? totalTPV / totalCount : 0;
     return averageTPV.toFixed(2);
   }
+  lastlastweektpv() {
+    const totalTPV = this.dataSource.data.reduce((sum, entry) => sum + entry.lastlastweektpv, 0);
+    const totalCount = this.dataSource.data.reduce((sum, entry) => sum + entry.lastlastweek, 0);
+    const averageTPV = totalCount !== 0 ? totalTPV / totalCount : 0;
+    return averageTPV.toFixed(2);
+  }
   currentmonthtpv() {
     const totalTPV = this.dataSource.data.reduce((sum, entry) => sum + entry.currentmonthtpv, 0);
     const totalCount = this.dataSource.data.reduce((sum, entry) => sum + entry.currentmonth, 0);
@@ -252,6 +267,12 @@ weekfreetopaid() {
   lastmonthtpv() {
     const totalTPV = this.dataSource.data.reduce((sum, entry) => sum + entry.lastmonthtpv, 0);
     const totalCount = this.dataSource.data.reduce((sum, entry) => sum + entry.lastmonth, 0);
+    const averageTPV = totalCount !== 0 ? totalTPV / totalCount : 0;
+    return averageTPV.toFixed(2);
+  }
+  lastlastmonthtpv() {
+    const totalTPV = this.dataSource.data.reduce((sum, entry) => sum + entry.lastlastmonthtpv, 0);
+    const totalCount = this.dataSource.data.reduce((sum, entry) => sum + entry.lastlastmonth, 0);
     const averageTPV = totalCount !== 0 ? totalTPV / totalCount : 0;
     return averageTPV.toFixed(2);
   }
@@ -286,29 +307,64 @@ weekfreetopaid() {
     var dayOfWeek = currentDate.getDay();
     var sundayDiff = dayOfWeek;
     var saturdayDiff = 6 - dayOfWeek;
+    
+    var startOfDayHours = 0;
+    var startOfDayMinutes = 0;
+
+    var endOfDayHours = 23;
+    var endOfDayMinutes = 59;
+    
     var sundayDate = new Date(currentDate);
     sundayDate.setDate(currentDate.getDate() - sundayDiff);
+    sundayDate.setHours(startOfDayHours);
+    sundayDate.setMinutes(startOfDayMinutes);
+    
     var saturdayDate = new Date(currentDate);
     saturdayDate.setDate(currentDate.getDate() + saturdayDiff);
+    saturdayDate.setHours(endOfDayHours);
+    saturdayDate.setMinutes(endOfDayMinutes);
+    
     var lastSaturdayDate = new Date(currentDate);
     lastSaturdayDate.setDate(currentDate.getDate() - (dayOfWeek + 1)); 
-    var lastSundayDate = new Date(lastSaturdayDate);
-    lastSundayDate.setDate(lastSaturdayDate.getDate() - 6); 
+    lastSaturdayDate.setHours(endOfDayHours);
+    lastSaturdayDate.setMinutes(endOfDayMinutes);
     
-    console.log("Sunday " , sundayDate);
-    console.log("Saturday " , saturdayDate);
-    console.log("Sunday", lastSundayDate);
-    console.log("Saturday ", lastSaturdayDate);
+    var lastSundayDate = new Date(lastSaturdayDate);
+    lastSundayDate.setDate(lastSaturdayDate.getDate() - 6);
+    lastSundayDate.setHours(startOfDayHours);
+    lastSundayDate.setMinutes(startOfDayMinutes);
+    
+    var lastlastSaturdayDate = new Date(currentDate);
+    lastlastSaturdayDate.setDate(currentDate.getDate() - (dayOfWeek + 8)); 
+    lastlastSaturdayDate.setHours(endOfDayHours);
+    lastlastSaturdayDate.setMinutes(endOfDayMinutes);
+    
+    var lastlastSundayDate = new Date(lastlastSaturdayDate);
+    lastlastSundayDate.setDate(lastlastSaturdayDate.getDate() - 6); 
+    lastlastSundayDate.setHours(startOfDayHours);
+    lastlastSundayDate.setMinutes(startOfDayMinutes);
+    
+    console.log("currentSunday " , sundayDate);
+    console.log("currentSaturday " , saturdayDate);
+    console.log("lastSunday", lastSundayDate);
+    console.log("lastSaturday ", lastSaturdayDate);
+     console.log("lastlastsunday", lastlastSundayDate);
+     console.log("lastlastsaturday", lastlastSaturdayDate);
   
     var startOfCurrentMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
     var endOfCurrentMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
     var startOfLastMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
     var endOfLastMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
+    var startOflastlasttMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() -2, 1);
+    var endOflastlastMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() -1, 0);
+ 
   
     console.log("Start of current month:", startOfCurrentMonth);
     console.log("End of current month:", endOfCurrentMonth);
     console.log("Start of last month:", startOfLastMonth);
     console.log("End of last month:", endOfLastMonth);
+    console.log('start of lastlast month', startOflastlasttMonth);
+    console.log("end of lastlast month", endOflastlastMonth);
     const campaigns = [
       { campaignname: 'entries', startdate: sundayDate, enddate: saturdayDate, label: 'currentweeklead' ,tag: 'week'},
       { campaignname: 'lylregistration', startdate: sundayDate, enddate: saturdayDate, label: 'currentweeklead',tag: 'week' },
@@ -320,6 +376,11 @@ weekfreetopaid() {
       { campaignname: 'leads', startdate: lastSundayDate, enddate: lastSaturdayDate, label: 'lastweek',tag: 'week' },
       { campaignname: 'funnelmc', startdate: lastSundayDate, enddate: lastSaturdayDate, label: 'lastweek',tag: 'week' },
 
+      { campaignname: 'entries', startdate: lastlastSundayDate, enddate: lastlastSaturdayDate, label: 'lastlastweeklead',tag: 'week' },
+      { campaignname: 'lylregistration', startdate: lastlastSundayDate, enddate: lastlastSaturdayDate, label: 'lastlastweeklead',tag: 'week' },
+      { campaignname: 'leads', startdate: lastlastSundayDate, enddate: lastlastSaturdayDate, label: 'lastlastweek',tag: 'week' },
+      { campaignname: 'funnelmc', startdate: lastlastSundayDate, enddate: lastlastSaturdayDate, label: 'lastlastweek',tag: 'week' },
+
       { campaignname: 'entries', startdate: startOfCurrentMonth, enddate: endOfCurrentMonth, label: 'currentmonthlead',tag: 'month' },
       { campaignname: 'lylregistration', startdate: startOfCurrentMonth, enddate: endOfCurrentMonth, label: 'currentmonthlead',tag: 'month' },
       { campaignname: 'leads', startdate: startOfCurrentMonth, enddate: endOfCurrentMonth, label: 'currentmonth',tag: 'month' },
@@ -329,6 +390,11 @@ weekfreetopaid() {
       { campaignname: 'lylregistration', startdate: startOfLastMonth, enddate: endOfLastMonth, label: 'lastmonthlead',tag: 'month' },
       { campaignname: 'leads', startdate: startOfLastMonth, enddate: endOfLastMonth, label: 'lastmonth',tag: 'month' },
       { campaignname: 'funnelmc', startdate: startOfLastMonth, enddate: endOfLastMonth, label: 'lastmonth',tag: 'month' },
+
+      { campaignname: 'entries', startdate: startOflastlasttMonth, enddate: endOflastlastMonth, label: 'lastlastmonthlead',tag: 'month' },
+      { campaignname: 'lylregistration', startdate: startOflastlasttMonth, enddate: endOflastlastMonth, label: 'lastlastmonthlead',tag: 'month' },
+      { campaignname: 'leads', startdate: startOflastlasttMonth, enddate: endOflastlastMonth, label: 'lastlastmonth',tag: 'month' },
+      { campaignname: 'funnelmc', startdate: startOflastlasttMonth, enddate: endOflastlastMonth, label: 'lastlastmonth',tag: 'month' },
     ];
 
     campaigns.forEach(campaign => {
@@ -367,13 +433,14 @@ weekfreetopaid() {
     const date = this.getDateFormatted(i, startDate);    
     const count = countsByDate[date] || 0;
     totalcount +=count;
+    const adjuststartdate = new Date(2024, 4, 1); 
     totalsales = await this.gettotalsales(startDate,endDate,label, campaignName);
     totalPurchaseValue = await this.getTotalPurchaseValueForDate(startDate,endDate,label, campaignName);
     totalemisubsale = await this.getecosystem(startDate,endDate,label,campaignName);
     totalsubsale = await this.getemiecosystem(startDate,endDate,label,campaignName);
-    totalparticipant = await this.getparticipant(startDate,endDate,label,campaignName);
+    totalparticipant = await this.getparticipant(adjuststartdate,endDate,label,campaignName);
     totalfreetopaid = await this.getfreetopaid(startDate,endDate,label,campaignName);
-    totalltpurchasevalue = await this.getltpurchasevalue(startDate,endDate,label,campaignName);
+    totalltpurchasevalue = await this.getltpurchasevalue(adjuststartdate,endDate,label,campaignName);
     totalsalewou = await this.gettotalpurchase(startDate,endDate,label,campaignName);
   }
   
@@ -396,6 +463,15 @@ weekfreetopaid() {
        this.dataSource.data[existingDataIndex]['lastweeklead'] =this.dataSource.data[existingDataIndex]['lastweeklead']+ totalcount ;
        this.dataSource.data[existingDataIndex]['lastweekfreetopaid'] = this.dataSource.data[existingDataIndex]['lastweekfreetopaid'] + totalfreetopaid ;
       }
+
+      if (campaignName === 'entries' && label === 'lastlastweeklead') {
+        this.dataSource.data[existingDataIndex]['lastlastweeklead'] = totalcount ;
+        this.dataSource.data[existingDataIndex]['lastlastweekfreetopaid'] = totalfreetopaid ;
+        }
+        if (label === 'lastlastweeklead' && (campaignName === 'lylregistration') )  {
+          this.dataSource.data[existingDataIndex]['lastlastweeklead'] =this.dataSource.data[existingDataIndex]['lastlastweeklead']+ totalcount ;
+          this.dataSource.data[existingDataIndex]['lastlastweekfreetopaid'] = this.dataSource.data[existingDataIndex]['lastlastweekfreetopaid'] + totalfreetopaid ;
+         }
      if (campaignName === 'entries' && label === 'currentmonthlead') {
      this.dataSource.data[existingDataIndex]['currentmonthlead'] = totalcount;
      this.dataSource.data[existingDataIndex]['currentmonthfreetopaid'] = totalfreetopaid;
@@ -413,22 +489,31 @@ weekfreetopaid() {
        this.dataSource.data[existingDataIndex]['lastmonthfreetopaid'] = this.dataSource.data[existingDataIndex]['lastmonthfreetopaid'] + totalfreetopaid;
       }
 
+      if (campaignName === 'entries' && label === 'lastlastmonthlead') {
+        this.dataSource.data[existingDataIndex]['lastlastmonthlead'] = totalcount;
+        this.dataSource.data[existingDataIndex]['lastlastmonthfreetopaid'] = totalfreetopaid;
+        }
+        if (label === 'lastlastmonthlead' && (campaignName === 'lylregistration') )  {
+          this.dataSource.data[existingDataIndex]['lastlastmonthlead'] =this.dataSource.data[existingDataIndex]['lastlastmonthlead']+ totalcount ;
+          this.dataSource.data[existingDataIndex]['lastlastmonthfreetopaid'] = this.dataSource.data[existingDataIndex]['lastlastmonthfreetopaid'] + totalfreetopaid;
+         }
+
     if (label === 'currentweek' && (campaignName === 'leads') )  {
      this.dataSource.data[existingDataIndex]['currentweek'] = totalsales ;
+     this.dataSource.data[existingDataIndex]['currentweektpv'] = totalPurchaseValue;
      this.dataSource.data[existingDataIndex]['currentweekwou'] = totalsalewou ;
      this.dataSource.data[existingDataIndex]['currentweekecosystem'] = totalemisubsale;
      this.dataSource.data[existingDataIndex]['currentweekemiecosystem'] = totalsubsale;
      this.dataSource.data[existingDataIndex]['currentweekparticipant'] = totalparticipant;
      this.dataSource.data[existingDataIndex]['currentweekfreetopaid'] = totalfreetopaid ;
-     this.dataSource.data[existingDataIndex]['currentweektpv'] = totalPurchaseValue;
      this.dataSource.data[existingDataIndex]['currentweekltv'] = totalltpurchasevalue;
     }
     if (label === 'currentweek' && (campaignName === 'funnelmc') )  {
       this.dataSource.data[existingDataIndex]['currentweek'] = this.dataSource.data[existingDataIndex]['currentweek']+ totalsales  ;
       this.dataSource.data[existingDataIndex]['currentweekwou'] = this.dataSource.data[existingDataIndex]['currentweekwou']+ totalsalewou  ;
-      this.dataSource.data[existingDataIndex]['currentweekparticipant'] = this.dataSource.data[existingDataIndex]['currentweekparticipant'] +totalparticipant +2206+765;
+      this.dataSource.data[existingDataIndex]['currentweekparticipant'] = this.dataSource.data[existingDataIndex]['currentweekparticipant'] +totalparticipant +2212 +765;
       this.dataSource.data[existingDataIndex]['currentweektpv'] = this.dataSource.data[existingDataIndex]['currentweektpv']  + totalPurchaseValue;
-      this.dataSource.data[existingDataIndex]['currentweekltv'] = this.dataSource.data[existingDataIndex]['currentweekltv']  + totalltpurchasevalue +967137655 + 1311268;
+      this.dataSource.data[existingDataIndex]['currentweekltv'] = this.dataSource.data[existingDataIndex]['currentweekltv']  + totalltpurchasevalue + 967665115 +1311268;
       this.dataSource.data[existingDataIndex]['currentweekfreetopaid'] = this.dataSource.data[existingDataIndex]['currentweekfreetopaid'] + totalfreetopaid ;
      }
     if (campaignName === 'leads' && label === 'lastweek') {
@@ -445,10 +530,30 @@ weekfreetopaid() {
       this.dataSource.data[existingDataIndex]['lastweek'] =this.dataSource.data[existingDataIndex]['lastweek']+ totalsales ;
       this.dataSource.data[existingDataIndex]['lastweekwou'] =this.dataSource.data[existingDataIndex]['lastweekwou']+ totalsalewou ;
       this.dataSource.data[existingDataIndex]['lastweektpv'] =this.dataSource.data[existingDataIndex]['lastweektpv']+ totalPurchaseValue ;
-      this.dataSource.data[existingDataIndex]['lastweekltv'] =this.dataSource.data[existingDataIndex]['lastweekltv']+ totalltpurchasevalue ;
-      this.dataSource.data[existingDataIndex]['lastweekparticipant'] =this.dataSource.data[existingDataIndex]['lastweekparticipant'] + totalparticipant;
+      this.dataSource.data[existingDataIndex]['lastweekltv'] =this.dataSource.data[existingDataIndex]['lastweekltv']+ totalltpurchasevalue + 967665115 +1311268;
+      this.dataSource.data[existingDataIndex]['lastweekparticipant'] =this.dataSource.data[existingDataIndex]['lastweekparticipant'] + totalparticipant  +2212 +765;
       this.dataSource.data[existingDataIndex]['lastweekfreetopaid'] = this.dataSource.data[existingDataIndex]['lastweekfreetopaid'] + totalfreetopaid ;
      }
+
+     if (campaignName === 'leads' && label === 'lastlastweek') {
+      this.dataSource.data[existingDataIndex]['lastlastweek'] = totalsales ;
+      this.dataSource.data[existingDataIndex]['lastlastweekwou'] = totalsalewou ;
+      this.dataSource.data[existingDataIndex]['lastlastweektpv'] = totalPurchaseValue ;
+      this.dataSource.data[existingDataIndex]['lastlastweekltv'] = totalltpurchasevalue ;
+      this.dataSource.data[existingDataIndex]['lastlastweekecosystem'] = totalemisubsale;
+      this.dataSource.data[existingDataIndex]['lastlastweekemiecosystem'] = totalsubsale;
+      this.dataSource.data[existingDataIndex]['lastlastweekparticipant'] = totalparticipant;
+      this.dataSource.data[existingDataIndex]['lastlastweekfreetopaid'] = totalfreetopaid ;
+      }
+      if (label === 'lastlastweek' && (campaignName === 'funnelmc') )  {
+        this.dataSource.data[existingDataIndex]['lastlastweek'] =this.dataSource.data[existingDataIndex]['lastlastweek']+ totalsales ;
+        this.dataSource.data[existingDataIndex]['lastlastweekwou'] =this.dataSource.data[existingDataIndex]['lastlastweekwou']+ totalsalewou ;
+        this.dataSource.data[existingDataIndex]['lastlastweektpv'] =this.dataSource.data[existingDataIndex]['lastlastweektpv']+ totalPurchaseValue ;
+        this.dataSource.data[existingDataIndex]['lastlastweekltv'] =this.dataSource.data[existingDataIndex]['lastlastweekltv']+ totalltpurchasevalue + 967665115 +1311268;
+        this.dataSource.data[existingDataIndex]['lastlastweekparticipant'] =this.dataSource.data[existingDataIndex]['lastlastweekparticipant'] + totalparticipant  +2212 +765;
+        this.dataSource.data[existingDataIndex]['lastlastweekfreetopaid'] = this.dataSource.data[existingDataIndex]['lastlastweekfreetopaid'] + totalfreetopaid ;
+       }
+
     if (campaignName === 'leads' && label === 'currentmonth') {
     this.dataSource.data[existingDataIndex]['currentmonth'] = totalsales;
     this.dataSource.data[existingDataIndex]['currentmonthwou'] = totalsalewou;
@@ -471,31 +576,106 @@ weekfreetopaid() {
     this.dataSource.data[existingDataIndex]['lastmonth'] = totalsales;
     this.dataSource.data[existingDataIndex]['lastmonthwou'] = totalsalewou;
     this.dataSource.data[existingDataIndex]['lastmonthtpv'] = totalPurchaseValue;
-    this.dataSource.data[existingDataIndex]['lastmonthltv'] = totalltpurchasevalue;
+    this.dataSource.data[existingDataIndex]['lastmonthltv'] = totalltpurchasevalue ;
     this.dataSource.data[existingDataIndex]['lastmonthecosystem'] = totalemisubsale;
     this.dataSource.data[existingDataIndex]['lastmonthemiecosystem'] = totalsubsale;
-    this.dataSource.data[existingDataIndex]['lastmonthparticipant'] = totalparticipant;
+    this.dataSource.data[existingDataIndex]['lastmonthparticipant'] = totalparticipant ;
     this.dataSource.data[existingDataIndex]['lastmonthfreetopaid'] = totalfreetopaid;
     }
     if (label === 'lastmonth' && (campaignName === 'funnelmc') )  {
       this.dataSource.data[existingDataIndex]['lastmonth'] =this.dataSource.data[existingDataIndex]['lastmonth']+ totalsales ;
       this.dataSource.data[existingDataIndex]['lastmonthwou'] =this.dataSource.data[existingDataIndex]['lastmonthwou']+ totalsalewou ;
       this.dataSource.data[existingDataIndex]['lastmonthtpv'] =this.dataSource.data[existingDataIndex]['lastmonthtpv']+ totalPurchaseValue ;
-      this.dataSource.data[existingDataIndex]['lastmonthltv'] =this.dataSource.data[existingDataIndex]['lastmonthltv']+ totalltpurchasevalue ;
-      this.dataSource.data[existingDataIndex]['lastmonthparticipant'] =this.dataSource.data[existingDataIndex]['lastmonthparticipant'] + totalparticipant;
+      this.dataSource.data[existingDataIndex]['lastmonthltv'] =this.dataSource.data[existingDataIndex]['lastmonthltv']+ totalltpurchasevalue + 967665115 +1311268;
+      this.dataSource.data[existingDataIndex]['lastmonthparticipant'] =this.dataSource.data[existingDataIndex]['lastmonthparticipant'] + totalparticipant +2212 +765;
       this.dataSource.data[existingDataIndex]['lastmonthfreetopaid'] = this.dataSource.data[existingDataIndex]['lastmonthfreetopaid'] + totalfreetopaid;
      }
+
+     if (campaignName === 'leads' && label === 'lastlastmonth') {
+      this.dataSource.data[existingDataIndex]['lastlastmonth'] = totalsales;
+      this.dataSource.data[existingDataIndex]['lastlastmonthwou'] = totalsalewou;
+      this.dataSource.data[existingDataIndex]['lastlastmonthtpv'] = totalPurchaseValue;
+      this.dataSource.data[existingDataIndex]['lastlastmonthltv'] = totalltpurchasevalue ;
+      this.dataSource.data[existingDataIndex]['lastlastmonthecosystem'] = totalemisubsale;
+      this.dataSource.data[existingDataIndex]['lastlastmonthemiecosystem'] = totalsubsale;
+      this.dataSource.data[existingDataIndex]['lastlastmonthparticipant'] = totalparticipant ;
+      this.dataSource.data[existingDataIndex]['lastlastmonthfreetopaid'] = totalfreetopaid;
+      }
+      if (label === 'lastlastmonth' && (campaignName === 'funnelmc') )  {
+        this.dataSource.data[existingDataIndex]['lastlastmonth'] =this.dataSource.data[existingDataIndex]['lastlastmonth']+ totalsales ;
+        this.dataSource.data[existingDataIndex]['lastlastmonthwou'] =this.dataSource.data[existingDataIndex]['lastlastmonthwou']+ totalsalewou ;
+        this.dataSource.data[existingDataIndex]['lastlastmonthtpv'] =this.dataSource.data[existingDataIndex]['lastlastmonthtpv']+ totalPurchaseValue ;
+        this.dataSource.data[existingDataIndex]['lastlastmonthltv'] =this.dataSource.data[existingDataIndex]['lastlastmonthltv']+ totalltpurchasevalue + 967665115 +1311268;
+        this.dataSource.data[existingDataIndex]['lastlastmonthparticipant'] =this.dataSource.data[existingDataIndex]['lastlastmonthparticipant'] + totalparticipant +2212 +765;
+        this.dataSource.data[existingDataIndex]['lastlastmonthfreetopaid'] = this.dataSource.data[existingDataIndex]['lastlastmonthfreetopaid'] + totalfreetopaid;
+       }
 
   }
    else {
     const newDataItem = {
-      date: 'data',currentweek: campaignName === 'leads' ? totalsales:0,lastweek: campaignName === 'leads' ? totalsales:0,currentmonth: campaignName === 'leads' ? totalsales:0,lastmonth: campaignName === 'leads' ? totalsales:0, currentweeklead : campaignName === 'entries' ? totalcount :0,currentmonthlead : campaignName === 'entries' ? totalcount:0,lastweeklead : campaignName === 'entries' ? totalcount:0, lastmonthlead : campaignName === 'entries' ? totalcount:0,currentweektpv : campaignName === 'leads' ? tpv:0, lastweektpv : campaignName === 'leads' ? tpv:0, currentmonthtpv : campaignName === 'leads' ? tpv:0, lastmonthtpv : campaignName === 'leads' ? tpv:0, currentweekecosystem : campaignName === 'leads' ? totalemisubsale:0,lastweekecosystem : campaignName === 'leads' ? totalemisubsale:0, currentmonthecosystem : campaignName === 'leads' ? totalemisubsale:0 ,lastmonthecosystem : campaignName === 'leads' ? totalemisubsale:0, currentweekemiecosystem : campaignName === 'leads' ? totalsubsale:0,lastweekemiecosystem : campaignName === 'leads' ? totalsubsale:0, currentmonthemiecosystem : campaignName === 'leads' ? totalsubsale:0, lastmonthemiecosystem : campaignName === 'leads' ? totalsubsale:0, currentweekparticipant: campaignName === 'leads' ? totalparticipant : 0,lastweekparticipant: campaignName === 'leads' ? totalparticipant : 0, currentmonthparticipant: campaignName === 'leads' ? totalparticipant : 0, lastmonthparticipant: campaignName === 'leads' ? totalparticipant : 0,
-    currentweekfreetopaid: campaignName === 'leads' ? totalfreetopaid : 0,lastweekfreetopaid: campaignName === 'leads' ? totalfreetopaid : 0, currentmonthfreetopaid: campaignName === 'leads' ? totalfreetopaid: 0, lastmonthfreetopaid: campaignName === 'leads' ? totalfreetopaid: 0,currentweekltv: campaignName === 'leads' ? totalltpurchasevalue: 0 ,lastweekltv: campaignName === 'leads' ? totalltpurchasevalue: 0,currentmonthltv: campaignName === 'leads' ? totalltpurchasevalue: 0,lastmonthltv: campaignName === 'leads' ? totalltpurchasevalue:0,currentweekwou: campaignName === 'leads' ? totalsalewou : 0,currentmonthwou: campaignName === 'leads' ? totalsalewou : 0,lastweekwou: campaignName === 'leads' ? totalsalewou : 0,lastmonthwou: campaignName === 'leads' ? totalsalewou : 0,};
+      date: 'data',
+      currentweek: campaignName === 'leads' ? totalsales : 0,
+      lastweek: campaignName === 'leads' ? totalsales : 0,
+      lastlastweek: campaignName === 'leads' ? totalsales : 0,
+      currentmonth: campaignName === 'leads' ? totalsales : 0,
+      lastmonth: campaignName === 'leads' ? totalsales : 0,
+      lastlastmonth: campaignName === 'leads' ? totalsales : 0,
+      currentweeklead: campaignName === 'entries' ? totalcount : 0,
+      lastlastweeklead: campaignName === 'entries' ? totalcount : 0,
+      currentmonthlead: campaignName === 'entries' ? totalcount : 0,
+      lastlastmonthlead: campaignName === 'entries' ? totalcount : 0,
+      lastweeklead: campaignName === 'entries' ? totalcount : 0,
+      lastmonthlead: campaignName === 'entries' ? totalcount : 0,
+      currentweektpv: campaignName === 'leads' ? tpv : 0,
+      lastweektpv: campaignName === 'leads' ? tpv : 0,
+      lastlastweektpv: campaignName === 'leads' ? tpv : 0,
+      currentmonthtpv: campaignName === 'leads' ? tpv : 0,
+      lastmonthtpv: campaignName === 'leads' ? tpv : 0,
+      lastlastmonthtpv: campaignName === 'leads' ? tpv : 0,
+      currentweekecosystem: campaignName === 'leads' ? totalemisubsale : 0,
+      lastweekecosystem: campaignName === 'leads' ? totalemisubsale : 0,
+      lastlastweekecosystem: campaignName === 'leads' ? totalemisubsale : 0,
+      currentmonthecosystem: campaignName === 'leads' ? totalemisubsale : 0,
+      lastmonthecosystem: campaignName === 'leads' ? totalemisubsale : 0,
+      lastlastmonthecosystem: campaignName === 'leads' ? totalemisubsale : 0,
+      currentweekemiecosystem: campaignName === 'leads' ? totalsubsale : 0,
+      lastweekemiecosystem: campaignName === 'leads' ? totalsubsale : 0,
+      lastlastweekemiecosystem: campaignName === 'leads' ? totalsubsale : 0,
+      currentmonthemiecosystem: campaignName === 'leads' ? totalsubsale : 0,
+      lastmonthemiecosystem: campaignName === 'leads' ? totalsubsale : 0,
+      lastlastmonthemiecosystem: campaignName === 'leads' ? totalsubsale : 0,
+      currentweekparticipant: campaignName === 'leads' ? totalparticipant : 0,
+      lastweekparticipant: campaignName === 'leads' ? totalparticipant : 0,
+      lastlastweekparticipant: campaignName === 'leads' ? totalparticipant : 0,
+      currentmonthparticipant: campaignName === 'leads' ? totalparticipant : 0,
+      lastmonthparticipant: campaignName === 'leads' ? totalparticipant : 0,
+      lastlastmonthparticipant: campaignName === 'leads' ? totalparticipant : 0,
+      currentweekfreetopaid: campaignName === 'leads' ? totalfreetopaid : 0,
+      lastweekfreetopaid: campaignName === 'leads' ? totalfreetopaid : 0,
+      lastlastweekfreetopaid: campaignName === 'leads' ? totalfreetopaid : 0,
+      currentmonthfreetopaid: campaignName === 'leads' ? totalfreetopaid : 0,
+      lastmonthfreetopaid: campaignName === 'leads' ? totalfreetopaid : 0,
+      lastlastmonthfreetopaid: campaignName === 'leads' ? totalfreetopaid : 0,
+      currentweekltv: campaignName === 'leads' ? totalltpurchasevalue : 0,
+      lastweekltv: campaignName === 'leads' ? totalltpurchasevalue : 0,
+      lastlastweekltv: campaignName === 'leads' ? totalltpurchasevalue : 0,
+      currentmonthltv: campaignName === 'leads' ? totalltpurchasevalue : 0,
+      lastmonthltv: campaignName === 'leads' ? totalltpurchasevalue : 0,
+      lastlastmonthltv: campaignName === 'leads' ? totalltpurchasevalue : 0,
+      currentweekwou: campaignName === 'leads' ? totalsalewou : 0,
+      lastweekwou: campaignName === 'leads' ? totalsalewou : 0,
+      lastlastweekwou: campaignName === 'leads' ? totalsalewou : 0,
+      currentmonthwou: campaignName === 'leads' ? totalsalewou : 0,
+      lastmonthwou: campaignName === 'leads' ? totalsalewou : 0,
+      lastlastmonthwou: campaignName === 'leads' ? totalsalewou : 0,
+    };
+    
     this.dataSource.data.push(newDataItem);
+    
   }
 
   this.dataSource.data = [...this.dataSource.data];
-  //console.log(this.dataSource)
+  console.log(this.dataSource)
 }
 
 async getTotalPurchaseValueForDate(startDate: Date, endDate: Date, label: string, campaignName: string): Promise<number> {
@@ -509,9 +689,9 @@ async getTotalPurchaseValueForDate(startDate: Date, endDate: Date, label: string
     ).valueChanges().pipe(takeUntil(this.unsubscribe$)).subscribe(entries => {
       entries.forEach(entry => {
         if (campaignName === 'leads') {
-          totalPurchaseValue += entry.totalpurchasevalue || 0;
+          totalPurchaseValue += (entry.totalpurchasevalue || 0);
         } else if (campaignName === 'funnelmc') {
-          totalPurchaseValue += entry.purchasevalue || 0;
+          totalPurchaseValue += (entry.ordertotal || 0);
         }
       });
       resolve(totalPurchaseValue);
@@ -534,22 +714,22 @@ async getltpurchasevalue(startDate: Date, endDate: Date, label: string, campaign
         if (campaignName === 'leads' && label === 'currentweek') {
           totalPurchaseValue += (entry.totalpurchasevalue  || 0) ;
         } else if (campaignName === 'funnelmc') {
-          totalPurchaseValue += entry.purchasevalue || 0;
+          totalPurchaseValue += entry.ordertotal || 0;
         }
         if (campaignName === 'leads' && label === 'lastweek') {
-          totalPurchaseValue =  967137655;
+          totalPurchaseValue += (entry.totalpurchasevalue || 0) ;
         } else if (campaignName === 'funnelmc') {
-          totalPurchaseValue = 1291289;
+          totalPurchaseValue += (entry.ordertotal || 0) ;
         }
         if (campaignName === 'leads' && label === 'lastmonth') {
-          totalPurchaseValue =  967665115;
+          totalPurchaseValue += (entry.totalpurchasevalue  || 0);
         } else if (campaignName === 'funnelmc') {
-          totalPurchaseValue = 1291289;
+          totalPurchaseValue += entry.ordertotal || 0;
         }
         if (campaignName === 'leads' && label === 'currentmonth') {
           totalPurchaseValue += (entry.totalpurchasevalue  || 0) ;
         } else if (campaignName === 'funnelmc') {
-          totalPurchaseValue += entry.purchasevalue || 0;
+          totalPurchaseValue += (entry.ordertotal) || 0;
         }
       });
       resolve(totalPurchaseValue);
@@ -569,8 +749,9 @@ async gettotalsales(startDate: Date, endDate: Date, label: string, campaignName:
          .where(dateField, '<=', firebase.firestore.Timestamp.fromDate(endDate))
     ).valueChanges().pipe(takeUntil(this.unsubscribe$)).subscribe(entries => {
       entries.forEach(entry => {
-        if (campaignName === 'leads' && entry.journeyname !== 'FTO' ) {
+        if (campaignName === 'leads' && (entry.journeyname !== 'FTO') ) {
           count += 1 || 0;
+          //console.log(entry.email)
         } else if (campaignName === 'funnelmc') {
           count += 1 || 0;
         }
@@ -592,10 +773,10 @@ async gettotalpurchase(startDate: Date, endDate: Date, label: string, campaignNa
          .where(dateField, '<=', firebase.firestore.Timestamp.fromDate(endDate))
     ).valueChanges().pipe(takeUntil(this.unsubscribe$)).subscribe(entries => {
       entries.forEach(entry => {
-        if (campaignName === 'leads' && entry.journeyname !== 'FTO' && entry.saletype === 'new') {
-          count += 1 || 0;
+        if (campaignName === 'leads' && entry.journeyname !== 'FTO' && entry.saletype !== 'upgrade') {
+          count += 1 ;
         } else if (campaignName === 'funnelmc') {
-          count += 1 || 0;
+          count += 1 ;
         }
       });
       resolve(count);
@@ -713,7 +894,7 @@ async getfreetopaid(startDate: Date, endDate: Date, label: string, campaignName:
      if(campaignName === 'leads' && label === 'currentweek'){
       this.currentweekleadsEmails.forEach(email => {
         if (this.currrentweeklylRegOrEntriesEmails.has(email)) {
-          console.log(email)
+         // console.log(email)
           count +=1;
         }
       });
@@ -740,7 +921,7 @@ async getfreetopaid(startDate: Date, endDate: Date, label: string, campaignName:
     else if(campaignName === 'leads' && label === 'currentmonth'){
       this.currentmonthleadsEmails.forEach(email => {
         if (this.currentmonthlylRegOrEntriesEmails.has(email)) {
-          console.log(email)
+          //console.log(email)
           count +=1;
         }
       });
@@ -796,10 +977,10 @@ async getparticipant(startDate: Date, endDate: Date, label: string, campaignName
         if (!uniqueEmails.has(email) && label === 'lastweek') { 
           uniqueEmails.add(email);
           if(campaignName === 'leads'){
-          count = 2206;
+          count += 1;
           }
           else if ( campaignName === 'funnelmc' && label === 'lastweek'){
-            count = 756;
+            count += 1;
           }
         }
         if (!uniqueEmails.has(email) && label === 'currentmonth') { 
@@ -814,10 +995,10 @@ async getparticipant(startDate: Date, endDate: Date, label: string, campaignName
         if (!uniqueEmails.has(email) && label === 'lastmonth') { 
           uniqueEmails.add(email);
           if(campaignName === 'leads'){
-          count = 2212;
+          count += 1;
           }
           else if (label === 'lastmonth' && campaignName === 'funnelmc'){
-            count = 756;
+            count += 1;
           }
         }
       });

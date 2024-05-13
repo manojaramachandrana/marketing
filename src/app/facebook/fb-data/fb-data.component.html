@@ -3,6 +3,7 @@
 <div class="header-container">
   <div class="filter-container">
     <mat-form-field >
+      <mat-label>Select Adaccount</mat-label>
       <mat-select [(ngModel)]="selectedValue" (selectionChange)="applyaccountFilter()">
         <mat-option [value]="'All'">All</mat-option>
         <mat-option [value]="'Magnetic_Marketing'">Magnetic_Marketing</mat-option>
