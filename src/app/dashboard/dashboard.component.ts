@@ -65,8 +65,8 @@ export class DashboardComponent implements OnInit {
     this.unsubscribe$.complete();
   }
   weekpaiduser() {
-    const lastWeekTotal = this.dataSource.data.reduce((total, item) => total + item.currentweek, 0);
-    const currentWeekTotal = this.dataSource.data.reduce((total, item) => total + item.lastlastweek, 0);
+    const lastWeekTotal = this.dataSource.data.reduce((total, item) => total + item.lastlastweek, 0);
+    const currentWeekTotal = this.dataSource.data.reduce((total, item) => total + item.lastweek, 0);
     const percentageChange = ((currentWeekTotal - lastWeekTotal ) / lastWeekTotal) * 100;
     return percentageChange.toFixed(0);
   }

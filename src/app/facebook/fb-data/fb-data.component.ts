@@ -351,7 +351,7 @@ applyaccountFilter() {
     matchingSetGroup[0].entries.push({
       leadname: entry.name,
       email: entry.email,
-      campaignname: entry.utmmedium ,
+      campaignname: (entry.utmmedium || (this.extractUtmMediumFromUrl(entry.url) || this.extractUtmCampaignFromUrl(entry.url)) ),
       url:entry.url,
       adsetname: entry.utmcampaign,
       adname: entry.utmcontent,

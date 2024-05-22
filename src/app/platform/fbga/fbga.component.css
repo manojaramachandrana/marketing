@@ -29,7 +29,7 @@
     margin-right: 5rem;
   }
 
-  h1 {
+  h1,h2 {
     text-align: center;
     margin: auto;
     font-family: fantasy;
@@ -42,4 +42,10 @@
   
   .mat-table {
     width: 100%;
+  }
+
+
+  .button-container {
+    display: flex;
+    gap: 10px; 
   }
