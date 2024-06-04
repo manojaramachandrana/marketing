@@ -37,7 +37,9 @@ export class AppComponent implements OnInit{
         this.pageTitle = 'Daily Leads & Sales'
       } else if ( this.pageTitle === 'fbadsdata'){
         this.pageTitle = ' Sales Conversion Cycle'
-      }else {
+      } else if ( this.pageTitle === 'northstar'){
+        this.pageTitle = ' MarkTech North Star'
+      } else {
         this.pageTitle = ''
       }
     });

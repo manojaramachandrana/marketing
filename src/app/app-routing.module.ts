@@ -9,6 +9,8 @@ import { LeaddialogComponent } from './facebook/leaddialog/leaddialog.component'
 import { LoginComponent } from './register/login/login.component';
 import { RegisterComponent } from './register/register/register.component';
 import { ResetPasswordComponent } from './register/reset-password/reset-password.component';
+import { NorthstarComponent } from './northstar/northstar.component';
+import { DashboarddialogComponent } from './dashboarddialog/dashboarddialog.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -21,6 +23,8 @@ const routes: Routes = [
   { path: 'fbadsdata', component: FbadsdataComponent},
   { path: 'leaddialog', component: LeaddialogComponent},
   { path: 'reset-password', component: ResetPasswordComponent},
+  { path: 'northstar', component: NorthstarComponent},
+  { path: 'dashboarddialog', component: DashboarddialogComponent},
 ];
 
 @NgModule({

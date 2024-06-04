@@ -55,11 +55,12 @@ export class FbgaComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   displayedColumns: string[] = [ 'date', 'homepage', 'lylreg', 'lylattended', 'lylcomwatch', 'lylapplied','loghot', 'superopportunity', 'sales', 'sales_total', 'amountreturn', 'spend_MM'];
-  displayedColumn: string[] = [ 'date', 'homepage', 'lylreg', 'lylattended', 'lylcomwatch', 'lylapplied', 'sales', 'sales_total', 'amountreturn'];
-  displayedColumnlyl: string[] = [ 'date','lylreg', 'lylattended', 'lylcomwatch', 'lylapplied', 'sales', 'sales_total', 'amountreturn'];
+  displayedColumn: string[] = [ 'date', 'homepage', 'lylreg', 'lylattended', 'lylcomwatch', 'lylapplied', 'sales', 'sales_total', 'amountreturn','spend'];
+  displayedColumnlyl: string[] = [ 'date','lylreg', 'lylattended', 'lylcomwatch', 'lylapplied', 'sales', 'sales_total', 'amountreturn','spend'];
  
   dataSource = new MatTableDataSource<MyData>([]);
   selectedSection: string = 'homepage';
+  loading: boolean = true;
 
   constructor(private firestore: AngularFirestore, private fb: FormBuilder) {}
 
@@ -70,8 +71,20 @@ export class FbgaComponent implements OnInit, OnDestroy, AfterViewInit {
         end: new FormControl()
       })
     });
+    this.loadData().then(() => {
+      this.loading = false;
+    });
     this.fetchAndProcessEntries();
     this.fetchprocessremainingentries();
+  }
+
+  loadData(): Promise<void> {
+    return new Promise<void>((resolve) => {
+      setTimeout(() => {
+        this.dataSource ;
+        resolve();
+      }, 7000);
+    });
   }
 
   ngOnDestroy(): void {
@@ -82,35 +95,6 @@ export class FbgaComponent implements OnInit, OnDestroy, AfterViewInit {
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-  }
-
-  split() {
-    const aggregatedData: { monthYear: string; homepageTotal: number; lylregTotal: number; salesTotal: number }[] = [];
-    
-    this.dataSource.data.forEach(item => {
-      const [day, month, year] = item.date.split('-');
-      const monthYearKey = `${month}-${year}`;
-  
-      let existingEntry = aggregatedData.find(entry => entry.monthYear === monthYearKey);
-  
-      if (!existingEntry) {
-        existingEntry = {
-          monthYear: monthYearKey,
-          homepageTotal: 0,
-          lylregTotal: 0,
-          salesTotal: 0
-        };
-        aggregatedData.push(existingEntry);
-      }
-  
-      existingEntry.homepageTotal += item.homepage + item.lylreg;
-      existingEntry.lylregTotal += item.lylreg;
-      existingEntry.salesTotal += item.sales;
-    });
-  
-    console.log('data', aggregatedData);
-  
-    return JSON.stringify(aggregatedData, null, 2);
   }
 
   exportexcel(): void {
@@ -456,27 +440,28 @@ async getlylentryforhp(date: string, campaignName: string, label: string): Promi
             count++;
             if (attendedEmails.includes(email)) {
               lylattend++;
-              console.log(`Counted fromhp for email: ${email}`);
+              //console.log(`Counted fromhp for email: ${email}`);
             }
           } else if (label === 'notfromhp' && ( entry.url.includes('global.antanoharini.com') )) {
             count++;
             if (attendedEmails.includes(email)) {
               lylattend++;
-              console.log(`Counted notfromhp for email: ${email}`);
+              //console.log(`Counted notfromhp for email: ${email}`);
             }
           }
         }
       });
 
       await Promise.all(checks);
-      console.log(`Final count: ${count}`);
-      console.log(`Final lylattend count: ${lylattend}`);
+      //console.log(`Final count: ${count}`);
+      //console.log(`Final lylattend count: ${lylattend}`);
       resolve(count);
     }, error => {
       reject(error);
     });
   });
 }
+
 
 async getlylentryforsales(date: string, campaignName: string, label: string, field: string): Promise<number> {
   const [day, month, year] = date.split("-").map(Number);
@@ -498,57 +483,157 @@ async getlylentryforsales(date: string, campaignName: string, label: string, fie
       });
     });
 
+  const lylattendLylReg = await this.processLylRegistrationEntries(startTimestamp, endTimestamp, label, field, attendedEmails);
+  const lylattendEntries = await this.processEntries(startTimestamp, endTimestamp, label, field, attendedEmails);
+
+  return lylattendLylReg + lylattendEntries;
+}
+
+async processLylRegistrationEntries(startTimestamp: firebase.firestore.Timestamp, endTimestamp: firebase.firestore.Timestamp, label: string, field: string, attendedEmails: { [email: string]: { totalpurchasevalue: number; initialpayment: number } }): Promise<number> {
   return new Promise<number>((resolve, reject) => {
     this.firestore.collection<any>('lylregistration', ref => ref.where('entrydata', '>=', startTimestamp)
       .where('entrydata', '<=', endTimestamp)
     ).valueChanges().pipe(takeUntil(this.unsubscribe$)).subscribe(async entries => {
       let lylattend = 0;
-      let count = 0;
 
       const checks = entries.map(async entry => {
         const email = entry.email.trim();
 
-        if (entry.event === 'lylregistration') {
-          if (label === 'fromhp' && (entry.qa1 === 'nil' || entry.qa2 === 'nil' || entry.url.includes('www.antanoharini.com') || entry.url === 'lyl ewebinar')) {
-            count++;
-            if (attendedEmails[email]) {
-              if (field === 'count') {
-                lylattend++;
-                console.log(`Counted fromhp for email: ${email}`);
-              } else if (field === 'saleamt') {
-                lylattend += attendedEmails[email].totalpurchasevalue;
-                console.log(`Added sale amount fromhp for email: ${email}`);
-              } else {
-                lylattend += attendedEmails[email].initialpayment;
-              }
+        if (label === 'fromhp' && (entry.qa1 === 'nil' || entry.qa2 === 'nil' || entry.url.includes('www.antanoharini.com') || entry.url === 'lyl ewebinar')) {
+          if (attendedEmails[email]) {
+            if (field === 'count') {
+              lylattend++;
+            } else if (field === 'saleamt') {
+              lylattend += attendedEmails[email].totalpurchasevalue;
+            } else {
+              lylattend += attendedEmails[email].initialpayment;
             }
-          } else if (label === 'notfromhp' && entry.url.includes('global.antanoharini.com')) {
-            count++;
-            if (attendedEmails[email]) {
-              if (field === 'count') {
-                lylattend++;
-                console.log(`Counted notfromhp for email: ${email}`);
-              } else if (field === 'saleamt') {
-                lylattend += attendedEmails[email].totalpurchasevalue;
-                console.log(`Added sale amount notfromhp for email: ${email}`);
-              }
-              else {
-                lylattend += attendedEmails[email].initialpayment;
-              }
+          }
+        } else if (label === 'notfromhp' && entry.url.includes('global.antanoharini.com')) {
+          if (attendedEmails[email]) {
+            if (field === 'count') {
+              lylattend++;
+            } else if (field === 'saleamt') {
+              lylattend += attendedEmails[email].totalpurchasevalue;
+            } else {
+              lylattend += attendedEmails[email].initialpayment;
             }
           }
         }
       });
 
       await Promise.all(checks);
-      console.log(`Final count: ${count}`);
-      console.log(`Final lylattend count: ${lylattend}`);
       resolve(lylattend);
     }, error => {
       reject(error);
     });
   });
 }
+
+async processEntries(startTimestamp: firebase.firestore.Timestamp, endTimestamp: firebase.firestore.Timestamp, label: string, field: string, attendedEmails: { [email: string]: { totalpurchasevalue: number; initialpayment: number } }): Promise<number> {
+  return new Promise<number>((resolve, reject) => {
+    this.firestore.collection<any>('entries', ref => ref.where('createddate', '>=', startTimestamp)
+      .where('createddate', '<=', endTimestamp)
+    ).valueChanges().pipe(takeUntil(this.unsubscribe$)).subscribe(async entries => {
+      let lylattend = 0;
+
+      const checks = entries.map(async entry => {
+        const email = entry.email.trim();
+
+        if (label === 'fromhp') {
+          if (attendedEmails[email]) {
+            if (field === 'count') {
+              lylattend++;
+            } else if (field === 'saleamt') {
+              lylattend += attendedEmails[email].totalpurchasevalue;
+            } else {
+              lylattend += attendedEmails[email].initialpayment;
+            }
+          }
+        }
+      });
+
+      await Promise.all(checks);
+      resolve(lylattend);
+    }, error => {
+      reject(error);
+    });
+  });
+}
+
+
+
+// async getlylentryforsales(date: string, campaignName: string, label: string, field: string): Promise<number> {
+//   const [day, month, year] = date.split("-").map(Number);
+//   const dateObject = new Date(year, month - 1, day);
+//   dateObject.setHours(0, 0, 0, 0);
+//   const startTimestamp = firebase.firestore.Timestamp.fromDate(dateObject);
+//   dateObject.setHours(23, 59, 59, 999);
+//   const endTimestamp = firebase.firestore.Timestamp.fromDate(dateObject);
+
+//   const attendedEmails: { [email: string]: { totalpurchasevalue: number; initialpayment: number } } = {};
+//   await this.firestore.collection<any>(campaignName, ref => ref.where('converteddate', '>=', startTimestamp))
+//     .get().toPromise().then(snapshot => {
+//       snapshot.docs.forEach(doc => {
+//         const email = doc.data().email.trim();
+//         attendedEmails[email] = {
+//           totalpurchasevalue: doc.data().totalpurchasevalue || 0,
+//           initialpayment: doc.data().initialpayment || 0
+//         };
+//       });
+//     });
+
+//   return new Promise<number>((resolve, reject) => {
+//     this.firestore.collection<any>('lylregistration', ref => ref.where('entrydata', '>=', startTimestamp)
+//       .where('entrydata', '<=', endTimestamp)
+//     ).valueChanges().pipe(takeUntil(this.unsubscribe$)).subscribe(async entries => {
+//       let lylattend = 0;
+//       let count = 0;
+
+//       const checks = entries.map(async entry => {
+//         const email = entry.email.trim();
+
+//         if (entry.event === 'lylregistration') {
+//           if (label === 'fromhp' && (entry.qa1 === 'nil' || entry.qa2 === 'nil' || entry.url.includes('www.antanoharini.com') || entry.url === 'lyl ewebinar')) {
+//             count++;
+//             if (attendedEmails[email]) {
+//               if (field === 'count') {
+//                 lylattend++;
+//                 //console.log(`Counted fromhp for email: ${email}`);
+//               } else if (field === 'saleamt') {
+//                 lylattend += attendedEmails[email].totalpurchasevalue;
+//                 //console.log(`Added sale amount fromhp for email: ${email}`);
+//               } else {
+//                 lylattend += attendedEmails[email].initialpayment;
+//               }
+//             }
+//           } else if (label === 'notfromhp' && entry.url.includes('global.antanoharini.com')) {
+//             count++;
+//             if (attendedEmails[email]) {
+//               if (field === 'count') {
+//                 lylattend++;
+//                 //console.log(`Counted notfromhp for email: ${email}`);
+//               } else if (field === 'saleamt') {
+//                 lylattend += attendedEmails[email].totalpurchasevalue;
+//                 //console.log(`Added sale amount notfromhp for email: ${email}`);
+//               }
+//               else {
+//                 lylattend += attendedEmails[email].initialpayment;
+//               }
+//             }
+//           }
+//         }
+//       });
+
+//       await Promise.all(checks);
+//       //console.log(`Final count: ${count}`);
+//       //console.log(`Final lylattend count: ${lylattend}`);
+//       resolve(lylattend);
+//     }, error => {
+//       reject(error);
+//     });
+//   });
+// }
 
 
 async getlylentryfromhpornot(date: string, campaignName: string, label: string): Promise<number> {
@@ -583,21 +668,21 @@ async getlylentryfromhpornot(date: string, campaignName: string, label: string):
             count++;
             if (attendedEmails.includes(email)) {
               lylattend++;
-              console.log(`Counted fromhp for email: ${email}`);
+              //console.log(`Counted fromhp for email: ${email}`);
             }
           } else if (label === 'notfromhp' && ( entry.url.includes('global.antanoharini.com') )) {
             count++;
             if (attendedEmails.includes(email)) {
               lylattend++;
-              console.log(`Counted notfromhp for email: ${email}`);
+              //console.log(`Counted notfromhp for email: ${email}`);
             }
           }
         }
       });
 
       await Promise.all(checks);
-      console.log(`Final count: ${count}`);
-      console.log(`Final lylattend count: ${lylattend}`);
+      //console.log(`Final count: ${count}`);
+      //console.log(`Final lylattend count: ${lylattend}`);
       resolve(lylattend);
     }, error => {
       reject(error);

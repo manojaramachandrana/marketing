@@ -23,6 +23,7 @@ import { A11yModule} from '@angular/cdk/a11y';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -39,6 +40,8 @@ import { LeaddialogComponent } from './facebook/leaddialog/leaddialog.component'
 import { LoginComponent } from './register/login/login.component';
 import { RegisterComponent } from './register/register/register.component';
 import { ResetPasswordComponent } from './register/reset-password/reset-password.component';
+import { NorthstarComponent } from './northstar/northstar.component';
+import { DashboarddialogComponent } from './dashboarddialog/dashboarddialog.component';
 
 @NgModule({
   declarations: [
@@ -52,6 +55,8 @@ import { ResetPasswordComponent } from './register/reset-password/reset-password
     LoginComponent,
     RegisterComponent,
     ResetPasswordComponent,
+    NorthstarComponent,
+    DashboarddialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -81,7 +86,8 @@ import { ResetPasswordComponent } from './register/reset-password/reset-password
     A11yModule,
     MatMenuModule,
     MatProgressBarModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatCheckboxModule,
   ],
   providers: [
     DataService,

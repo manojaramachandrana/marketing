@@ -1,5 +1,13 @@
 <!-- <h1>Daily leads & sales</h1> -->
+<div *ngIf="loading" class="progress-container">
+  <mat-progress-spinner class="center-spinner" mode="indeterminate"></mat-progress-spinner>
+</div>
+<div *ngIf="loading" >
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</div>
 <br><br>
+
+<div *ngIf="!loading">
 
 <div class="button-container">
 <button mat-raised-button (click)="selectedSection = 'homepage'" >Homepage Funnel</button>
@@ -143,11 +151,11 @@
     <td mat-footer-cell *matFooterCellDef> Total </td>
   </ng-container>
 
-  <!-- <ng-container matColumnDef="spend_MM">
+  <ng-container matColumnDef="spend">
     <th mat-header-cell *matHeaderCellDef  mat-sort-header>Spend</th>
     <td mat-cell *matCellDef="let element">{{ element.spend_MM }}</td>
     <td mat-footer-cell *matFooterCellDef> {{calculatespend()}} </td>
-  </ng-container> -->
+  </ng-container>
 
   <ng-container matColumnDef="homepage">
     <th mat-header-cell *matHeaderCellDef   mat-sort-header> Homepage Enquiries</th>
@@ -215,7 +223,7 @@
   <tr mat-row *matRowDef="let row; columns: displayedColumn; "></tr>
   <tr mat-footer-row *matFooterRowDef="displayedColumn"></tr>
 </table>
-<mat-paginator [pageSizeOptions]="[7,60,90,120,150,180, dataSource.data.length]" ></mat-paginator>
+<mat-paginator [pageSizeOptions]="[7,31,60,90,120,150,180, dataSource.data.length]" ></mat-paginator>
 </div>
 
 </div>
@@ -251,11 +259,11 @@
     <td mat-footer-cell *matFooterCellDef> Total </td>
   </ng-container>
 
-  <!-- <ng-container matColumnDef="spend_MM">
+  <ng-container matColumnDef="spend">
     <th mat-header-cell *matHeaderCellDef  mat-sort-header>Spend</th>
     <td mat-cell *matCellDef="let element">{{ element.spend_MM }}</td>
     <td mat-footer-cell *matFooterCellDef> {{calculatespend()}} </td>
-  </ng-container> -->
+  </ng-container>
 
   <!-- <ng-container matColumnDef="homepage">
     <th mat-header-cell *matHeaderCellDef   mat-sort-header> Homepage Enquiries</th>
@@ -321,44 +329,8 @@
   <tr mat-row *matRowDef="let row; columns: displayedColumnlyl; "></tr>
   <tr mat-footer-row *matFooterRowDef="displayedColumnlyl"></tr>
 </table>
-<mat-paginator [pageSizeOptions]="[7,60,90,120,150,180, dataSource.data.length]" ></mat-paginator>
+<mat-paginator [pageSizeOptions]="[7,31,60,90,120,150,180, dataSource.data.length]" ></mat-paginator>
 </div>
 
 </div>
-
-<!-- <div>
-  <p *ngFor="let entry of dataSource">{{ entry.date }}</p>
-</div> -->
-
-
-<!-- <div>{{split()}}</div> -->
-
-<!-- <div class="table">
-  <table mat-table [dataSource]="aggregatedData" id="aggregatedTable" class="mat-elevation-z8">
-
-    <ng-container matColumnDef="monthYear">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
-      <td mat-cell *matCellDef="let element">{{ element.monthYear }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="homepageTotal">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Homepage Total</th>
-      <td mat-cell *matCellDef="let element">{{ element.homepageTotal }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="lylregTotal">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Lylreg Total</th>
-      <td mat-cell *matCellDef="let element">{{ element.lylregTotal }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="salesTotal">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Sales Total</th>
-      <td mat-cell *matCellDef="let element">{{ element.salesTotal }}</td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="aggregatedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: aggregatedColumns;"></tr>
-  </table>
-</div> -->
-
-  
+</div>

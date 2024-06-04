@@ -7,6 +7,9 @@ import { Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { DashboarddialogComponent } from '../dashboarddialog/dashboarddialog.component';
+import { MatDialog } from '@angular/material/dialog';
+
 
 @Component({
   selector: 'app-dashboard',
@@ -30,16 +33,28 @@ export class DashboardComponent implements OnInit {
   private currentmonthFunnelMCEmails = new Set<string>();
   private lastmonthFunnelMCEmails = new Set<string>();
 
-  constructor( private firestore: AngularFirestore) {}
+  constructor( private firestore: AngularFirestore, private dialog: MatDialog) {}
   dataSource = new MatTableDataSource< { date: string,currentweek: number,lastweek: number,lastlastweek:number,currentmonth: number,lastmonth: number,lastlastmonth:number,currentweeklead: number,lastlastweeklead:number, currentmonthlead: number,lastlastmonthlead:number, lastweeklead: number, lastmonthlead: number, currentweektpv: number, lastweektpv: number,lastlastweektpv: number,lastlastmonthtpv:number, currentmonthtpv: number, lastmonthtpv: number, currentweekecosystem:number,lastlastweekecosystem:number,lastlastmonthecosystem:number, lastweekecosystem: number, currentmonthecosystem: number, lastmonthecosystem: number, currentweekemiecosystem: number,lastlastweekemiecosystem:number,lastlastmonthemiecosystem: number, lastweekemiecosystem: number, currentmonthemiecosystem: number, lastmonthemiecosystem: number, currentweekparticipant: number,lastlastweekparticipant: number,lastlastmonthparticipant:number, lastweekparticipant: number, currentmonthparticipant:number, lastmonthparticipant: number, currentweekfreetopaid: number,lastlastweekfreetopaid: number,lastlastmonthfreetopaid: number, lastweekfreetopaid: number, currentmonthfreetopaid: number, lastmonthfreetopaid: number, lastmonthltv: number,lastlastmonthltv: number,lastlastweekltv: number, currentmonthltv: number, lastweekltv:number,currentweekltv:number, currentweekwou:number,lastlastweekwou:number,currentmonthwou:number,lastlastmonthwou:number, lastweekwou:number,lastmonthwou:number }>(); 
   displayedColumns: string[] = ['no', 'currentweek', 'lastweek','metrics'];
   displayedColumn: string[] = ['no','lastlastweek', 'currentweek', 'lastweek','metrics'];
+  displayColumn: string[] = ['check','no','lastlastweek', 'currentweek', 'lastweek','metrics'];
   //displayedColumns: string[] = [ 'date', 'currentweek', 'lastweek', 'currentmonth', 'lastmonth', 'currentweeklead', 'lastweeklead', 'currentmonthlead', 'lastmonthlead', 'currentweektpv', 'lastweektpv', 'currentmonthtpv', 'lastmonthtpv', 'currentweekecosystem', 'lastweekecosystem', 'currentmonthecosystem', 'lastmonthecosystem', 'currentweekemiecosystem', 'lastweekemiecosystem', 'currentmonthemiecosystem', 'lastmonthemiecosystem', 'currentweekparticipant', 'lastweekparticipant', 'currentmonthparticipant', 'lastmonthparticipant', 'currentweekfreetopaid', 'lastweekfreetopaid', 'currentmonthfreetopaid', 'lastmonthfreetopaid'];
 
   ngOnInit(): void {
     this.fetchdata();
     this.loadData().then(() => {
       this.loading = false;
+    });
+  }
+
+  openDialog(element: any): void {
+    const dialogRef = this.dialog.open(DashboarddialogComponent, {
+      width: '400px', 
+      data: { element } 
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      console.log('The dialog was closed');
     });
   }
 

@@ -1,3 +1,364 @@
+// import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+// import { AngularFirestore } from '@angular/fire/firestore';
+// import { MatTableDataSource } from '@angular/material/table';
+// import { MatPaginator } from '@angular/material/paginator';
+// import { MatDrawer } from '@angular/material/sidenav';
+// import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+// import { MatDialog } from '@angular/material/dialog';
+// import { LeaddialogComponent } from '../leaddialog/leaddialog.component';
+// import { switchMap, take, tap } from 'rxjs/operators';
+// import firebase from 'firebase/app';
+// import 'firebase/firestore';
+// import { Observable, Subject } from 'rxjs';
+// import { takeUntil } from 'rxjs/operators';
+// import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+
+// interface FacebookData {
+//   campaignSets(arg0: string, campaignSets: any): unknown;
+//   campaignBudget: any;
+//   campaignId: any;
+//   campaignName: string;
+//   campaignActive: number;
+//   docDate: firebase.firestore.Timestamp;
+//   adsets: AdsetType[];
+//   adaccount: string;
+// }
+
+// interface AdsetType {
+//   adaccount: string | null;
+//   adsetBudget: any;
+//   adsetName: any;
+//   adName: string;
+//   ads: AdType[];
+// }
+
+// interface AdType {
+//   adId: string;
+//   adName: string;
+//   insights: InsightType[];
+// }
+
+// interface InsightType {
+//   reach: string;
+//   impressions: string;
+//   frequency: string;
+//   amountSpend: string;
+//   videoPlays25: string;
+//   videoPlays50: string;
+//   videoPlays75: string;
+//   videoPlays100: string;
+//   videoPlayActions: string;
+// }
+
+// interface CampaignInfo {
+//   count: number;
+//   minDate: Date;
+//   maxDate: Date;
+//   minDocument: FacebookData;
+//   maxDocument: FacebookData;
+//   minSpendDocument: FacebookData | null;
+//   maxSpendDocument: FacebookData | null;
+//   [key: string]: any;
+// }
+// interface FacebookSet {
+//   [x: string]: any;
+//   formattedDate: string; 
+//   campaignName?: string;
+//   adsetName?: string;
+//   adname?: string;
+//   //docDate: Date;
+//   campaignSets: FacebookData[];
+// }
+
+// interface Result {
+//   campaignInfo: { [key: string]: CampaignInfo };
+//   totalCount: number;
+// }
+
+// @Component({
+//   selector: 'app-fb-data',
+//   templateUrl: './fb-data.component.html',
+//   styleUrls: ['./fb-data.component.css'],
+//   changeDetection: ChangeDetectionStrategy.OnPush,
+// })
+
+// export class FbDataComponent implements OnInit, OnDestroy{
+//   private ngUnsubscribe = new Subject();
+//   dataSource = new MatTableDataSource<FacebookData>();
+//   data$: Observable<FacebookData[]>;
+//   entries: Observable<any[]>;
+//   lylregistration: Observable<any[]>;
+//   adwebsiteurl: Observable<any[]>
+//   displayedColumns: string[] = ['position','Adaccount', 'daterange', 'campaignname', 'campaignbudget', 'campaignobjective', 'campaignactive', 'adsetbudget', 'adsetAds'];
+//   searchCampaign: string = '';
+//   selectedAd: string | null = null;
+//   showDetails: boolean = false;
+//   clickedAd: AdType | null = null;
+//   selectedDate: Date = new Date();
+//   row: any = {};
+//   facebookset: FacebookSet[] = [];
+//   set!: FacebookSet;
+//   dataHistory: any[] = [];
+//   entry: any;
+//   matchingSet: any;
+//   groupedEntries: any[] = []; 
+//   group:any;
+//   selectedadaccounts: (string | null)[] = [];
+//   uniqueAdAccounts: string[] = [];  
+//   selectedStartDate: Date | null = null;
+//   selectedEndDate: Date | null = null;
+//   selectedDateRange: string = '';
+//   form!: FormGroup;
+//   selectedAccount: string = '';
+//   adaccounts: string[] = [];
+//   selectedValue: any; 
+//   originalset: any[]= this.facebookset; 
+//   daterangeset: any[] = [];
+
+//   @ViewChild(MatPaginator, { static: true })
+//   paginator!: MatPaginator;
+//   @ViewChild('drawer', { static: true }) drawer!: MatDrawer;
+
+//   todayDate: Date = new Date();
+//   minDocument: any;
+//   maxDocument: any;
+//   spendDifference: number | undefined;
+//   filteredFacebookSet: { campaignSets: FacebookData[]; formattedDate: string; campaignName?: string | undefined; adsetName?: string | undefined; adname?: string | undefined; }[] | undefined;
+//   FacebookSet: any;
+
+//   constructor(private firestore: AngularFirestore, private dialog: MatDialog,private fb: FormBuilder) {
+//     this.data$ = this.firestore.collection<FacebookData>('facebookadsdata').valueChanges();
+//     this.entries = this.firestore.collection<any>('entries').valueChanges();
+//     this.lylregistration = this.firestore.collection<any>('lylregistration').valueChanges();
+//     this.adwebsiteurl = this.firestore.collection<any>('adwebsiteurl').valueChanges();
+//   }
+
+//   ngOnInit(): void {
+//     this.todayDate.setHours(0, 0, 0, 0);
+//     this.setupDataFetch();
+//     this.form= this.fb.group({
+//       daterange: new FormGroup({
+//         start: new FormControl(),
+//         end: new FormControl()
+//       })
+//     });
+//     this.setupForm();
+//   }
+
+//   ngOnDestroy(): void {
+//     this.ngUnsubscribe.next();
+//     this.ngUnsubscribe.complete();
+//   }
+
+//   setupForm(): void {
+//     this.form = this.fb.group({
+//       daterange: new FormGroup({
+//         start: new FormControl(),
+//         end: new FormControl()
+//       })
+//     });
+//   }
+
+//   onStartDateSelected(event: MatDatepickerInputEvent<Date>): void {
+//     this.selectedStartDate = event.value;
+//     this.applyDateRangeFilter();
+//   }
+
+//   onEndDateSelected(event: MatDatepickerInputEvent<Date>): void {
+//     this.selectedEndDate = event.value;
+//     this.applyDateRangeFilter();
+//   }
+
+//   getDate(date: Date): string {
+//     const year = date.getFullYear();
+//     const month = ('0' + (date.getMonth() + 1)).slice(-2);
+//     const day = ('0' + date.getDate()).slice(-2);
+//     return `${year}-${month}-${day}`;
+//   }
+
+//   applyDateRangeFilter(): void {
+//     if (this.selectedStartDate && this.selectedEndDate) {
+//       const startDate = new Date(this.selectedStartDate);
+//       const endDate = new Date(this.selectedEndDate);
+
+//       this.facebookset = this.facebookset.filter(set => {
+//         const setDate = new Date(set.formattedDate);
+//         const adjustedEndDate = new Date(endDate);
+//         adjustedEndDate.setDate(adjustedEndDate.getDate() + 1);
+//         const isInRange = setDate >= startDate && setDate <= adjustedEndDate;
+//         return isInRange;
+//       });
+//     } else {
+//       this.filteredFacebookSet = [];
+//     }
+//   }
+ 
+//   applyaccountFilter() {
+//     if (this.selectedValue.trim().toLowerCase() === 'all') {
+//       this.facebookset = this.originalset;
+//     } else {
+//       this.facebookset = this.originalset.map(facebookData => {
+//         return {
+//           ...facebookData,
+//           campaignSets: facebookData.campaignSets.filter((campaignSet: { adaccount: string; }) =>
+//             campaignSet.adaccount  && campaignSet.adaccount.toLowerCase() === this.selectedValue.trim().toLowerCase()
+//           )
+//         };
+//       }).filter(facebookData => facebookData.campaignSets.length > 0); 
+//     }
+//   }
+
+//   async setupDataFetch(): Promise<void> {
+//     try {
+//       const data = await this.lylregistration.pipe(takeUntil(this.ngUnsubscribe), take(1)).toPromise();
+//       const data1 = await this.entries.pipe(takeUntil(this.ngUnsubscribe), take(1)).toPromise();
+//       const entriesData = [...data, ...data1];
+//       const facebookAdsData = await this.data$.pipe(takeUntil(this.ngUnsubscribe), take(1)).toPromise();
+
+//       this.processEntriesAndData(entriesData, facebookAdsData);
+
+//     } catch (error) {
+//       console.error('Error during initialization:', error);
+//     }
+//   }
+
+//   processEntriesAndData(entriesData: any[], facebookAdsData: FacebookData[]): void {
+//     this.groupFacebookDataByFormattedDate(facebookAdsData);
+//     this.dataSource.paginator = this.paginator;
+
+//     entriesData.forEach((entry: any) => {
+//       this.processEntry(entry);
+//     });
+
+//     this.filterDataByDate();
+
+//     this.groupedEntries.sort((a, b) => {
+//       const dateA = new Date(a[0]?.matchingSet.formattedDate).getTime();
+//       const dateB = new Date(b[0]?.matchingSet.formattedDate).getTime();
+//       return dateA - dateB;
+//     });
+
+//     this.checkAndAddNewEntry(entriesData);
+
+//     // Add unmatched sets to groupedEntries
+//     this.addUnmatchedSets(facebookAdsData);
+
+//     console.log('groupedEntries:', this.groupedEntries);
+//   }
+
+//   groupFacebookDataByFormattedDate(facebookAdsData: FacebookData[]): void {
+//     facebookAdsData.forEach((data: FacebookData) => {
+//       const formattedDate = this.getDate(data.docDate.toDate());
+//       let facebookSet = this.facebookset.find(set => set.formattedDate === formattedDate);
+
+//       if (!facebookSet) {
+//         facebookSet = { formattedDate: formattedDate, campaignSets: [] };
+//         this.facebookset.push(facebookSet);
+//       }
+
+//       facebookSet.campaignSets.push(data);
+
+//       if (data.adsets) {
+//         data.adsets.forEach((adset: AdsetType) => {
+//           this.addUniqueAdAccount(adset.adaccount);
+//         });
+//       }
+//     });
+//   }
+
+//   addUniqueAdAccount(adaccount: string | null): void {
+//     if (adaccount && !this.uniqueAdAccounts.includes(adaccount)) {
+//       this.uniqueAdAccounts.push(adaccount);
+//     }
+//   }
+
+//   processEntry(entry: any): void {
+//     const matchingSet = this.facebookset.find(set => set.formattedDate === entry.entrydate);
+
+//     if (matchingSet) {
+//       this.selectedAd = entry.adname;
+//       this.showDetails = true;
+
+//       const group = this.groupedEntries.find(g => g[0]?.matchingSet?.formattedDate === matchingSet.formattedDate);
+
+//       if (group) {
+//         group.push({ entry, matchingSet });
+//       } else {
+//         this.groupedEntries.push([{ entry, matchingSet }]);
+//       }
+
+//       this.selectedadaccounts.push(entry.adaccount);
+//     } else {
+//       console.log(`No matching set found for entry:`, entry);
+//     }
+//   }
+
+//   filterDataByDate(): void {
+//     this.dataHistory = this.groupedEntries.filter(group => {
+//       return group.some((entry: { entry: { entrydate: string; }; }) => entry.entry.entrydate !== '');
+//     });
+//   }
+
+//   checkAndAddNewEntry(entriesData: any[]): void {
+//     const newEntry = this.checkNewEntry(entriesData);
+//     if (newEntry) {
+//       this.groupedEntries.push(newEntry);
+//     }
+//   }
+
+//   checkNewEntry(entriesData: any[]): any {
+//     return this.groupedEntries.find(group =>
+//       !entriesData.some(entry => entry.entrydate === group[0]?.matchingSet?.formattedDate)
+//     );
+//   }
+
+//   addUnmatchedSets(facebookAdsData: FacebookData[]): void {
+//     const matchedDates = this.groupedEntries.map(group => group[0].matchingSet.formattedDate);
+
+//     this.facebookset.forEach(facebookSet => {
+//       if (!matchedDates.includes(facebookSet.formattedDate)) {
+//         this.groupedEntries.push([{ entry: null, matchingSet: facebookSet }]);
+//       }
+//     });
+//   }
+
+//   openDialog(adset: any, row: any): void {
+//     const dialogRef = this.dialog.open(LeaddialogComponent, {
+//       width: '400px',
+//       data: { adset, row }
+//     });
+
+//     dialogRef.afterClosed().subscribe(result => {
+//       if (result) {
+//         // Handle the result if needed
+//       }
+//     });
+//   }
+
+//   onRowClick(row: any): void {
+//     this.row = row;
+//   }
+
+//   getAdAccount(adset: AdsetType): string | null {
+//     return adset?.adaccount ?? null;
+//   }
+
+//   getAdsets(adsets: AdsetType[]): AdsetType[] {
+//     return adsets.filter(adset => {
+//       const adaccount = this.getAdAccount(adset);
+//       return adaccount && this.selectedadaccounts.includes(adaccount);
+//     });
+//   }
+
+//   getFacebookSets(): FacebookSet[] {
+//     return this.facebookset;
+//   }
+
+//   getUniqueAdAccounts(): string[] {
+//     return this.uniqueAdAccounts;
+//   }
+// }
+
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { MatTableDataSource } from '@angular/material/table';
@@ -253,6 +614,7 @@ applyaccountFilter() {
     });
 
     this.checkAndAddNewEntry(entriesData);
+    this.addUnmatchedSets(facebookAdsData);
   }
   // processEntry(entry: any): void {
   //   if ((entry.createddate) && ( typeof entry.createddate.seconds === 'number') && (typeof entry.createddate.nanoseconds === 'number')) {
@@ -288,7 +650,6 @@ applyaccountFilter() {
     }
   }
   
-
   findMatchingSet(entry: any, formattedEntryDate: string): FacebookSet | undefined {
     return this.facebookset.find((set, index) => {
       const startDate = this.getFormattedStartDate(index);
@@ -338,14 +699,13 @@ applyaccountFilter() {
     return matches ? matches[1] : '';
   }
   
-  
  addEntryToMatchingSet(matchingSet: FacebookSet, entry: any, formattedEntryDate: string): void {
     let matchingSetGroup = this.groupedEntries.find(group => this.areMatchingSetsEqual(group[0]?.matchingSet, matchingSet));
 
     if (!matchingSetGroup) {
       matchingSetGroup = [{ matchingSet, entries: [] }];
       this.groupedEntries.push(matchingSetGroup);
-      //console.log('entry',this.groupedEntries);
+      console.log('entry',this.groupedEntries);
     }
 
     matchingSetGroup[0].entries.push({
@@ -356,6 +716,16 @@ applyaccountFilter() {
       adsetname: entry.utmcampaign,
       adname: entry.utmcontent,
       createddate: formattedEntryDate,
+    });
+  }
+
+  addUnmatchedSets(facebookAdsData: FacebookData[]): void {
+    const matchedDates = this.groupedEntries.map(group => group[0].matchingSet.formattedDate);
+  
+    this.facebookset.forEach(facebookSet => {
+      if (!matchedDates.includes(facebookSet.formattedDate)) {
+        this.groupedEntries.push([{ matchingSet: facebookSet, entries: [] }]);
+      }
     });
   }
 
@@ -381,8 +751,17 @@ applyaccountFilter() {
       });
     }
   }
-  
 
+  //addUnmatchedSets(facebookAdsData: FacebookData[]): void {
+    //     const matchedDates = this.groupedEntries.map(group => group[0].matchingSet.formattedDate);
+    
+    //     this.facebookset.forEach(facebookSet => {
+    //       if (!matchedDates.includes(facebookSet.formattedDate)) {
+    //         this.groupedEntries.push([{ entry: null, matchingSet: facebookSet }]);
+    //       }
+    //     });
+    //   }
+  
   openLeadDialog(index: number): void {
     if (this.groupedEntries.length > index) {
       const selectedSetEntries = this.groupedEntries[index];
@@ -415,6 +794,107 @@ applyaccountFilter() {
       this.dataSource.data = filteredData;
     });
   }
+
+//   groupFacebookDataByFormattedDate(data: FacebookData[]): void {
+//     data.forEach(item => {
+//       if (item.docDate && item.campaignActive !== 0) {
+//         const formattedDate = this.getFormattedDate(item.docDate);
+  
+//         const existingSetIndex = this.facebookset.findIndex(set => set.formattedDate === formattedDate);
+  
+//         if (existingSetIndex !== -1) {
+//           const matchingItemIndex = this.facebookset[existingSetIndex].campaignSets.findIndex(existingItem =>
+//             this.haveSameCampaignId(existingItem, item) && this.haveSameProperties(existingItem, item)
+//           );
+  
+//           if (matchingItemIndex === -1) {
+//             this.facebookset[existingSetIndex].campaignSets.push(item);
+//           }
+//         } else {
+//           this.facebookset.push({
+//             formattedDate: formattedDate,
+//             campaignSets: [item]
+//           });
+//         }
+//       }
+//     });
+  
+//     const changes: FacebookData[] = [];
+  
+//     for (let i = 0; i < this.facebookset.length - 1; i++) {
+//       const currentSet = this.facebookset[i];
+  
+//       for (let j = i + 1; j < this.facebookset.length; j++) {
+//         const nextSet = this.facebookset[j];
+  
+//         let setsMatch = true;
+//         for (let k = 0; k < currentSet.campaignSets.length; k++) {
+//           const currentCampaignSet = currentSet.campaignSets[k];
+//           let foundMatchingSet = false;
+  
+//           for (let l = 0; l < nextSet.campaignSets.length; l++) {
+//             const nextCampaignSet = nextSet.campaignSets[l];
+  
+//             if (this.haveSameCampaignId(currentCampaignSet, nextCampaignSet) && this.haveSameCampaignDetails(currentCampaignSet, nextCampaignSet)) {
+//               foundMatchingSet = true;
+//               break;
+//             } else {
+//               if (!nextCampaignSet.adaccount) {
+//                 nextCampaignSet.adaccount = "Magnetic_Marketing";
+//               }
+
+//               if (!this.haveSameCampaignDetails(currentCampaignSet, nextCampaignSet)) {
+//                 changes.push(nextCampaignSet);
+//               }
+//             }
+//           }
+  
+//           if (!foundMatchingSet) {
+//             setsMatch = false;
+//             break;
+//           }
+//         }
+  
+//         if (setsMatch) {
+//           const indexToRemove = i < j ? i : j;
+//           this.removeLowerIndexSet(indexToRemove);
+//           i--;
+//           break;
+//         }
+//       }
+//     }
+  
+//     console.log('Changes:', changes);
+//   }
+
+//   haveSameProperties(item1: FacebookData, item2: FacebookData): boolean {
+//   return (
+//     item1.campaignName === item2.campaignName &&
+//     this.compareArrays(item1.adsets.map(adset => adset.adsetName), item2.adsets.map(adset => adset.adsetName)) &&
+//     this.compareArrays(item1.adsets.map((adset: { ads: any[]; }) => adset.ads.map((ad: { adName: any; }) => ad.adName)), item2.adsets.map((adset: { ads: any[]; }) => adset.ads.map((ad: { adName: any; }) => ad.adName))) &&
+//     this.compareArrays(item1.adsets.map(adset => adset.adsetBudget), item2.adsets.map(adset => adset.adsetBudget)) &&
+//     item1.campaignBudget === item2.campaignBudget
+//   );
+// }
+
+//   haveSameCampaignDetails(item1: FacebookData, item2: FacebookData): boolean {
+//     return (
+//       item1.campaignName === item2.campaignName &&
+//       this.compareArrays(item1.adsets.map(adset => adset.adsetName), item2.adsets.map(adset => adset.adsetName)) &&
+//       this.compareArrays(item1.adsets.map((adset: { ads: any[]; }) => adset.ads.map((ad: { adName: any; }) => ad.adName)), item2.adsets.map((adset: { ads: any[]; }) => adset.ads.map((ad: { adName: any; }) => ad.adName))) &&
+//       this.compareArrays(item1.adsets.map(adset => adset.adsetBudget), item2.adsets.map(adset => adset.adsetBudget)) &&
+//       item1.campaignBudget === item2.campaignBudget
+//     );
+//   }
+  
+//   compareArrays(arr1: any[], arr2: any[]): boolean {
+//     return JSON.stringify(arr1.sort()) === JSON.stringify(arr2.sort());
+//   }
+  
+//   removeLowerIndexSet(index: number): void {
+//     this.facebookset.splice(index, 1);
+//   }
+  
 
   groupFacebookDataByFormattedDate(data: FacebookData[]): void {
     data.forEach(item => {
@@ -466,6 +946,7 @@ applyaccountFilter() {
           }
   
           if (!foundMatchingSet) {
+            
             setsMatch = false;
             break;
           }
