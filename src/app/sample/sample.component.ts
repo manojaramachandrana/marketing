@@ -10,6 +10,11 @@ import * as XLSX from 'xlsx';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import { SpinnerComponent } from '../spinner/spinner.component';
+import { timestamp } from 'rxjs/operators';
+import { Timestamp } from 'rxjs/internal/operators/timestamp';
+//import { Timestamp } from 'rxjs/internal/operators/timestamp';
+// import { firestore } from 'firebase/app';
+// import Timestamp = firestore.Timestamp;
 
 interface TableData {
   date: string;
@@ -490,9 +495,9 @@ export class SampleComponent implements OnInit {
       for (let i = 0; i < snap.docs.length; i++) {
         const element:any = snap.docs[i].data();
        
-        if (element['converteddate'] != undefined ){
-
-          let datestring = new Date(new Date(element['converteddate'].toDate()).getTime() + 330 * 60000).toISOString().substring(0,10)
+        if (element['purchasedate'] != undefined ){
+          let day = new firebase.firestore.Timestamp(element['purchasedate']['_seconds'],element['purchasedate']['_nanoseconds'] )
+          let datestring = new Date(new Date(day.toDate()).getTime() + 330 * 60000).toISOString().substring(0,10)
           this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || {};
           this.outputTableStructure[datestring]['date'] =  datestring
           this.outputTableStructure[datestring]['sales'] = this.outputTableStructure[datestring]['sales'] != undefined ? this.outputTableStructure[datestring]['sales']+1 :1;
@@ -528,7 +533,7 @@ export class SampleComponent implements OnInit {
           webinarSnap.docs.forEach(webinarDoc => {
             const webinarElement = webinarDoc.data();
             let webinaremail = webinarElement['email'].trim();
-            if (webinarElement['converteddate'] != undefined && webinarElement['converteddate'] >= date && webinaremail == email) {
+            if (webinarElement['purchasedate'] != undefined && new firebase.firestore.Timestamp(webinarElement['purchasedate']['_seconds'],webinarElement['purchasedate']['_nanoseconds'] ) >= date && webinaremail == email) {
               m = 'true';
             }
           });
@@ -568,7 +573,7 @@ export class SampleComponent implements OnInit {
           webinarSnap.docs.forEach(webinarDoc => {
             const webinarElement = webinarDoc.data();
             let webinaremail = webinarElement['email'].trim();
-            if (webinarElement['converteddate'] != undefined && webinarElement['converteddate'] >= date && webinaremail == email) {
+            if (webinarElement['purchasedate'] != undefined && new firebase.firestore.Timestamp(webinarElement['purchasedate']['_seconds'],webinarElement['purchasedate']['_nanoseconds'] ) >= date && webinaremail == email) {
               m = 'true';
             }
           });
@@ -588,9 +593,9 @@ export class SampleComponent implements OnInit {
       for (let i = 0; i < snap.docs.length; i++) {
         const element:any = snap.docs[i].data();
        
-        if (element['converteddate'] != undefined ){
-
-          let datestring = new Date(new Date(element['converteddate'].toDate()).getTime() + 330 * 60000).toISOString().substring(0,10)
+        if (element['purchasedate'] != undefined ){
+          let day = new firebase.firestore.Timestamp(element['purchasedate']['_seconds'],element['purchasedate']['_nanoseconds'] )
+          let datestring = new Date(new Date(day.toDate()).getTime() + 330 * 60000).toISOString().substring(0,10)
           this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || {};
           this.outputTableStructure[datestring]['date'] =  datestring;
           this.outputTableStructure[datestring]['totalpurchasevalue'] = this.outputTableStructure[datestring]['totalpurchasevalue'] != undefined || null ? this.outputTableStructure[datestring]['totalpurchasevalue'] + element['totalpurchasevalue'] :  element['totalpurchasevalue'];
@@ -626,7 +631,7 @@ this.firestore.collection('entries').get().toPromise().then(async snap => {
       webinarSnap.docs.forEach(webinarDoc => {
         const webinarElement = webinarDoc.data();
         let webinaremail = webinarElement['email'].trim();
-        if (webinarElement['converteddate'] != undefined && webinarElement['converteddate'] >= date && webinaremail == email) {
+        if (webinarElement['purchasedate'] != undefined && new firebase.firestore.Timestamp(webinarElement['purchasedate']['_seconds'],webinarElement['purchasedate']['_nanoseconds'] ) >= date && webinaremail == email) {
           m = 'true';
           this.outputTableStructure[datestring]['totalpurchasevaluefromhp'] = this.outputTableStructure[datestring]['totalpurchasevaluefromhp'] != undefined || null ?
             this.outputTableStructure[datestring]['totalpurchasevaluefromhp'] + webinarElement['totalpurchasevalue'] :
@@ -668,7 +673,7 @@ this.firestore.collection('lylregistration').get().toPromise().then(async snap =
       webinarSnap.docs.forEach(webinarDoc => {
         const webinarElement = webinarDoc.data();
         let webinaremail = webinarElement['email'].trim();
-        if (webinarElement['converteddate'] != undefined && webinarElement['converteddate'] >= date && webinaremail == email) {
+        if (webinarElement['purchasedate'] != undefined && new firebase.firestore.Timestamp(webinarElement['purchasedate']['_seconds'],webinarElement['purchasedate']['_nanoseconds'] ) >= date && webinaremail == email) {
           m = 'true';
           this.outputTableStructure[datestring]['totalpurchasevaluenotfromhp'] = this.outputTableStructure[datestring]['totalpurchasevaluenotfromhp'] != undefined || null ?
             this.outputTableStructure[datestring]['totalpurchasevaluenotfromhp'] + webinarElement['totalpurchasevalue'] :
@@ -691,9 +696,9 @@ this.firestore.collection('lylregistration').get().toPromise().then(async snap =
       for (let i = 0; i < snap.docs.length; i++) {
         const element:any = snap.docs[i].data();
        
-        if (element['converteddate'] != undefined ){
-
-          let datestring = new Date(new Date(element['converteddate'].toDate()).getTime() + 330 * 60000).toISOString().substring(0,10)
+        if (element['purchasedate'] != undefined ){
+          let day = new firebase.firestore.Timestamp(element['purchasedate']['_seconds'],element['purchasedate']['_nanoseconds'] )
+          let datestring = new Date(new Date(day.toDate()).getTime() + 330 * 60000).toISOString().substring(0,10)
           this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || {};
           this.outputTableStructure[datestring]['date'] =  datestring;
           this.outputTableStructure[datestring]['initialpayment'] = this.outputTableStructure[datestring]['initialpayment'] != undefined || null ? this.outputTableStructure[datestring]['initialpayment'] + element['initialpayment'] :  element['initialpayment'];
@@ -729,7 +734,7 @@ this.firestore.collection('entries').get().toPromise().then(async snap => {
       webinarSnap.docs.forEach(webinarDoc => {
         const webinarElement = webinarDoc.data();
         let webinaremail = webinarElement['email'].trim();
-        if (webinarElement['converteddate'] != undefined && webinarElement['converteddate'] >= date && webinaremail == email) {
+        if (webinarElement['purchasedate'] != undefined && new firebase.firestore.Timestamp(webinarElement['purchasedate']['_seconds'],webinarElement['purchasedate']['_nanoseconds'] ) >= date && webinaremail == email) {
           m = 'true';
           this.outputTableStructure[datestring]['initialpaymentfromhp'] = this.outputTableStructure[datestring]['initialpaymentfromhp'] != undefined || null ?
             this.outputTableStructure[datestring]['initialpaymentfromhp'] + webinarElement['initialpayment'] :
@@ -771,7 +776,7 @@ this.firestore.collection('lylregistration').get().toPromise().then(async snap =
       webinarSnap.docs.forEach(webinarDoc => {
         const webinarElement = webinarDoc.data();
         let webinaremail = webinarElement['email'].trim();
-        if (webinarElement['converteddate'] != undefined && webinarElement['converteddate'] >= date && webinaremail == email) {
+        if (webinarElement['purchasedate'] != undefined && new firebase.firestore.Timestamp(webinarElement['purchasedate']['_seconds'],webinarElement['purchasedate']['_nanoseconds'] ) >= date && webinaremail == email) {
           m = 'true';
           this.outputTableStructure[datestring]['initialpaymentnotfromhp'] = this.outputTableStructure[datestring]['initialpaymentnotfromhp'] != undefined || null ?
             this.outputTableStructure[datestring]['initialpaymentnotfromhp'] + webinarElement['initialpayment'] :
@@ -810,12 +815,20 @@ this.firestore.collection('lylregistration').get().toPromise().then(async snap =
     this.firestore.collection('leads').get().toPromise().then(snap => {
       for (let i = 0; i < snap.docs.length; i++) {
         const element:any = snap.docs[0].data();
-        console.log('purchasedate',new Date(element['purchasedate']))
+
+         //const date = new Date(element['purchasedate']['_seconds'] * 1000);
+         const date = new firebase.firestore.Timestamp(element['purchasedate']['_seconds'],element['purchasedate']['_nanoseconds'] )
+         console.log('date',date,element['email'],element['purchasedate'],element['converteddate'])
         break;
       }
     });
 
    }
+   getFormattedDate(timestamp): string {
+    const date = new Date(timestamp.toMillis());
+    //const date = timestamp;
+    return date.toISOString().split('T')[0];
+  }
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -824,7 +837,6 @@ this.firestore.collection('lylregistration').get().toPromise().then(async snap =
         end: new FormControl()
       })
     });
-   
 
   }
   exportexcel(): void {
