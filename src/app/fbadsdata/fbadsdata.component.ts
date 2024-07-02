@@ -244,37 +244,43 @@ export class FbadsdataComponent implements OnInit, OnDestroy {
   
       leads.forEach(lead => {
         const leadDate = lead.converteddate.toDate();
-        const dateDifference = Math.abs(entryDate.getTime() - leadDate.getTime()) / (1000 * 60 * 60 * 24);
-        let conversionPeriod: string = '';
-        if (dateDifference <= 30) {
-          monthData.conversion_30++;
-          conversionPeriod = 'Conversion_30';
-          console.log(email)
-        } else if (dateDifference <= 60) {
-          monthData.conversion_60++;
-          conversionPeriod = 'Conversion_60';
-        } else if (dateDifference <= 90) {
-          monthData.conversion_90++;
-          conversionPeriod = 'Conversion_90';
-        } else if (dateDifference <= 120) {
-          monthData.conversion_120++;
-          conversionPeriod = 'Conversion_120';
-        } else if (dateDifference <= 240) {
-          monthData.conversion_240++;
-          conversionPeriod = 'Conversion_240';
-        } else if (dateDifference <= 360) {
-          monthData.conversion_360++;
-          conversionPeriod = 'Conversion_360';
+        
+        // Ensure entryDate is less than leadDate
+        if (entryDate < leadDate) {
+            const dateDifference = Math.abs(entryDate.getTime() - leadDate.getTime()) / (1000 * 60 * 60 * 24);
+    
+            let conversionPeriod = '';
+            if (dateDifference <= 30) {
+                monthData.conversion_30++;
+                conversionPeriod = 'Conversion_30';
+                //console.log(email);
+            } else if (dateDifference <= 60) {
+                monthData.conversion_60++;
+                conversionPeriod = 'Conversion_60';
+            } else if (dateDifference <= 90) {
+                monthData.conversion_90++;
+                conversionPeriod = 'Conversion_90';
+            } else if (dateDifference <= 120) {
+                monthData.conversion_120++;
+                conversionPeriod = 'Conversion_120';
+            } else if (dateDifference <= 240) {
+                monthData.conversion_240++;
+                conversionPeriod = 'Conversion_240';
+            } else if (dateDifference <= 360) {
+                monthData.conversion_360++;
+                conversionPeriod = 'Conversion_360';
+            }
+    
+            const leadDetails = { email, lead, conversionPeriod };
+    
+            if (!this.monthlyLeadDetails[monthYear].some(existingLead => existingLead.email === email)) {
+                this.monthlyLeadDetails[monthYear].push(leadDetails);
+            }
         }
-  
-        const leadDetails = { email, lead, conversionPeriod };
-  
-        if (!this.monthlyLeadDetails[monthYear].some(existingLead => existingLead.email === email)) {
-          this.monthlyLeadDetails[monthYear].push(leadDetails);
-        }
-      });
-  
+    });
+    
     console.log('leads', this.monthlyLeadDetails);
+    
     });
   }
 
@@ -316,6 +322,7 @@ export class FbadsdataComponent implements OnInit, OnDestroy {
     this.dataSource.data.sort((a, b) => new Date(a.month).getTime() - new Date(b.month).getTime());
   
     this.dataSource.data = [...this.dataSource.data];
+    console.log('data',this.dataSource)
   }
   
   

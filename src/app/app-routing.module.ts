@@ -11,6 +11,8 @@ import { RegisterComponent } from './register/register/register.component';
 import { ResetPasswordComponent } from './register/reset-password/reset-password.component';
 import { NorthstarComponent } from './northstar/northstar.component';
 import { DashboarddialogComponent } from './dashboarddialog/dashboarddialog.component';
+import { SampleComponent } from './sample/sample.component';
+import { SpinnerComponent } from './spinner/spinner.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -25,6 +27,9 @@ const routes: Routes = [
   { path: 'reset-password', component: ResetPasswordComponent},
   { path: 'northstar', component: NorthstarComponent},
   { path: 'dashboarddialog', component: DashboarddialogComponent},
+  { path: 'sample', component: SampleComponent},
+  { path: 'spinner', component: SpinnerComponent},
+
 ];
 
 @NgModule({

@@ -462,7 +462,6 @@ async getlylentryforhp(date: string, campaignName: string, label: string): Promi
   });
 }
 
-
 async getlylentryforsales(date: string, campaignName: string, label: string, field: string): Promise<number> {
   const [day, month, year] = date.split("-").map(Number);
   const dateObject = new Date(year, month - 1, day);
@@ -560,8 +559,6 @@ async processEntries(startTimestamp: firebase.firestore.Timestamp, endTimestamp:
     });
   });
 }
-
-
 
 // async getlylentryforsales(date: string, campaignName: string, label: string, field: string): Promise<number> {
 //   const [day, month, year] = date.split("-").map(Number);

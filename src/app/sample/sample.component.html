@@ -1,0 +1,277 @@
+<!-- <div *ngIf="dataLoading" class="progress-container">
+  <mat-progress-spinner class="center-spinner" mode="indeterminate"></mat-progress-spinner>
+</div> -->
+<br><br>
+<div class="button-container">
+  <button mat-raised-button (click)="selectedSection = 'homepage'" >Homepage Funnel</button>
+  <button mat-raised-button (click)="selectedSection = 'lyl'" >LYL Funnel</button>
+  <button mat-raised-button (click)="selectedSection = 'other'"  >Other</button>
+  </div>
+  <br>
+
+<div class="filter-container">
+  <form [formGroup]="form">
+    <mat-form-field>
+      <mat-label>Enter a date range</mat-label>
+      <mat-date-range-input [rangePicker]="picker" formGroupName="daterange">
+        <input matStartDate placeholder="Start date" formControlName="start"/>
+        <input matEndDate placeholder="End date" formControlName="end"/>
+      </mat-date-range-input>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>
+
+    <button mat-button (click)="onSubmit()">Search</button>
+  </form>
+
+  <button mat-button (click)="exportexcel()" class="export-excel-btn">Export</button>
+</div>
+
+<!-- <div *ngIf="selectedSection === 'other'"> -->
+  <div [ngClass]="selectedSection === 'other' ? 'other' : 'hide'">
+<div class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" id="exampleTable" matSort matSortActive="created" matSortDisableClear matSortDirection="desc">
+
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Date</th>
+        <td mat-cell *matCellDef="let row"> {{row}} </td>
+        <td mat-footer-cell *matFooterCellDef><strong> Total </strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="homepage">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> HomePage </th>
+        <td mat-cell *matCellDef="let row">{{ outputTableStructure[row] != undefined ? outputTableStructure[row]['homepage'] != undefined ? outputTableStructure[row]['homepage'] : 0 : 0}} </td>
+        <td mat-footer-cell *matFooterCellDef><strong>{{ gethomepage() }}  </strong> </td>
+      </ng-container>
+
+      <!-- <ng-container matColumnDef="lylreg">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>LYLRegistration</th>
+        <td [ngClass]="outputTableStructure[row] && outputTableStructure[row]['lylregister'] === 0 ? '-' : ''" mat-cell *matCellDef="let row">
+          {{ outputTableStructure[row] != undefined ? outputTableStructure[row]['lylattended'] != undefined ? outputTableStructure[row]['lylattended'] : 0 : 0}}
+        </td>
+        <td mat-footer-cell *matFooterCellDef><strong>{{ getlylregister() }}</strong></td>
+      </ng-container> -->
+
+      <!-- <ng-container matColumnDef="lylreg">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> LYLRegistration </th>
+        <td mat-cell *matCellDef="let row">{{ outputTableStructure[row] != undefined ? outputTableStructure[row]['lylregister'] != undefined ? outputTableStructure[row]['lylregister'] : 0 : 0}} </td>
+        <td mat-footer-cell *matFooterCellDef><strong> {{ getlylregister() }} </strong> </td>
+      </ng-container> -->
+
+      <ng-container matColumnDef="lylreg">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>LYLRegistration</th>
+        <td mat-cell *matCellDef="let row"> {{ outputTableStructure[row] && outputTableStructure[row]['lylregister'] !== undefined ? (outputTableStructure[row]['lylregister'] == 0 ? '-' : outputTableStructure[row]['lylregister']) : '-' }} </td>
+        <td mat-footer-cell *matFooterCellDef><strong>{{ getlylregister() }}</strong></td>
+      </ng-container>      
+
+      <ng-container matColumnDef="lylattend">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> LYLAttended </th>
+        <td mat-cell *matCellDef="let row"> {{ outputTableStructure[row] != undefined ? outputTableStructure[row]['lylattended'] != undefined ? outputTableStructure[row]['lylattended'] == 0 ? '-' : outputTableStructure[row]['lylattended']: '-' : '-'}} </td>
+        <td mat-footer-cell *matFooterCellDef><strong> {{ getlylattended() }} </strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="lylcomwat">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> LYLCompleteWatch </th>
+        <td mat-cell *matCellDef="let row">{{ outputTableStructure[row] != undefined ? outputTableStructure[row]['lylcomwat'] != undefined ? outputTableStructure[row]['lylcomwat'] == 0 ? '-': outputTableStructure[row]['lylcomwat'] : '-' : '-'}} </td>
+        <td mat-footer-cell *matFooterCellDef><strong> {{ getlylcomwat() }} </strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="lylapplied">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> LYLApplication </th>
+        <td mat-cell *matCellDef="let row">{{ outputTableStructure[row] != undefined ? outputTableStructure[row]['lylapplied'] != undefined ? outputTableStructure[row]['lylapplied'] == 0 ? '-': outputTableStructure[row]['lylapplied'] : '-' : '-'}} </td>
+        <td mat-footer-cell *matFooterCellDef><strong> {{ getlylapplied() }}  </strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="loghot">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> LogHot </th>
+        <td mat-cell *matCellDef="let row">{{ outputTableStructure[row] != undefined ? outputTableStructure[row]['loghot'] != undefined ? outputTableStructure[row]['loghot'] : '-' : '-'}} </td>
+        <td mat-footer-cell *matFooterCellDef><strong> {{ getloghot() }} </strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="superopportunity">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> SuperOpportunity </th>
+        <td mat-cell *matCellDef="let row">{{ outputTableStructure[row] != undefined ? outputTableStructure[row]['superopportunity'] != undefined ? outputTableStructure[row]['superopportunity'] : '-' : '-'}} </td>
+        <td mat-footer-cell *matFooterCellDef><strong> {{ getsuperopportunity() }} </strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="sales">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Sales </th>
+        <td mat-cell *matCellDef="let row">{{ outputTableStructure[row] != undefined ? outputTableStructure[row]['sales'] != undefined ? outputTableStructure[row]['sales'] : '-' : '-'}} </td>
+        <td mat-footer-cell *matFooterCellDef><strong> {{ getsales() }} </strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="totalpurchasevalue">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> TotalPurchaseValue </th>
+        <td mat-cell *matCellDef="let row">{{ outputTableStructure[row] != undefined ? outputTableStructure[row]['totalpurchasevalue'] != undefined ? outputTableStructure[row]['totalpurchasevalue'] : '-' : '-'}} </td>
+        <td mat-footer-cell *matFooterCellDef><strong> {{ gettotalpurchasevalue() | currency: 'INR': 'symbol': '1.0-0'}} </strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="initialpayment">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> InitialReturn </th>
+        <td mat-cell *matCellDef="let row">{{ outputTableStructure[row] != undefined ? outputTableStructure[row]['initialpayment'] != undefined ? outputTableStructure[row]['initialpayment'] : '-' : '-'}} </td>
+        <td mat-footer-cell *matFooterCellDef><strong> {{ getinitialpayment() | currency: 'INR': 'symbol': '1.0-0' }} </strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="amountspend">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> AdSpend </th>
+        <td mat-cell *matCellDef="let row">{{ outputTableStructure[row] != undefined ? outputTableStructure[row]['amountSpend'] != undefined ? outputTableStructure[row]['amountSpend'] : '-' : '-'}} </td>
+        <td mat-footer-cell *matFooterCellDef><strong> {{ getamountSpend() | currency: 'INR': 'symbol': '1.0-0' }} </strong> </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></tr>
+    </table>
+
+    <!-- <mat-paginator #paginator [pageSizeOptions]="[10,25,50,75,100,tableData.length]" [pageSize]="pageSize" aria-label="Select page of users"></mat-paginator> -->
+  </div> 
+</div>
+
+<!-- <div *ngIf="selectedSection === 'homepage'"> -->
+<div [ngClass]="selectedSection === 'homepage' ? 'homepage' : 'hide'">
+  <h1>Homepage Funnel</h1>
+  <br>
+
+  <div class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" id="exampleTable" matSort  >
+  
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+        <td mat-cell *matCellDef="let row"> {{row}} </td>
+        <td mat-footer-cell *matFooterCellDef><strong> Total  </strong> </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="homepage">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> HomePage </th>
+        <td mat-cell *matCellDef="let row">{{ outputTableStructure[row] != undefined ? outputTableStructure[row]['homepage'] != undefined ? outputTableStructure[row]['homepage'] : '-' : '-'}} </td>
+        <td mat-footer-cell *matFooterCellDef><strong>{{ gethomepage() }}  </strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="lylreg">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> LYLRegistration </th>
+        <td mat-cell *matCellDef="let row">{{ outputTableStructure[row] != undefined ? outputTableStructure[row]['lylregisterfromhp'] != undefined ? outputTableStructure[row]['lylregisterfromhp'] : '-' : '-'}} </td>
+        <td mat-footer-cell *matFooterCellDef><strong>{{ getlylregisterfromhp()  }}  </strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="lylattend">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> LYLAttended </th>
+        <td mat-cell *matCellDef="let row">{{ outputTableStructure[row] != undefined ? outputTableStructure[row]['lylattendedfromhp'] != undefined ? outputTableStructure[row]['lylattendedfromhp'] : '-' : '-'}} </td>
+        <td mat-footer-cell *matFooterCellDef><strong>{{ getlylattendedfromhp() }}  </strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="lylcomwat">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> LYLCompleteWatch </th>
+        <td mat-cell *matCellDef="let row">{{ outputTableStructure[row] != undefined ? outputTableStructure[row]['lylcomwatfromhp'] != undefined ? outputTableStructure[row]['lylcomwatfromhp'] : '-' : '-'}} </td>
+        <td mat-footer-cell *matFooterCellDef><strong>{{ getlylcomwatfromhp() }}  </strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="lylapplied">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> LYLApplication </th>
+        <td mat-cell *matCellDef="let row">{{ outputTableStructure[row] != undefined ? outputTableStructure[row]['lylappliedfromhp'] != undefined ? outputTableStructure[row]['lylappliedfromhp'] : '-' : '-'}} </td>
+        <td mat-footer-cell *matFooterCellDef><strong>{{ getlylappliedfromhp() }}  </strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="sales">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Sales </th>
+        <td mat-cell *matCellDef="let row">{{ outputTableStructure[row] != undefined ? outputTableStructure[row]['salesfromhp'] != undefined ? outputTableStructure[row]['salesfromhp'] : '-' : '-'}} </td>
+        <td mat-footer-cell *matFooterCellDef><strong>{{ getsalesfromhp() }}  </strong> </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="totalpurchasevalue">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> TotalPurchaseValue </th>
+        <td mat-cell *matCellDef="let row">{{ outputTableStructure[row] != undefined ? outputTableStructure[row]['totalpurchasevaluefromhp'] != undefined ? outputTableStructure[row]['totalpurchasevaluefromhp'] : '-' : '-'}} </td>
+        <td mat-footer-cell *matFooterCellDef><strong>{{ gettotalpurchasevaluefromhp() | currency: 'INR': 'symbol': '1.0-0' }}  </strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="initialpayment">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> InitialReturn </th>
+        <td mat-cell *matCellDef="let row">{{ outputTableStructure[row] != undefined ? outputTableStructure[row]['initialpaymentfromhp'] != undefined ? outputTableStructure[row]['initialpaymentfromhp'] : '-' : '-'}} </td>
+        <td mat-footer-cell *matFooterCellDef><strong>{{ getinitialpaymentfromhp() | currency: 'INR': 'symbol': '1.0-0'}}  </strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="amountspend">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> AdSpend </th>
+        <td mat-cell *matCellDef="let row">{{ outputTableStructure[row] != undefined ? outputTableStructure[row]['amountSpend'] != undefined ? outputTableStructure[row]['amountSpend'] : '-' : '-'}} </td>
+        <td mat-footer-cell *matFooterCellDef><strong>{{ getamountSpend() | currency: 'INR': 'symbol': '1.0-0'}}  </strong> </td>
+      </ng-container>
+  
+      <tr mat-header-row *matHeaderRowDef="displayedColumnshp; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnshp;"></tr>
+      <tr mat-footer-row *matFooterRowDef="displayedColumnshp; sticky: true"></tr>
+    </table>
+
+    <!-- <mat-paginator #paginator [pageSizeOptions]="[10,25,50,75,100,tableData.length]" [pageSize]="pageSize" aria-label="Select page of users"></mat-paginator> -->
+  </div>
+</div>
+
+<!-- <div *ngIf="selectedSection === 'lyl'"> -->
+  <div [ngClass]="selectedSection ==='lyl' ? 'lyl' : 'hide'">
+
+  <h2>LYL Funnel</h2>
+<br>
+  <div class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" id="exampleTable" matSort >
+  
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+        <td mat-cell *matCellDef="let row"> {{row}} </td>
+        <td mat-footer-cell *matFooterCellDef><strong> Total  </strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="lylreg">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> LYLRegistration </th>
+        <td mat-cell *matCellDef="let row">{{ outputTableStructure[row] != undefined ? outputTableStructure[row]['lylregisternotfromhp'] != undefined ? outputTableStructure[row]['lylregisternotfromhp'] : '-' : '-'}} </td>
+        <td mat-footer-cell *matFooterCellDef><strong>{{ getlylregisternotfromhp() }}  </strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="lylattend">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> LYLAttended </th>
+        <td mat-cell *matCellDef="let row">{{ outputTableStructure[row] != undefined ? outputTableStructure[row]['lylattendednotfromhp'] != undefined ? outputTableStructure[row]['lylattendednotfromhp'] : '-' : '-'}} </td>
+        <td mat-footer-cell *matFooterCellDef><strong>{{ getlylattendednotfromhp() }}  </strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="lylcomwat">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> LYLCompleteWatch </th>
+        <td mat-cell *matCellDef="let row">{{ outputTableStructure[row] != undefined ? outputTableStructure[row]['lylcomwatnotfromhp'] != undefined ? outputTableStructure[row]['lylcomwatnotfromhp'] : '-' : '-'}} </td>
+        <td mat-footer-cell *matFooterCellDef><strong>{{ getlylcomwatnotfromhp() }}  </strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="lylapplied">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> LYLApplication </th>
+        <td mat-cell *matCellDef="let row">{{ outputTableStructure[row] != undefined ? outputTableStructure[row]['lylappliednotfromhp'] != undefined ? outputTableStructure[row]['lylappliednotfromhp'] : '-' : '-'}} </td>
+        <td mat-footer-cell *matFooterCellDef><strong>{{ getlylappliednotfromhp() }}  </strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="sales">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Sales </th>
+        <td mat-cell *matCellDef="let row">{{ outputTableStructure[row] != undefined ? outputTableStructure[row]['salesnotfromhp'] != undefined ? outputTableStructure[row]['salesnotfromhp'] : '-' : '-'}} </td>
+        <td mat-footer-cell *matFooterCellDef><strong>{{ getsalesnotfromhp() }}  </strong> </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="totalpurchasevalue">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> TotalPurchaseValue </th>
+        <td mat-cell *matCellDef="let row">{{ outputTableStructure[row] != undefined ? outputTableStructure[row]['totalpurchasevaluenotfromhp'] != undefined ? outputTableStructure[row]['totalpurchasevaluenotfromhp'] : '-' : '-'}} </td>
+        <td mat-footer-cell *matFooterCellDef><strong>{{ gettotalpurchasevaluenotfromhp() | currency: 'INR': 'symbol': '1.0-0'}}  </strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="initialpayment">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> InitialReturn </th>
+        <td mat-cell *matCellDef="let row">{{ outputTableStructure[row] != undefined ? outputTableStructure[row]['initialpaymentnotfromhp'] != undefined ? outputTableStructure[row]['initialpaymentnotfromhp'] : '-' : '-'}} </td>
+        <td mat-footer-cell *matFooterCellDef><strong>{{ getinitialpaymentnotfromhp() | currency: 'INR': 'symbol': '1.0-0'}}  </strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="amountspend">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> AdSpend </th>
+        <td mat-cell *matCellDef="let row">{{ outputTableStructure[row] != undefined ? outputTableStructure[row]['amountSpend'] != undefined ? outputTableStructure[row]['amountSpend'] : '-' : '-'}} </td>
+        <td mat-footer-cell *matFooterCellDef><strong>{{ getamountSpend() | currency: 'INR': 'symbol': '1.0-0'}}  </strong> </td>
+      </ng-container>
+  
+      <tr mat-header-row *matHeaderRowDef="displayedColumnslyl; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnslyl;"></tr>
+      <tr mat-footer-row *matFooterRowDef="displayedColumnslyl; sticky: true"></tr>
+    </table>
+  
+    <!-- <mat-paginator #paginator [pageSizeOptions]="[10,25,50,75,100,tableData.length]" [pageSize]="pageSize" aria-label="Select page of users"></mat-paginator> -->
+  </div>
+</div>
+<mat-paginator #paginator [pageSizeOptions]="[10,25,50,75,100,tableData.length]" [pageSize]="pageSize" aria-label="Select page of users"></mat-paginator>

@@ -33,7 +33,7 @@ export class AppComponent implements OnInit{
         this.pageTitle = 'Growth Metrics';
       } else if ( this.pageTitle === 'fb-data'){
         this.pageTitle = 'Ads Campaign Sets'
-      } else if ( this.pageTitle === 'fbga'){
+      } else if ( this.pageTitle === 'sample'){
         this.pageTitle = 'Daily Leads & Sales'
       } else if ( this.pageTitle === 'fbadsdata'){
         this.pageTitle = ' Sales Conversion Cycle'

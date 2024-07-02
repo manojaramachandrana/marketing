@@ -42,6 +42,8 @@ import { RegisterComponent } from './register/register/register.component';
 import { ResetPasswordComponent } from './register/reset-password/reset-password.component';
 import { NorthstarComponent } from './northstar/northstar.component';
 import { DashboarddialogComponent } from './dashboarddialog/dashboarddialog.component';
+import { SampleComponent } from './sample/sample.component';
+import { SpinnerComponent } from './spinner/spinner.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +59,8 @@ import { DashboarddialogComponent } from './dashboarddialog/dashboarddialog.comp
     ResetPasswordComponent,
     NorthstarComponent,
     DashboarddialogComponent,
+    SampleComponent,
+    SpinnerComponent,
   ],
   imports: [
     BrowserModule,
