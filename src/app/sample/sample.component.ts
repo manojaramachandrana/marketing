@@ -44,7 +44,7 @@ export class SampleComponent implements OnInit {
   selectedSection: string = 'other';
   pageSize: number = 10;
   standalone: true;
-  dataLoading: boolean = true;
+  //dataLoading: boolean = true;
 
   // dataSource = new MatTableDataSource();
   // @ViewChild('Sort') Sort = new MatSort();
@@ -67,9 +67,9 @@ export class SampleComponent implements OnInit {
   outputTableStructure:any = {}
   //dialog: any;
   
-  get loadingdialog(){
-    return this.dialog.open(SpinnerComponent,{data:{msg:'Please wait processing.....'},disableClose:true})
-  }
+  // get loadingdialog(){
+  //   return this.dialog.open(SpinnerComponent,{data:{msg:'Please wait processing.....'},disableClose:true})
+  // }
 
   entrySubscriptiion: Subscription = new Subscription;
   constructor(
@@ -169,82 +169,86 @@ export class SampleComponent implements OnInit {
       }
       this.ngAfterViewInit()
     })
-    let loadingref = this.loadingdialog
+    //let loadingref = this.loadingdialog
 //lyl attended from homepage
-    this.firestore.collection('lylregistration').get().toPromise().then(async snap => {
-      snap.docs.forEach(async doc => {
-        const element = doc.data();
-    
-        this.maplylregistration[element['entrydata']] = element;
-    
-        Object.keys(this.maplylregistration).forEach(key => {
-          //console.log(element[element['entrydata']]);
-        });
-    
-        if (element['entrydata'] != undefined && element['event'] == 'lylregistration' &&
-            (element['qa1'] == 'nil' || element['qa2'] == 'nil' || element['url'].includes('www.antanoharini.com') || element['url'] == 'lyl ewebinar')) {
-    
-          let email = element['email'];
-          let date = element['entrydata'];
-          let datestring = new Date(new Date(element['entrydata'].toDate()).getTime() + 330 * 60000).toISOString().substring(0, 10);
-          this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || { date: "", lylattendedfromhp: 0 };
-          this.outputTableStructure[datestring]['date'] = datestring;
-    
-          let m = 'false';
-    
-          let webinarSnap = await this.firestore.collection('lylwebinarattended').get().toPromise();
-          webinarSnap.docs.forEach(webinarDoc => {
-            const webinarElement = webinarDoc.data();
-            let webinaremail = webinarElement['email'].trim();
-            if (webinarElement['entrydate'] != undefined && webinarElement['entrydate'] >= date && webinaremail == email) {
-              m = 'true';
-            }
-          });
-    
-          if (m == 'true') {
-            this.outputTableStructure[datestring]['lylattendedfromhp'] = this.outputTableStructure[datestring]['lylattendedfromhp'] != undefined ? this.outputTableStructure[datestring]['lylattendedfromhp'] + 1 : 1;
-            if (!this.tableData.includes(datestring)) {
-              this.tableData.push(datestring);
-            }
-          }
+this.firestore.collection('lylwebinarattended').get().toPromise().then(async snap => {
+  snap.docs.forEach(async doc => {
+    const element = doc.data();
+
+    this.maplylregistration[element['entrydate']] = element;
+
+    Object.keys(this.maplylregistration).forEach(key => {
+      //console.log(element[element['entrydata']]);
+    });
+
+    if (element['entrydate'] !== undefined) {
+      let email = element['email'].trim();
+      let date = element['entrydate']; 
+      let datestring = new Date(new Date(element['entrydate'].toDate()).getTime() + 330 * 60000).toISOString().substring(0,10)
+
+      this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || { date: "", lylattendedfromhp: 0 };
+      this.outputTableStructure[datestring]['date'] = datestring;
+
+      let m = 'false';
+
+      let webinarSnap = await this.firestore.collection('lylregistration').get().toPromise();
+      webinarSnap.docs.forEach(webinarDoc => {
+        const webinarElement = webinarDoc.data();
+        let webinaremail = webinarElement['email'].trim();
+
+        if (webinarElement['entrydata'] !== undefined && webinarElement['entrydata'] <= date && webinaremail === email &&
+            webinarElement['event'] === 'lylregistration' && webinarElement['event'] == 'lylregistration' &&
+                    (webinarElement['qa1'] == 'nil' || webinarElement['qa2'] == 'nil' || webinarElement['url'].includes('www.antanoharini.com') || webinarElement['url'] == 'lyl ewebinar') ) {
+          m = 'true';
         }
       });
-      // console.log('lylnf', this.outputTableStructure);
-      // console.log('tabnf', this.tableData);
-      this.ngAfterViewInit();
-    });
+
+      if (m === 'true') {
+        this.outputTableStructure[datestring]['lylattendedfromhp'] = this.outputTableStructure[datestring]['lylattendedfromhp'] != undefined ? this.outputTableStructure[datestring]['lylattendedfromhp'] + 1 : 1;
+        if (!this.tableData.includes(datestring)) {
+          this.tableData.push(datestring);
+        }
+      }
+    }
+  });
+  this.ngAfterViewInit();
+}).catch(error => {
+  console.error('Error getting documents: ', error);
+});
     
 //lyl attended not from homepage
-    this.firestore.collection('lylregistration').get().toPromise().then(async snap => {
+    this.firestore.collection('lylwebinarattended').get().toPromise().then(async snap => {
       snap.docs.forEach(async doc => {
         const element = doc.data();
     
-        this.maplylregistration[element['entrydata']] = element;
-    
+        this.maplylregistration[element['entrydate']] = element;
+
         Object.keys(this.maplylregistration).forEach(key => {
           //console.log(element[element['entrydata']]);
         });
     
-        if (element['entrydata'] != undefined && element['event'] == 'lylregistration' && element['url'].includes('global.antanoharini.com')) {
+        if (element['entrydate'] !== undefined) {
+          let email = element['email'].trim();
+          let date = element['entrydate']; 
+          let datestring = new Date(new Date(element['entrydate'].toDate()).getTime() + 330 * 60000).toISOString().substring(0,10)
     
-          let email = element['email'];
-          let date = element['entrydata'];
-          let datestring = new Date(new Date(element['entrydata'].toDate()).getTime() + 330 * 60000).toISOString().substring(0, 10);
           this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || { date: "", lylattendednotfromhp: 0 };
           this.outputTableStructure[datestring]['date'] = datestring;
     
           let m = 'false';
     
-          let webinarSnap = await this.firestore.collection('lylwebinarattended').get().toPromise();
+          let webinarSnap = await this.firestore.collection('lylregistration').get().toPromise();
           webinarSnap.docs.forEach(webinarDoc => {
             const webinarElement = webinarDoc.data();
             let webinaremail = webinarElement['email'].trim();
-            if (webinarElement['entrydate'] != undefined && webinarElement['entrydate'] >= date && webinaremail == email) {
+    
+            if (webinarElement['entrydata'] !== undefined && webinarElement['entrydata'] <= date && webinaremail === email &&
+                webinarElement['event'] === 'lylregistration' && webinarElement['url'].includes('global.antanoharini.com') ) {
               m = 'true';
             }
           });
     
-          if (m == 'true') {
+          if (m === 'true') {
             this.outputTableStructure[datestring]['lylattendednotfromhp'] = this.outputTableStructure[datestring]['lylattendednotfromhp'] != undefined ? this.outputTableStructure[datestring]['lylattendednotfromhp'] + 1 : 1;
             if (!this.tableData.includes(datestring)) {
               this.tableData.push(datestring);
@@ -253,6 +257,8 @@ export class SampleComponent implements OnInit {
         }
       });
       this.ngAfterViewInit();
+    }).catch(error => {
+      console.error('Error getting documents: ', error);
     });
 //lyl webinar complete watch
     this.firestore.collection('lylwebcompletewatch').get().toPromise().then(snap => {
@@ -273,32 +279,32 @@ export class SampleComponent implements OnInit {
       this.ngAfterViewInit()
     })
 //lyl com watch from homepage
-    this.firestore.collection('lylregistration').get().toPromise().then(async snap => {
+    this.firestore.collection('lylwebcompletewatch').get().toPromise().then(async snap => {
       snap.docs.forEach(async doc => {
         const element = doc.data();
     
-        this.maplylregistration[element['entrydata']] = element;
+        this.maplylregistration[element['entrydate']] = element;
     
         Object.keys(this.maplylregistration).forEach(key => {
           //console.log(element[element['entrydata']]);
         });
     
-        if (element['entrydata'] != undefined && element['event'] == 'lylregistration' &&
-            (element['qa1'] == 'nil' || element['qa2'] == 'nil' || element['url'].includes('www.antanoharini.com') || element['url'] == 'lyl ewebinar')) {
+        if (element['entrydate'] != undefined) {
     
-          let email = element['email'];
-          let date = element['entrydata'];
-          let datestring = new Date(new Date(element['entrydata'].toDate()).getTime() + 330 * 60000).toISOString().substring(0, 10);
+          let email = element['email'].trim();
+          let date = element['entrydate'];
+          let datestring = new Date(new Date(element['entrydate'].toDate()).getTime() + 330 * 60000).toISOString().substring(0, 10);
           this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || { date: "", lylcomwatfromhp: 0 };
           this.outputTableStructure[datestring]['date'] = datestring;
     
           let m = 'false';
     
-          let webinarSnap = await this.firestore.collection('lylwebcompletewatch').get().toPromise();
+          let webinarSnap = await this.firestore.collection('lylregistration').get().toPromise();
           webinarSnap.docs.forEach(webinarDoc => {
             const webinarElement = webinarDoc.data();
             let webinaremail = webinarElement['email'].trim();
-            if (webinarElement['entrydate'] != undefined && webinarElement['entrydate'] >= date && webinaremail == email) {
+            if (webinarElement['entrydata'] != undefined && webinarElement['entrydata'] <= date && webinaremail == email  && webinarElement['event'] == 'lylregistration' &&
+              (webinarElement['qa1'] == 'nil' || webinarElement['qa2'] == 'nil' || webinarElement['url'].includes('www.antanoharini.com') || webinarElement['url'] == 'lyl ewebinar')) {
               m = 'true';
             }
           });
@@ -314,45 +320,46 @@ export class SampleComponent implements OnInit {
       this.ngAfterViewInit();
     });
 //lyl com watch not from homepage
-    this.firestore.collection('lylregistration').get().toPromise().then(async snap => {
-      snap.docs.forEach(async doc => {
-        const element = doc.data();
-    
-        this.maplylregistration[element['entrydata']] = element;
-    
-        Object.keys(this.maplylregistration).forEach(key => {
-          //console.log(element[element['entrydata']]);
-        });
-    
-        if (element['entrydata'] != undefined && element['event'] == 'lylregistration' && element['url'].includes('global.antanoharini.com')) {
-    
-          let email = element['email'];
-          let date = element['entrydata'];
-          let datestring = new Date(new Date(element['entrydata'].toDate()).getTime() + 330 * 60000).toISOString().substring(0, 10);
-          this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || { date: "", lylcomwatnotfromhp: 0 };
-          this.outputTableStructure[datestring]['date'] = datestring;
-    
-          let m = 'false';
-    
-          let webinarSnap = await this.firestore.collection('lylwebcompletewatch').get().toPromise();
-          webinarSnap.docs.forEach(webinarDoc => {
-            const webinarElement = webinarDoc.data();
-            let webinaremail = webinarElement['email'].trim();
-            if (webinarElement['entrydate'] != undefined && webinarElement['entrydate'] >= date && webinaremail == email) {
-              m = 'true';
-            }
-          });
-    
-          if (m == 'true') {
-            this.outputTableStructure[datestring]['lylcomwatnotfromhp'] = this.outputTableStructure[datestring]['lylcomwatnotfromhp'] != undefined ? this.outputTableStructure[datestring]['lylcomwatnotfromhp'] + 1 : 1;
-            if (!this.tableData.includes(datestring)) {
-              this.tableData.push(datestring);
-            }
-          }
+this.firestore.collection('lylwebcompletewatch').get().toPromise().then(async snap => {
+  snap.docs.forEach(async doc => {
+    const element = doc.data();
+
+    this.maplylregistration[element['entrydate']] = element;
+
+    Object.keys(this.maplylregistration).forEach(key => {
+      //console.log(element[element['entrydata']]);
+    });
+
+    if (element['entrydate'] != undefined) {
+
+      let email = element['email'].trim();
+      let date = element['entrydate'];
+      let datestring = new Date(new Date(element['entrydate'].toDate()).getTime() + 330 * 60000).toISOString().substring(0, 10);
+      this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || { date: "", lylcomwatnotfromhp: 0 };
+      this.outputTableStructure[datestring]['date'] = datestring;
+
+      let m = 'false';
+
+      let webinarSnap = await this.firestore.collection('lylregistration').get().toPromise();
+      webinarSnap.docs.forEach(webinarDoc => {
+        const webinarElement = webinarDoc.data();
+        let webinaremail = webinarElement['email'].trim();
+        if (webinarElement['entrydata'] != undefined && webinarElement['entrydata'] <= date && webinaremail == email  && webinarElement['event'] == 'lylregistration' &&
+           webinarElement['url'].includes('global.antanoharini.com')) {
+          m = 'true';
         }
       });
-      this.ngAfterViewInit();
-    });
+
+      if (m == 'true') {
+        this.outputTableStructure[datestring]['lylcomwatnotfromhp'] = this.outputTableStructure[datestring]['lylcomwatnotfromhp'] != undefined ? this.outputTableStructure[datestring]['lylcomwatnotfromhp'] + 1 : 1;
+        if (!this.tableData.includes(datestring)) {
+          this.tableData.push(datestring);
+        }
+      }
+    }
+  });
+  this.ngAfterViewInit();
+});
 //lyl application
     this.firestore.collection('lylapplied').get().toPromise().then(snap => {
       for (let i = 0; i < snap.docs.length; i++) {
@@ -372,88 +379,87 @@ export class SampleComponent implements OnInit {
       this.ngAfterViewInit()
     })
 //lyl application from homepage
-    this.firestore.collection('lylregistration').get().toPromise().then(async snap => {
-      snap.docs.forEach(async doc => {
-        const element = doc.data();
-    
-        this.maplylregistration[element['entrydata']] = element;
-    
-        Object.keys(this.maplylregistration).forEach(key => {
-          //console.log(element[element['entrydata']]);
-        });
-    
-        if (element['entrydata'] != undefined && element['event'] == 'lylregistration' &&
-            (element['qa1'] == 'nil' || element['qa2'] == 'nil' || element['url'].includes('www.antanoharini.com') || element['url'] == 'lyl ewebinar')) {
-    
-          let email = element['email'];
-          let date = element['entrydata'];
-          let datestring = new Date(new Date(element['entrydata'].toDate()).getTime() + 330 * 60000).toISOString().substring(0, 10);
-          this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || { date: "", lylappliedfromhp: 0 };
-          this.outputTableStructure[datestring]['date'] = datestring;
-    
-          let m = 'false';
-    
-          let webinarSnap = await this.firestore.collection('lylapplied').get().toPromise();
-          webinarSnap.docs.forEach(webinarDoc => {
-            const webinarElement = webinarDoc.data();
-            let webinaremail = webinarElement['email'].trim();
-            if (webinarElement['entrydate'] != undefined && webinarElement['entrydate'] >= date && webinaremail == email) {
-              m = 'true';
-            }
-          });
-    
-          if (m == 'true') {
-            this.outputTableStructure[datestring]['lylappliedfromhp'] = this.outputTableStructure[datestring]['lylappliedfromhp'] != undefined ? this.outputTableStructure[datestring]['lylappliedfromhp'] + 1 : 1;
-            if (!this.tableData.includes(datestring)) {
-              this.tableData.push(datestring);
-            }
-          }
+this.firestore.collection('lylapplied').get().toPromise().then(async snap => {
+  snap.docs.forEach(async doc => {
+    const element = doc.data();
+
+    this.maplylregistration[element['entrydate']] = element;
+
+    Object.keys(this.maplylregistration).forEach(key => {
+      //console.log(element[element['entrydata']]);
+    });
+
+    if (element['entrydate'] != undefined) {
+
+      let email = element['email'].trim();
+      let date = element['entrydate'];
+      let datestring = new Date(new Date(element['entrydate'].toDate()).getTime() + 330 * 60000).toISOString().substring(0, 10);
+      this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || { date: "", lylappliedfromhp: 0 };
+      this.outputTableStructure[datestring]['date'] = datestring;
+
+      let m = 'false';
+
+      let webinarSnap = await this.firestore.collection('lylregistration').get().toPromise();
+      webinarSnap.docs.forEach(webinarDoc => {
+        const webinarElement = webinarDoc.data();
+        let webinaremail = webinarElement['email'].trim();
+        if (webinarElement['entrydata'] != undefined && webinarElement['entrydata'] <= date && webinaremail == email  && webinarElement['event'] == 'lylregistration' &&
+          (webinarElement['qa1'] == 'nil' || webinarElement['qa2'] == 'nil' || webinarElement['url'].includes('www.antanoharini.com') || webinarElement['url'] == 'lyl ewebinar')) {
+          m = 'true';
         }
       });
-      this.ngAfterViewInit();
-    });
-    loadingref.close()
+
+      if (m == 'true') {
+        this.outputTableStructure[datestring]['lylappliedfromhp'] = this.outputTableStructure[datestring]['lylappliedfromhp'] != undefined ? this.outputTableStructure[datestring]['lylappliedfromhp'] + 1 : 1;
+        if (!this.tableData.includes(datestring)) {
+          this.tableData.push(datestring);
+        }
+      }
+    }
+  });
+  this.ngAfterViewInit();
+});
 //lyl application not from homepage
-    this.firestore.collection('lylregistration').get().toPromise().then(async snap => {
-      snap.docs.forEach(async doc => {
-        const element = doc.data();
-    
-        this.maplylregistration[element['entrydata']] = element;
-    
-        Object.keys(this.maplylregistration).forEach(key => {
-          //console.log(element[element['entrydata']]);
-        });
-    
-        if (element['entrydata'] != undefined && element['event'] == 'lylregistration' && element['url'].includes('global.antanoharini.com')) {
-    
-          let email = element['email'];
-          let date = element['entrydata'];
-          let datestring = new Date(new Date(element['entrydata'].toDate()).getTime() + 330 * 60000).toISOString().substring(0, 10);
-          this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || { date: "", lylappliednotfromhp: 0 };
-          this.outputTableStructure[datestring]['date'] = datestring;
-    
-          let m = 'false';
-    
-          let webinarSnap = await this.firestore.collection('lylapplied').get().toPromise();
-          webinarSnap.docs.forEach(webinarDoc => {
-            const webinarElement = webinarDoc.data();
-            let webinaremail = webinarElement['email'].trim();
-            if (webinarElement['entrydate'] != undefined && webinarElement['entrydate'] >= date && webinaremail == email) {
-              m = 'true';
-            }
-          });
-    
-          if (m == 'true') {
-            this.outputTableStructure[datestring]['lylappliednotfromhp'] = this.outputTableStructure[datestring]['lylappliednotfromhp'] != undefined ? this.outputTableStructure[datestring]['lylappliednotfromhp'] + 1 : 1;
-            if (!this.tableData.includes(datestring)) {
-              this.tableData.push(datestring);
-            }
-          }
-        }
-      });
-      this.dataLoading = false;
-      this.ngAfterViewInit();
-    });
+this.firestore.collection('lylapplied').get().toPromise().then(async snap => {
+snap.docs.forEach(async doc => {
+const element = doc.data();
+
+this.maplylregistration[element['entrydate']] = element;
+
+Object.keys(this.maplylregistration).forEach(key => {
+  //console.log(element[element['entrydata']]);
+});
+
+if (element['entrydate'] != undefined) {
+
+  let email = element['email'].trim();
+  let date = element['entrydate'];
+  let datestring = new Date(new Date(element['entrydate'].toDate()).getTime() + 330 * 60000).toISOString().substring(0, 10);
+  this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || { date: "", lylappliednotfromhp: 0 };
+  this.outputTableStructure[datestring]['date'] = datestring;
+
+  let m = 'false';
+
+  let webinarSnap = await this.firestore.collection('lylregistration').get().toPromise();
+  webinarSnap.docs.forEach(webinarDoc => {
+    const webinarElement = webinarDoc.data();
+    let webinaremail = webinarElement['email'].trim();
+    if (webinarElement['entrydata'] != undefined && webinarElement['entrydata'] <= date && webinaremail == email  && webinarElement['event'] == 'lylregistration' &&
+       webinarElement['url'].includes('global.antanoharini.com')) {
+      m = 'true';
+    }
+  });
+
+  if (m == 'true') {
+    this.outputTableStructure[datestring]['lylappliednotfromhp'] = this.outputTableStructure[datestring]['lylappliednotfromhp'] != undefined ? this.outputTableStructure[datestring]['lylappliednotfromhp'] + 1 : 1;
+    if (!this.tableData.includes(datestring)) {
+      this.tableData.push(datestring);
+    }
+  }
+}
+});
+this.ngAfterViewInit();
+});
 //loghot 
     this.firestore.collection('loghot').get().toPromise().then(snap => {
       for (let i = 0; i < snap.docs.length; i++) {
@@ -509,31 +515,31 @@ export class SampleComponent implements OnInit {
       this.ngAfterViewInit()
     })
 //sales from homepage
-    this.firestore.collection('entries').get().toPromise().then(async snap => {
+    this.firestore.collection('leads').get().toPromise().then(async snap => {
       snap.docs.forEach(async doc => {
         const element = doc.data();
     
-        this.maplylregistration[element['createddate']] = element;
+        this.maplylregistration[element['purchasedate']] = element;
     
         Object.keys(this.maplylregistration).forEach(key => {
           //console.log(element[element['entrydata']]);
         });
     
-        if (element['createddate'] != undefined) {
+        if (element['purchasedate'] != undefined) {
     
           let email = element['email'];
-          let date = element['createddate'];
-          let datestring = new Date(new Date(element['createddate'].toDate()).getTime() + 330 * 60000).toISOString().substring(0, 10);
+          let date = new firebase.firestore.Timestamp(element['purchasedate']['_seconds'],element['purchasedate']['_nanoseconds'] );
+          let datestring = new Date(new Date(date.toDate()).getTime() + 330 * 60000).toISOString().substring(0, 10);
           this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || { date: "", salesfromhp: 0 };
           this.outputTableStructure[datestring]['date'] = datestring;
     
           let m = 'false';
     
-          let webinarSnap = await this.firestore.collection('leads').get().toPromise();
+          let webinarSnap = await this.firestore.collection('entries').get().toPromise();
           webinarSnap.docs.forEach(webinarDoc => {
             const webinarElement = webinarDoc.data();
             let webinaremail = webinarElement['email'].trim();
-            if (webinarElement['purchasedate'] != undefined && new firebase.firestore.Timestamp(webinarElement['purchasedate']['_seconds'],webinarElement['purchasedate']['_nanoseconds'] ) >= date && webinaremail == email) {
+            if (webinarElement['createddate'] != undefined && webinarElement['createddate'] <= date && webinaremail == email) {
               m = 'true';
             }
           });
@@ -549,45 +555,46 @@ export class SampleComponent implements OnInit {
       this.ngAfterViewInit();
     });
 //sales not from homepage
-    this.firestore.collection('lylregistration').get().toPromise().then(async snap => {
-      snap.docs.forEach(async doc => {
-        const element = doc.data();
-    
-        this.maplylregistration[element['entrydata']] = element;
-    
-        Object.keys(this.maplylregistration).forEach(key => {
-          //console.log(element[element['entrydata']]);
-        });
-    
-        if (element['entrydata'] != undefined && element['event'] == 'lylregistration' && element['url'].includes('global.antanoharini.com')) {
-    
-          let email = element['email'];
-          let date = element['entrydata'];
-          let datestring = new Date(new Date(element['entrydata'].toDate()).getTime() + 330 * 60000).toISOString().substring(0, 10);
-          this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || { date: "", salesnotfromhp: 0 };
-          this.outputTableStructure[datestring]['date'] = datestring;
-    
-          let m = 'false';
-    
-          let webinarSnap = await this.firestore.collection('leads').get().toPromise();
-          webinarSnap.docs.forEach(webinarDoc => {
-            const webinarElement = webinarDoc.data();
-            let webinaremail = webinarElement['email'].trim();
-            if (webinarElement['purchasedate'] != undefined && new firebase.firestore.Timestamp(webinarElement['purchasedate']['_seconds'],webinarElement['purchasedate']['_nanoseconds'] ) >= date && webinaremail == email) {
-              m = 'true';
-            }
-          });
-    
-          if (m == 'true') {
-            this.outputTableStructure[datestring]['salesnotfromhp'] = this.outputTableStructure[datestring]['salesnotfromhp'] != undefined ? this.outputTableStructure[datestring]['salesnotfromhp'] + 1 : 1;
-            if (!this.tableData.includes(datestring)) {
-              this.tableData.push(datestring);
-            }
-          }
+this.firestore.collection('leads').get().toPromise().then(async snap => {
+  snap.docs.forEach(async doc => {
+    const element = doc.data();
+
+    this.maplylregistration[element['purchasedate']] = element;
+
+    Object.keys(this.maplylregistration).forEach(key => {
+      //console.log(element[element['entrydata']]);
+    });
+
+    if (element['purchasedate'] != undefined) {
+
+      let email = element['email'];
+      let date = new firebase.firestore.Timestamp(element['purchasedate']['_seconds'],element['purchasedate']['_nanoseconds'] );
+      let datestring = new Date(new Date(date.toDate()).getTime() + 330 * 60000).toISOString().substring(0, 10);
+      this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || { date: "", salesnotfromhp: 0 };
+      this.outputTableStructure[datestring]['date'] = datestring;
+
+      let m = 'false';
+
+      let webinarSnap = await this.firestore.collection('lylregistration').get().toPromise();
+      webinarSnap.docs.forEach(webinarDoc => {
+        const webinarElement = webinarDoc.data();
+        let webinaremail = webinarElement['email'].trim();
+        if (webinarElement['entrydata'] != undefined && webinarElement['entrydata'] <= date && webinaremail == email && webinarElement['event'] == 'lylregistration' &&
+          webinarElement['url'].includes('global.antanoharini.com')) {
+          m = 'true';
         }
       });
-      this.ngAfterViewInit();
-    });
+
+      if (m == 'true') {
+        this.outputTableStructure[datestring]['salesnotfromhp'] = this.outputTableStructure[datestring]['salesnotfromhp'] != undefined ? this.outputTableStructure[datestring]['salesnotfromhp'] + 1 : 1;
+        if (!this.tableData.includes(datestring)) {
+          this.tableData.push(datestring);
+        }
+      }
+    }
+  });
+  this.ngAfterViewInit();
+});
 //sales totalpurchasevalue
     this.firestore.collection('leads').get().toPromise().then(snap => {
       for (let i = 0; i < snap.docs.length; i++) {
@@ -607,39 +614,38 @@ export class SampleComponent implements OnInit {
       this.ngAfterViewInit()
     })
 //sales totalpurchasevalue from homepage
-this.firestore.collection('entries').get().toPromise().then(async snap => {
+this.firestore.collection('leads').get().toPromise().then(async snap => {
   snap.docs.forEach(async doc => {
     const element = doc.data();
 
-    this.maplylregistration[element['createddate']] = element;
+    this.maplylregistration[element['purchasedate']] = element;
 
     Object.keys(this.maplylregistration).forEach(key => {
       //console.log(element[element['entrydata']]);
     });
 
-    if (element['createddate'] != undefined) {
+    if (element['purchasedate'] != undefined) {
 
       let email = element['email'];
-      let date = element['createddate'];
-      let datestring = new Date(new Date(element['createddate'].toDate()).getTime() + 330 * 60000).toISOString().substring(0, 10);
-      this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || { date: "", totalpurchasevaluefromhp: 0 };
+      let totalpurchasevalue = element['totalpurchasevalue'];
+      let date = new firebase.firestore.Timestamp(element['purchasedate']['_seconds'],element['purchasedate']['_nanoseconds'] );
+      let datestring = new Date(new Date(date.toDate()).getTime() + 330 * 60000).toISOString().substring(0, 10);
+      this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || { date: "", salesfromhp: 0 };
       this.outputTableStructure[datestring]['date'] = datestring;
 
       let m = 'false';
 
-      let webinarSnap = await this.firestore.collection('leads').get().toPromise();
+      let webinarSnap = await this.firestore.collection('entries').get().toPromise();
       webinarSnap.docs.forEach(webinarDoc => {
         const webinarElement = webinarDoc.data();
         let webinaremail = webinarElement['email'].trim();
-        if (webinarElement['purchasedate'] != undefined && new firebase.firestore.Timestamp(webinarElement['purchasedate']['_seconds'],webinarElement['purchasedate']['_nanoseconds'] ) >= date && webinaremail == email) {
+        if (webinarElement['createddate'] != undefined && webinarElement['createddate'] <= date && webinaremail == email) {
           m = 'true';
-          this.outputTableStructure[datestring]['totalpurchasevaluefromhp'] = this.outputTableStructure[datestring]['totalpurchasevaluefromhp'] != undefined || null ?
-            this.outputTableStructure[datestring]['totalpurchasevaluefromhp'] + webinarElement['totalpurchasevalue'] :
-            webinarElement['totalpurchasevalue'];
         }
       });
 
       if (m == 'true') {
+        this.outputTableStructure[datestring]['totalpurchasevaluefromhp'] = this.outputTableStructure[datestring]['totalpurchasevaluefromhp'] != undefined ? this.outputTableStructure[datestring]['totalpurchasevaluefromhp'] + totalpurchasevalue : totalpurchasevalue;
         if (!this.tableData.includes(datestring)) {
           this.tableData.push(datestring);
         }
@@ -648,49 +654,48 @@ this.firestore.collection('entries').get().toPromise().then(async snap => {
   });
   this.ngAfterViewInit();
 });
-//sales totalpurchasevalue not from homepage
-this.firestore.collection('lylregistration').get().toPromise().then(async snap => {
-  snap.docs.forEach(async doc => {
-    const element = doc.data();
+//sales totalpurchase not from homepage
+this.firestore.collection('leads').get().toPromise().then(async snap => {
+snap.docs.forEach(async doc => {
+const element = doc.data();
 
-    this.maplylregistration[element['entrydata']] = element;
+this.maplylregistration[element['purchasedate']] = element;
 
-    Object.keys(this.maplylregistration).forEach(key => {
-      //console.log(element[element['entrydata']]);
-    });
-
-    if (element['entrydata'] != undefined && element['event'] == 'lylregistration' && element['url'].includes('global.antanoharini.com')) {
-
-      let email = element['email'];
-      let date = element['entrydata'];
-      let datestring = new Date(new Date(element['entrydata'].toDate()).getTime() + 330 * 60000).toISOString().substring(0, 10);
-      this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || { date: "", totalpurchasevaluenotfromhp: 0 };
-      this.outputTableStructure[datestring]['date'] = datestring;
-
-      let m = 'false';
-
-      let webinarSnap = await this.firestore.collection('leads').get().toPromise();
-      webinarSnap.docs.forEach(webinarDoc => {
-        const webinarElement = webinarDoc.data();
-        let webinaremail = webinarElement['email'].trim();
-        if (webinarElement['purchasedate'] != undefined && new firebase.firestore.Timestamp(webinarElement['purchasedate']['_seconds'],webinarElement['purchasedate']['_nanoseconds'] ) >= date && webinaremail == email) {
-          m = 'true';
-          this.outputTableStructure[datestring]['totalpurchasevaluenotfromhp'] = this.outputTableStructure[datestring]['totalpurchasevaluenotfromhp'] != undefined || null ?
-            this.outputTableStructure[datestring]['totalpurchasevaluenotfromhp'] + webinarElement['totalpurchasevalue'] :
-            webinarElement['totalpurchasevalue'];
-        }
-      });
-
-      if (m == 'true') {
-        if (!this.tableData.includes(datestring)) {
-          this.tableData.push(datestring);
-        }
-      }
-    }
-  });
-  this.ngAfterViewInit();
+Object.keys(this.maplylregistration).forEach(key => {
+  //console.log(element[element['entrydata']]);
 });
 
+if (element['purchasedate'] != undefined) {
+
+  let email = element['email'];
+  let totalpurchasevalue = element['totalpurchasevalue'];
+  let date = new firebase.firestore.Timestamp(element['purchasedate']['_seconds'],element['purchasedate']['_nanoseconds'] );
+  let datestring = new Date(new Date(date.toDate()).getTime() + 330 * 60000).toISOString().substring(0, 10);
+  this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || { date: "", salesnotfromhp: 0 };
+  this.outputTableStructure[datestring]['date'] = datestring;
+
+  let m = 'false';
+
+  let webinarSnap = await this.firestore.collection('lylregistration').get().toPromise();
+  webinarSnap.docs.forEach(webinarDoc => {
+    const webinarElement = webinarDoc.data();
+    let webinaremail = webinarElement['email'].trim();
+    if (webinarElement['entrydata'] != undefined && webinarElement['entrydata'] <= date && webinaremail == email && webinarElement['event'] == 'lylregistration' &&
+      webinarElement['url'].includes('global.antanoharini.com')) {
+      m = 'true';
+    }
+  });
+
+  if (m == 'true') {
+    this.outputTableStructure[datestring]['totalpurchasevaluenotfromhp'] = this.outputTableStructure[datestring]['totalpurchasevaluenotfromhp'] != undefined ? this.outputTableStructure[datestring]['totalpurchasevaluenotfromhp'] + totalpurchasevalue : totalpurchasevalue;
+    if (!this.tableData.includes(datestring)) {
+      this.tableData.push(datestring);
+    }
+  }
+}
+});
+this.ngAfterViewInit();
+});
 //sales initial payment
     this.firestore.collection('leads').get().toPromise().then(snap => {
       for (let i = 0; i < snap.docs.length; i++) {
@@ -710,39 +715,38 @@ this.firestore.collection('lylregistration').get().toPromise().then(async snap =
       this.ngAfterViewInit()
     })
 //sales initialpayment from homepage
-this.firestore.collection('entries').get().toPromise().then(async snap => {
+this.firestore.collection('leads').get().toPromise().then(async snap => {
   snap.docs.forEach(async doc => {
     const element = doc.data();
 
-    this.maplylregistration[element['createddate']] = element;
+    this.maplylregistration[element['purchasedate']] = element;
 
     Object.keys(this.maplylregistration).forEach(key => {
       //console.log(element[element['entrydata']]);
     });
 
-    if (element['createddate'] != undefined) {
+    if (element['purchasedate'] != undefined) {
 
       let email = element['email'];
-      let date = element['createddate'];
-      let datestring = new Date(new Date(element['createddate'].toDate()).getTime() + 330 * 60000).toISOString().substring(0, 10);
+      let totalpurchasevalue = element['initialpayment'];
+      let date = new firebase.firestore.Timestamp(element['purchasedate']['_seconds'],element['purchasedate']['_nanoseconds'] );
+      let datestring = new Date(new Date(date.toDate()).getTime() + 330 * 60000).toISOString().substring(0, 10);
       this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || { date: "", initialpaymentfromhp: 0 };
       this.outputTableStructure[datestring]['date'] = datestring;
 
       let m = 'false';
 
-      let webinarSnap = await this.firestore.collection('leads').get().toPromise();
+      let webinarSnap = await this.firestore.collection('entries').get().toPromise();
       webinarSnap.docs.forEach(webinarDoc => {
         const webinarElement = webinarDoc.data();
         let webinaremail = webinarElement['email'].trim();
-        if (webinarElement['purchasedate'] != undefined && new firebase.firestore.Timestamp(webinarElement['purchasedate']['_seconds'],webinarElement['purchasedate']['_nanoseconds'] ) >= date && webinaremail == email) {
+        if (webinarElement['createddate'] != undefined && webinarElement['createddate'] <= date && webinaremail == email) {
           m = 'true';
-          this.outputTableStructure[datestring]['initialpaymentfromhp'] = this.outputTableStructure[datestring]['initialpaymentfromhp'] != undefined || null ?
-            this.outputTableStructure[datestring]['initialpaymentfromhp'] + webinarElement['initialpayment'] :
-            webinarElement['initialpayment'];
         }
       });
 
       if (m == 'true') {
+        this.outputTableStructure[datestring]['initialpaymentfromhp'] = this.outputTableStructure[datestring]['initialpaymentfromhp'] != undefined ? this.outputTableStructure[datestring]['initialpaymentfromhp'] + totalpurchasevalue : totalpurchasevalue;
         if (!this.tableData.includes(datestring)) {
           this.tableData.push(datestring);
         }
@@ -752,46 +756,46 @@ this.firestore.collection('entries').get().toPromise().then(async snap => {
   this.ngAfterViewInit();
 });
 //sales initialpayment not from homepage
-this.firestore.collection('lylregistration').get().toPromise().then(async snap => {
-  snap.docs.forEach(async doc => {
-    const element = doc.data();
+this.firestore.collection('leads').get().toPromise().then(async snap => {
+snap.docs.forEach(async doc => {
+const element = doc.data();
 
-    this.maplylregistration[element['entrydata']] = element;
+this.maplylregistration[element['purchasedate']] = element;
 
-    Object.keys(this.maplylregistration).forEach(key => {
-      //console.log(element[element['entrydata']]);
-    });
+Object.keys(this.maplylregistration).forEach(key => {
+  //console.log(element[element['entrydata']]);
+});
 
-    if (element['entrydata'] != undefined && element['event'] == 'lylregistration' && element['url'].includes('global.antanoharini.com')) {
+if (element['purchasedate'] != undefined) {
 
-      let email = element['email'];
-      let date = element['entrydata'];
-      let datestring = new Date(new Date(element['entrydata'].toDate()).getTime() + 330 * 60000).toISOString().substring(0, 10);
-      this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || { date: "", initialpaymentnotfromhp: 0 };
-      this.outputTableStructure[datestring]['date'] = datestring;
+  let email = element['email'];
+  let totalpurchasevalue = element['initialpayment'];
+  let date = new firebase.firestore.Timestamp(element['purchasedate']['_seconds'],element['purchasedate']['_nanoseconds'] );
+  let datestring = new Date(new Date(date.toDate()).getTime() + 330 * 60000).toISOString().substring(0, 10);
+  this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || { date: "", salesnotfromhp: 0 };
+  this.outputTableStructure[datestring]['date'] = datestring;
 
-      let m = 'false';
+  let m = 'false';
 
-      let webinarSnap = await this.firestore.collection('leads').get().toPromise();
-      webinarSnap.docs.forEach(webinarDoc => {
-        const webinarElement = webinarDoc.data();
-        let webinaremail = webinarElement['email'].trim();
-        if (webinarElement['purchasedate'] != undefined && new firebase.firestore.Timestamp(webinarElement['purchasedate']['_seconds'],webinarElement['purchasedate']['_nanoseconds'] ) >= date && webinaremail == email) {
-          m = 'true';
-          this.outputTableStructure[datestring]['initialpaymentnotfromhp'] = this.outputTableStructure[datestring]['initialpaymentnotfromhp'] != undefined || null ?
-            this.outputTableStructure[datestring]['initialpaymentnotfromhp'] + webinarElement['initialpayment'] :
-            webinarElement['initialpayment'];
-        }
-      });
-
-      if (m == 'true') {
-        if (!this.tableData.includes(datestring)) {
-          this.tableData.push(datestring);
-        }
-      }
+  let webinarSnap = await this.firestore.collection('lylregistration').get().toPromise();
+  webinarSnap.docs.forEach(webinarDoc => {
+    const webinarElement = webinarDoc.data();
+    let webinaremail = webinarElement['email'].trim();
+    if (webinarElement['entrydata'] != undefined && webinarElement['entrydata'] <= date && webinaremail == email && webinarElement['event'] == 'lylregistration' &&
+      webinarElement['url'].includes('global.antanoharini.com')) {
+      m = 'true';
     }
   });
-  this.ngAfterViewInit();
+
+  if (m == 'true') {
+    this.outputTableStructure[datestring]['initialpaymentnotfromhp'] = this.outputTableStructure[datestring]['initialpaymentnotfromhp'] != undefined ? this.outputTableStructure[datestring]['initialpaymentnotfromhp'] + totalpurchasevalue : totalpurchasevalue;
+    if (!this.tableData.includes(datestring)) {
+      this.tableData.push(datestring);
+    }
+  }
+}
+});
+this.ngAfterViewInit();
 });
 //total amount ad spend
     this.firestore.collection('adsinsight').get().toPromise().then(snap => {
@@ -856,6 +860,8 @@ this.firestore.collection('lylregistration').get().toPromise().then(async snap =
       console.log(this.selectedStartDate,this.selectedEndDate)
       const startDate = new Date(this.selectedStartDate);
       const endDate = new Date(this.selectedEndDate);
+      endDate.setDate(endDate.getDate() +1)
+      console.log(startDate,endDate)
       this.dataSource.data = this.tableData.filter(datestring => {
         const date = new Date(datestring);
         return date >= startDate && date <= endDate;

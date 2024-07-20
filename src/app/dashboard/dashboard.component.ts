@@ -10,7 +10,6 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { DashboarddialogComponent } from '../dashboarddialog/dashboarddialog.component';
 import { MatDialog } from '@angular/material/dialog';
 
-
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -811,7 +810,7 @@ async getecosystem(startDate: Date, endDate: Date, label: string, campaignName: 
          .where(dateField, '<=', firebase.firestore.Timestamp.fromDate(endDate))
     ).valueChanges().pipe(takeUntil(this.unsubscribe$)).subscribe(entries => {
       entries.forEach(entry => {
-        if ( entry.journeyname === 'uP!' || entry.journeyname === 'BiG' || entry.journeyname === 'FTM' || entry.journeyname === 'CPM upgrade' || entry.journeyname === 'FastTrack Membership' || entry.journeyname === 'Launch Your Legacy L2') {
+        if ( entry.journeyname === 'uP!' || entry.journeyname === 'BiG' || entry.journeyname === 'FTM' || entry.journeyname === 'CPM upgrade' || entry.journeyname === 'CPM' || entry.journeyname === 'FastTrack Membership' || entry.journeyname === 'Launch Your Legacy L2') {
           count += 1;
         }
       });
@@ -1034,7 +1033,7 @@ async getemiecosystem(startDate: Date, endDate: Date, label: string, campaignNam
          .where(dateField, '<=', firebase.firestore.Timestamp.fromDate(endDate))
     ).valueChanges().pipe(takeUntil(this.unsubscribe$)).subscribe(entries => {
       entries.forEach(entry => {
-        if ( (entry.totalpurchasevalue > entry.initialpayment) && ( entry.emiagreed !== ""  ) && ( entry.totalpurchasevalue !== entry.initialpayment) && ( entry.journeyname === 'uP!' || entry.journeyname === 'BiG' || entry.journeyname === 'FTM' || entry.journeyname === 'CPM upgrade' || entry.journeyname === 'FastTrack Membership' || entry.journeyname === 'Launch Your Legacy L2')) {
+        if ( (entry.totalpurchasevalue > entry.initialpayment) && ( entry.emiagreed !== ""  ) && ( entry.totalpurchasevalue !== entry.initialpayment) && ( entry.journeyname === 'uP!' || entry.journeyname === 'BiG' || entry.journeyname === 'FTM' || entry.journeyname === 'CPM upgrade' || entry.journeyname === 'FastTrack Membership' || entry.journeyname === 'CPM' || entry.journeyname === 'Launch Your Legacy L2')) {
           count += 1;
         }
       });

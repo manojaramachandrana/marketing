@@ -78,3 +78,37 @@
     </div>
   </div>
   
+  <button mat-button (click)="exportexcel()" class="export-excel-btn">Export</button>
+
+<div class="mat-elevation-z8">
+  <table mat-table [dataSource]="dataSourceopportunities"  id="exampleTable" class="mat-table" matSort>
+
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+      <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Email </th>
+      <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="phone">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Phone </th>
+      <td mat-cell *matCellDef="let element"> {{element.phone}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="entrydate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Entry Date </th>
+      <td mat-cell *matCellDef="let element"> {{element.entrydate.toDate() | date:'MM, d, y'}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="combinations">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Combinations </th>
+      <td mat-cell *matCellDef="let element"> {{element.combinations}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>

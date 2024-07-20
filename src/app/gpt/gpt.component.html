@@ -1,0 +1,7 @@
+<div>
+    <h1>GPT Model</h1>
+    <textarea #prompt></textarea>
+    <button (click)="queryGpt(prompt.value)">Submit</button>
+    <pre>{{ response | json }}</pre>
+  </div>
+  

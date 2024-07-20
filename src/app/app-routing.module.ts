@@ -13,6 +13,8 @@ import { NorthstarComponent } from './northstar/northstar.component';
 import { DashboarddialogComponent } from './dashboarddialog/dashboarddialog.component';
 import { SampleComponent } from './sample/sample.component';
 import { SpinnerComponent } from './spinner/spinner.component';
+import { GptComponent } from './gpt/gpt.component';
+import { DocComponent } from './doc/doc.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -29,6 +31,8 @@ const routes: Routes = [
   { path: 'dashboarddialog', component: DashboarddialogComponent},
   { path: 'sample', component: SampleComponent},
   { path: 'spinner', component: SpinnerComponent},
+  { path: 'doc', component: DocComponent},
+  { path: 'gpt', component: GptComponent},
 
 ];
 

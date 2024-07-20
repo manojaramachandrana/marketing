@@ -5,6 +5,8 @@ import { map, takeUntil } from 'rxjs/operators';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import { Observable, Subject } from 'rxjs';
+import { Timestamp } from 'rxjs/internal/operators/timestamp';
+import * as XLSX from 'xlsx';
 
 
 interface CampaignData {
@@ -76,14 +78,22 @@ interface DialogData {
   styleUrls: ['./dashboarddialog.component.css']
 })
 export class DashboarddialogComponent implements OnInit {
+  fileName = 'ExportExcel.xlsx';
   private unsubscribe$ = new Subject<void>();
   penultimateMonthData: DialogData[] = [];
   lastMonthData: DialogData[] = [];
   dataArray: any[] = [];
   data$: Observable<any>;
+  opportunities: Observable<any>;
+  dataSourceopportunities = new MatTableDataSource< {name:'string', phone: 'string', email: 'string', entrydate: 'any', combinations: 'string' }>();
+  displayedColumns: string[] = ['name', 'email', 'phone', 'entrydate', 'combinations']
 
   dataSource = new MatTableDataSource<CampaignData>();
   constructor(private firestore: AngularFirestore) { 
+    this.opportunities = this.firestore.collection<any>('superhotopportunities').valueChanges();
+    this.opportunities.subscribe(data => {
+      this.dataSourceopportunities.data = data;
+    });
     this.data$ = this.firestore.collection<any>('dialog').valueChanges();
     this.data$.pipe(takeUntil(this.unsubscribe$)).subscribe((data) => {
       console.log('Data from Firestore:', data);
@@ -99,6 +109,9 @@ export class DashboarddialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchdata();
+  }
+  exportexcel(): void {
+    TableUtil.exportToExcel("exampleTable");
   }
 
 
@@ -666,3 +679,18 @@ export class DashboarddialogComponent implements OnInit {
   }
 }
 
+export class TableUtil {
+  static exportToExcel(tableId: string, name?: string) {
+    let timeSpan = new Date().toISOString();
+    let prefix = name || "ExportResult";
+    let fileName = `${prefix}-${timeSpan}`;
+    let targetTableElm = document.getElementById(tableId);
+    
+    if (targetTableElm) {
+      let wb = XLSX.utils.table_to_book(targetTableElm, { sheet: prefix });
+      XLSX.writeFile(wb, `${fileName}.xlsx`);
+    } else {
+      console.error(`Table with id '${tableId}' not found.`);
+    }
+  }
+}

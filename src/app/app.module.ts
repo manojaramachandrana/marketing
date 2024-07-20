@@ -44,6 +44,8 @@ import { NorthstarComponent } from './northstar/northstar.component';
 import { DashboarddialogComponent } from './dashboarddialog/dashboarddialog.component';
 import { SampleComponent } from './sample/sample.component';
 import { SpinnerComponent } from './spinner/spinner.component';
+import { DocComponent } from './doc/doc.component';
+import { GptComponent } from './gpt/gpt.component';
 
 @NgModule({
   declarations: [
@@ -61,6 +63,8 @@ import { SpinnerComponent } from './spinner/spinner.component';
     DashboarddialogComponent,
     SampleComponent,
     SpinnerComponent,
+    DocComponent,
+    GptComponent,
   ],
   imports: [
     BrowserModule,
