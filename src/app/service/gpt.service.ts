@@ -8,14 +8,14 @@ import { Observable } from 'rxjs';
 export class GptService {
 
   private apiUrl = 'https://api.openai.com/v1/chat/completions';
-  private apiKey = '';  
+  //private apiKey = '';  
 
   constructor(private http: HttpClient) {}
 
   queryGptModel(prompt: string): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${this.apiKey}`
+      //'Authorization': `Bearer ${this.apiKey}`
     });
 
     const body = {
