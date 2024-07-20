@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 export class GptService {
 
   private apiUrl = 'https://api.openai.com/v1/chat/completions';
-  //private apiKey = '';  
+  
 
   constructor(private http: HttpClient) {}
 
