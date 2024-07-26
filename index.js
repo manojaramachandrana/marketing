@@ -104,7 +104,7 @@ wss.on('connection', (ws) => {
                                 }
                             });
                         });
-
+ 
                     // recognizeStreamInbound = client.streamingRecognize(request)
                     //     .on("error", (error) => {
                     //         console.error('Google Cloud Speech error (inbound):', error);
