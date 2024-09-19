@@ -245,7 +245,6 @@ export class FbadsdataComponent implements OnInit, OnDestroy {
       leads.forEach(lead => {
         const leadDate = lead.converteddate.toDate();
         
-        // Ensure entryDate is less than leadDate
         if (entryDate < leadDate) {
             const dateDifference = Math.abs(entryDate.getTime() - leadDate.getTime()) / (1000 * 60 * 60 * 24);
     

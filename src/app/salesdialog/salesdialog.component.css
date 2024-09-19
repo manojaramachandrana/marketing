@@ -1,0 +1,59 @@
+table {
+    width: 100%;
+  }
+  
+  th.mat-header-cell, td.mat-cell {
+    text-align: left;
+  }
+  
+  mat-header-cell {
+    background: #f5f5f5;
+  }
+
+  .mat-header-cell {
+    padding: 10px;
+    text-align: left;
+    font-size: 100%;
+    font-weight: bold;
+  }
+
+  .mat-dialog-actions {
+    align-items: center;
+    align-content: center; 
+   }
+
+  .mat-cell, .mat-button {
+    margin-right: 50rem;
+    padding: 10px;
+    text-align: left;
+    font-size: 100%;
+    font-weight: lighter;
+  }
+
+  .dialog-actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    padding: 16px;
+  }
+  
+  .export-excel-btn {
+    left: 45rem;
+    margin-right: 5rem;
+  }
+  
+  /* .close-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+  } */
+
+   .close-button {
+    position: absolute;
+    /* display: flex;
+    margin-left: auto;  */
+    /* top: 8px; */
+    right: 21rem;
+    margin-right: 10rem;
+   }
+  

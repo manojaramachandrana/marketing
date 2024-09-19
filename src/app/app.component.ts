@@ -35,11 +35,13 @@ export class AppComponent implements OnInit{
         this.pageTitle = 'Ads Campaign Sets'
       } else if ( this.pageTitle === 'sample'){
         this.pageTitle = 'Daily Leads & Sales'
-      } else if ( this.pageTitle === 'fbadsdata'){
+      } else if ( this.pageTitle === 'salesconv'){
         this.pageTitle = ' Sales Conversion Cycle'
       } else if ( this.pageTitle === 'northstar'){
         this.pageTitle = ' MarkTech North Star'
-      } else {
+      } else if ( this.pageTitle === 'seasonalcampaign'){
+        this.pageTitle = ' Seasonal Campaign'
+      }else {
         this.pageTitle = ''
       }
     });

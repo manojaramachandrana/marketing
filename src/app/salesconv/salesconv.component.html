@@ -1,0 +1,57 @@
+<br><br>
+
+<div class="mat-elevation-z8">
+
+    <table mat-table [dataSource]="dataSource" matSort>
+  
+      <ng-container matColumnDef="month">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Month-Year </th>
+        <td mat-cell *matCellDef="let row">{{ row.month }}</td>
+      </ng-container>
+  
+      <ng-container matColumnDef="leads">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Leads </th>
+        <td mat-cell *matCellDef="let row">{{ row.leads }}</td>
+      </ng-container>
+  
+      <ng-container matColumnDef="sales">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Sales </th>
+        <td mat-cell *matCellDef="let row">{{ row.sales }}</td>
+      </ng-container>
+  
+      <ng-container matColumnDef="conversion30">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header > Conversion30 </th>
+        <td mat-cell *matCellDef="let row" (click)="onRowClick(row,'conversion30')">{{ row.conversion30 }}</td>
+      </ng-container>
+  
+      <ng-container matColumnDef="conversion60">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header  > Conversion60 </th>
+        <td mat-cell *matCellDef="let row" (click)="onRowClick(row,'conversion60')">{{ row.conversion60 }}</td>
+      </ng-container>
+  
+      <ng-container matColumnDef="conversion90">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header  > Conversion90 </th>
+        <td mat-cell *matCellDef="let row" (click)="onRowClick(row,'conversion90')">{{ row.conversion90 }}</td>
+      </ng-container>
+  
+      <ng-container matColumnDef="conversion120">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header > Conversion120 </th>
+        <td mat-cell *matCellDef="let row"  (click)="onRowClick(row,'conversion120')">{{ row.conversion120 }}</td>
+      </ng-container>
+  
+      <ng-container matColumnDef="conversion240">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header  > Conversion240 </th>
+        <td mat-cell *matCellDef="let row" (click)="onRowClick(row,'conversion240')">{{ row.conversion240 }}</td>
+      </ng-container>
+  
+      <ng-container matColumnDef="conversion360">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header  > Conversion360 </th>
+        <td mat-cell *matCellDef="let row" (click)="onRowClick(row,'conversion360')">{{ row.conversion360 }}</td>
+      </ng-container>
+  
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <mat-paginator [pageSizeOptions]="[12, 24,36]" showFirstLastButtons></mat-paginator>
+  </div>
+  

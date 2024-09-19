@@ -46,6 +46,10 @@ import { SampleComponent } from './sample/sample.component';
 import { SpinnerComponent } from './spinner/spinner.component';
 import { DocComponent } from './doc/doc.component';
 import { GptComponent } from './gpt/gpt.component';
+import { SeasonalcamComponent } from './seasonalcam/seasonalcam.component';
+import { SalesdialogComponent } from './salesdialog/salesdialog.component';
+import { SalesconvComponent } from './salesconv/salesconv.component';
+import { ConversionDialogComponent } from './conversion-dialog/conversion-dialog.component';
 
 @NgModule({
   declarations: [
@@ -65,6 +69,10 @@ import { GptComponent } from './gpt/gpt.component';
     SpinnerComponent,
     DocComponent,
     GptComponent,
+    SeasonalcamComponent,
+    SalesdialogComponent,
+    SalesconvComponent,
+    ConversionDialogComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,38 @@
+.mat-column-campaign {
+    width: 150px;
+  }
+
+  table{
+    width: 100%;
+    overflow: auto;
+}
+  
+  .mat-column-count {
+    width: 100px;
+  }
+  
+  .mat-column-sales {
+    width: 100px;
+  }
+  
+  .mat-column-salevalue {
+    width: 120px;
+  }
+  
+  .mat-column-liquidity {
+    width: 120px;
+  }
+  
+  .mat-column-amountSpend {
+    width: 150px;
+  }
+  
+  .mat-column-mindate, .mat-column-maxdate {
+    width: 150px;
+  }
+
+  .mat-cell, .mat-header-cell {
+    text-align: center; 
+  }
+  
+  

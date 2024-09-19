@@ -1,0 +1,35 @@
+table {
+    width: 100%;
+  }
+
+/* .mat-dialog-content {
+    display: flex;
+    justify-content: center;
+    padding: 16px; 
+  } */
+
+  
+  .mat-header-cell,
+  .mat-cell {
+    text-align: center;
+  }
+  
+  /* .mat-dialog-actions {
+    display: flex;
+    justify-content: center;
+    padding: 8px;
+  }
+  
+  button.mat-button {
+    margin: 0 8px;
+  } */
+  
+  .close-button {
+    position: absolute;
+    /* display: flex;
+    margin-left: auto;  */
+    /* top: 8px; */
+    right: 5rem;
+    margin-right: 10rem;
+   }
+  

@@ -1,0 +1,48 @@
+<button mat-icon-button class="close-button" [mat-dialog-close]="true">
+  <mat-icon class="close-icon" color="warn">close</mat-icon>
+</button>
+
+<h1 mat-dialog-title>
+  Lead Information
+</h1>
+
+
+<button mat-button (click)="exportexcel()" class="export-excel-btn">Export</button>
+
+<div mat-dialog-content>
+  <table mat-table [dataSource]="getLeads()" id="exampleTable" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> Name </th>
+      <td mat-cell *matCellDef="let lead"> {{ lead.name || 'N/A' }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef> Email </th>
+      <td mat-cell *matCellDef="let lead"> {{ lead.email || 'N/A' }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="mobile">
+      <th mat-header-cell *matHeaderCellDef> Mobile </th>
+      <td mat-cell *matCellDef="let lead"> {{ lead.mobile || 'N/A' }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="purchaseDate">
+      <th mat-header-cell *matHeaderCellDef> Purchase Date </th>
+      <td mat-cell *matCellDef="let lead"> {{ lead.purchaseDate | date:'shortDate' || 'N/A' }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="totalPurchaseValue">
+      <th mat-header-cell *matHeaderCellDef> Total Purchase Value </th>
+      <td mat-cell *matCellDef="let lead"> {{ lead.totalPurchaseValue || 0 }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="initialPayment">
+      <th mat-header-cell *matHeaderCellDef> Initial Payment </th>
+      <td mat-cell *matCellDef="let lead"> {{ lead.initialPayment || 0 }} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>

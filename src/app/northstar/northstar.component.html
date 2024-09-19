@@ -1,31 +1,27 @@
-<!-- <div class="container">
-    <div class="content"> -->
-
-      <!-- <h3>Total Spend: {{ totalAmountSpent }}</h3>
-      <h3>Total Return: {{ totalReturn }}</h3> -->
-      <!-- <h3>MarkTech North Star from {{today}} - {{last30dayago}} {{ finalResult }}</h3>
-      <h3>Status: {{ getFinalResultStatus(finalResult) }}</h3>
-    </div>
-  </div> -->
-  <!-- <div class="container">
-    <div class="content">
-      <div class = "style">MarkTech North Star from {{ last30day | date }} - {{ today | date }}</div>
-      <div class = "style"> {{ finalResult }}</div>
-      <div class = "style">Status: {{ getFinalResultStatus(finalResult) }}</div>
-    </div>
-  </div> -->
-  <div class="container">
+<div class="container">
   <div class="content">
     <div class="style">
       MarkTech North Star from {{ last30day | date }} - {{ today | date }}
-    </div><br><br>
+    </div>
+    <br><br>
+
+    <div class="style">
+      Total Spend: {{ totalAmountSpent | currency:'INR':'symbol':'1.0-0' }}
+    </div>
+    <br>
+
+    <div class="style">
+      Total Return: {{ totalReturn | currency:'INR':'symbol':'1.0-0' }}
+    </div>
+    <br><br>
+
     <div class="final-result">
-      {{ finalResult }}
-    </div><br><br><br>
+      Final Result: {{ finalResult }}
+    </div>
+    <br><br><br>
+
     <div class="style">
       Status: {{ getFinalResultStatus(finalResult) }}
     </div>
   </div>
 </div>
-
-  

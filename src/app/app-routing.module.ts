@@ -15,6 +15,10 @@ import { SampleComponent } from './sample/sample.component';
 import { SpinnerComponent } from './spinner/spinner.component';
 import { GptComponent } from './gpt/gpt.component';
 import { DocComponent } from './doc/doc.component';
+import { SeasonalcamComponent } from './seasonalcam/seasonalcam.component';
+import { SalesdialogComponent } from './salesdialog/salesdialog.component';
+import { SalesconvComponent } from './salesconv/salesconv.component';
+import { ConversionDialogComponent } from './conversion-dialog/conversion-dialog.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -33,6 +37,10 @@ const routes: Routes = [
   { path: 'spinner', component: SpinnerComponent},
   { path: 'doc', component: DocComponent},
   { path: 'gpt', component: GptComponent},
+  { path: 'seasonalcampaign', component: SeasonalcamComponent},
+  { path: 'salesdialog', component: SalesdialogComponent},
+  { path: 'salesconv', component: SalesconvComponent},
+  { path: 'conversiondialog', component: ConversionDialogComponent}
 
 ];
 

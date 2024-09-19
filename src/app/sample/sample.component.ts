@@ -81,94 +81,354 @@ export class SampleComponent implements OnInit {
 //entries
     //this.loadingdialog();
     this.firestore.collection('entries').get().toPromise().then(snap => {
-      for (let i = 0; i < snap.docs.length; i++) {
-        const element:any = snap.docs[i].data();
-        if (element['createddate'] != undefined ){
-        let datestring = new Date(new Date(element['createddate'].toDate()).getTime() + 330 * 60000).toISOString().substring(0,10)
-        this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || {date:"" , homepage:0}
-        this.outputTableStructure[datestring]['date'] = datestring
-        this.outputTableStructure[datestring]['homepage'] = this.outputTableStructure[datestring]['homepage'] + 1;
-        if(!this.tableData.includes(datestring)){
-          this.tableData.push(datestring)
+      snap.docs.forEach((doc: any) => {
+        const element = doc.data();
+        if (element['createddate'] != undefined) {
+          let datestring = new Date(new Date(element['createddate'].toDate()).getTime() + 330 * 60000)
+            .toISOString()
+            .substring(0, 10);
+    
+          this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || { date: "", homepage: 0 };
+          this.outputTableStructure[datestring]['date'] = datestring;
+          this.outputTableStructure[datestring]['homepage'] = this.outputTableStructure[datestring]['homepage'] + 1;
+    
+          if (!this.tableData.includes(datestring)) {
+            this.tableData.push(datestring);
+          }
         }
+      });
+    
+      this.ngAfterViewInit();
+    });
+    
+//lylregistration
+this.firestore.collection('lylregistration').get().toPromise().then(snap => {
+  snap.docs.forEach((doc: any) => {
+    const element = doc.data();
+
+    if (element['entrydata'] != undefined && element['event'] == 'lylregistration') {
+
+      let datestring = new Date(new Date(element['entrydata'].toDate()).getTime() + 330 * 60000)
+        .toISOString()
+        .substring(0, 10);
+
+      this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || { date: "", lylregister: 0 };
+      this.outputTableStructure[datestring]['date'] = datestring;
+      this.outputTableStructure[datestring]['lylregister'] = this.outputTableStructure[datestring]['lylregister'] != undefined
+        ? this.outputTableStructure[datestring]['lylregister'] + 1
+        : 1;
+
+      if (!this.tableData.includes(datestring)) {
+        this.tableData.push(datestring);
       }
     }
-      //console.log(this.outputTableStructure);
-      //console.log(this.tableData);
-      this.ngAfterViewInit()
-    })
-//lylregistration
-    this.firestore.collection('lylregistration').get().toPromise().then(snap => {
-      for (let i = 0; i < snap.docs.length; i++) {
-        const element:any = snap.docs[i].data();
-       
-        if (element['entrydata'] != undefined && element['event'] == 'lylregistration' ){
+  });
 
-          let datestring = new Date(new Date(element['entrydata'].toDate()).getTime() + 330 * 60000).toISOString().substring(0,10)
-          this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || { date: "", lylregister: 0};
-          this.outputTableStructure[datestring]['date'] =  datestring
-          this.outputTableStructure[datestring]['lylregister'] = this.outputTableStructure[datestring]['lylregister'] != undefined ? this.outputTableStructure[datestring]['lylregister']+1 :1;
-          if(!this.tableData.includes(datestring)){
-            this.tableData.push(datestring)
-          }
-        }
-      }
-      this.ngAfterViewInit()
-    })
+  this.ngAfterViewInit();
+});
+
 //lylregistration from homepage
-    this.firestore.collection('lylregistration').get().toPromise().then(snap => {
-      for (let i = 0; i < snap.docs.length; i++) {
-        const element:any = snap.docs[i].data();
-       
-        if (element['entrydata'] != undefined && element['event'] == 'lylregistration' && (element['qa1'] == 'nil' || element['qa2'] == 'nil' ||element['url'].includes('www.antanoharini.com') || element['url']  == 'lyl ewebinar')  ){
+this.firestore.collection('lylregistration').get().toPromise().then(snap => {
+  snap.docs.forEach((doc: any) => {
+    const element = doc.data();
+    
+    if (
+      element['entrydata'] != undefined &&
+      element['event'] == 'lylregistration' &&
+      (
+        element['qa1'] == 'nil' ||
+        element['qa2'] == 'nil' ||
+        element['url'].includes('www.antanoharini.com') ||
+        element['url'] == 'lyl ewebinar'
+      )
+    ) {
+      let datestring = new Date(new Date(element['entrydata'].toDate()).getTime() + 330 * 60000)
+        .toISOString()
+        .substring(0, 10);
 
-          let datestring = new Date(new Date(element['entrydata'].toDate()).getTime() + 330 * 60000).toISOString().substring(0,10)
-          this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || { date: "", lylregisterfromhp: 0};
-          this.outputTableStructure[datestring]['date'] =  datestring
-          this.outputTableStructure[datestring]['lylregisterfromhp'] = this.outputTableStructure[datestring]['lylregisterfromhp'] != undefined ? this.outputTableStructure[datestring]['lylregisterfromhp']+1 :1;
-          if(!this.tableData.includes(datestring)){
-            this.tableData.push(datestring)
-          }
-        }
+      this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || { date: "", lylregisterfromhp: 0 };
+      this.outputTableStructure[datestring]['date'] = datestring;
+      this.outputTableStructure[datestring]['lylregisterfromhp'] = this.outputTableStructure[datestring]['lylregisterfromhp'] != undefined
+        ? this.outputTableStructure[datestring]['lylregisterfromhp'] + 1
+        : 1;
+
+      if (!this.tableData.includes(datestring)) {
+        this.tableData.push(datestring);
       }
-      this.ngAfterViewInit()
-    })
+    }
+  });
+
+  this.ngAfterViewInit();
+});
+
 //lylregistration not from homepage
-    this.firestore.collection('lylregistration').get().toPromise().then(snap => {
-      for (let i = 0; i < snap.docs.length; i++) {
-        const element:any = snap.docs[i].data();
-       
-        if (element['entrydata'] != undefined && element['event'] == 'lylregistration' && element['url'].includes('global.antanoharini.com')  ){
+this.firestore.collection('lylregistration').get().toPromise().then(snap => {
+  snap.docs.forEach((doc: any) => {
+    const element = doc.data();
+    
+    if (element['entrydata'] != undefined && element['event'] == 'lylregistration' && element['url'].includes('global.antanoharini.com')) {
+      let datestring = new Date(new Date(element['entrydata'].toDate()).getTime() + 330 * 60000)
+        .toISOString()
+        .substring(0, 10);
 
-          let datestring = new Date(new Date(element['entrydata'].toDate()).getTime() + 330 * 60000).toISOString().substring(0,10)
-          this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || { date: "", lylregisternotfromhp: 0};
-          this.outputTableStructure[datestring]['date'] =  datestring
-          this.outputTableStructure[datestring]['lylregisternotfromhp'] = this.outputTableStructure[datestring]['lylregisternotfromhp'] != undefined ? this.outputTableStructure[datestring]['lylregisternotfromhp']+1 :1;
-          if(!this.tableData.includes(datestring)){
-            this.tableData.push(datestring)
-          }
-        }
+      this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || { date: "", lylregisternotfromhp: 0 };
+      this.outputTableStructure[datestring]['date'] = datestring;
+      this.outputTableStructure[datestring]['lylregisternotfromhp'] = this.outputTableStructure[datestring]['lylregisternotfromhp'] != undefined
+        ? this.outputTableStructure[datestring]['lylregisternotfromhp'] + 1
+        : 1;
+
+      if (!this.tableData.includes(datestring)) {
+        this.tableData.push(datestring);
       }
-      this.ngAfterViewInit()
-    })
+    }
+  });
+
+  this.ngAfterViewInit();
+});
+
 //lyl attended
     this.firestore.collection('lylwebinarattended').get().toPromise().then(snap => {
-      for (let i = 0; i < snap.docs.length; i++) {
-        const element:any = snap.docs[i].data();
-       
-        if (element['entrydate'] != undefined ){
+      snap.docs.forEach((doc: any) => {
+        const element = doc.data();
+        
+        if (element['entrydate'] != undefined) {
+          let datestring = new Date(new Date(element['entrydate'].toDate()).getTime() + 330 * 60000)
+            .toISOString()
+            .substring(0, 10);
 
-          let datestring = new Date(new Date(element['entrydate'].toDate()).getTime() + 330 * 60000).toISOString().substring(0,10)
           this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || {};
-          this.outputTableStructure[datestring]['date'] =  datestring
-          this.outputTableStructure[datestring]['lylattended'] = this.outputTableStructure[datestring]['lylattended'] != undefined ? this.outputTableStructure[datestring]['lylattended']+1 :1;
-          if(!this.tableData.includes(datestring)){
-            this.tableData.push(datestring)
+          this.outputTableStructure[datestring]['date'] = datestring;
+          this.outputTableStructure[datestring]['lylattended'] = this.outputTableStructure[datestring]['lylattended'] != undefined
+            ? this.outputTableStructure[datestring]['lylattended'] + 1
+            : 1;
+
+          if (!this.tableData.includes(datestring)) {
+            this.tableData.push(datestring);
           }
         }
+      });
+
+      this.ngAfterViewInit();
+    });
+
+    //lyl webinar complete watch
+this.firestore.collection('lylwebcompletewatch').get().toPromise().then(snap => {
+  snap.docs.forEach((doc: any) => {
+    const element = doc.data();
+
+    if (element['entrydate'] != undefined) {
+      let datestring = new Date(new Date(element['entrydate'].toDate()).getTime() + 330 * 60000)
+        .toISOString()
+        .substring(0, 10);
+
+      this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || {};
+      this.outputTableStructure[datestring]['date'] = datestring;
+      this.outputTableStructure[datestring]['lylcomwat'] = this.outputTableStructure[datestring]['lylcomwat'] != undefined
+        ? this.outputTableStructure[datestring]['lylcomwat'] + 1
+        : 1;
+
+      if (!this.tableData.includes(datestring)) {
+        this.tableData.push(datestring);
       }
-      this.ngAfterViewInit()
-    })
+    }
+  });
+
+  this.ngAfterViewInit();
+});
+
+//lyl application
+this.firestore.collection('lylapplied').get().toPromise().then(snap => {
+  snap.docs.forEach((doc: any) => {
+    const element = doc.data();
+    
+    if (element['entrydate'] != undefined) {
+      let datestring = new Date(new Date(element['entrydate'].toDate()).getTime() + 330 * 60000)
+        .toISOString()
+        .substring(0, 10);
+
+      this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || {};
+      this.outputTableStructure[datestring]['date'] = datestring;
+      this.outputTableStructure[datestring]['lylapplied'] = this.outputTableStructure[datestring]['lylapplied'] != undefined 
+        ? this.outputTableStructure[datestring]['lylapplied'] + 1 
+        : 1;
+
+      if (!this.tableData.includes(datestring)) {
+        this.tableData.push(datestring);
+      }
+    }
+  });
+
+  this.ngAfterViewInit();
+});
+
+//loghot 
+this.firestore.collection('loghot').get().toPromise().then(snap => {
+  snap.docs.forEach((doc: any) => {
+    const element = doc.data();
+    
+    if (element['entrydate'] != undefined) {
+      let datestring = new Date(new Date(element['entrydate'].toDate()).getTime() + 330 * 60000)
+        .toISOString()
+        .substring(0, 10);
+
+      this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || {};
+      this.outputTableStructure[datestring]['date'] = datestring;
+      this.outputTableStructure[datestring]['loghot'] = this.outputTableStructure[datestring]['loghot'] != undefined 
+        ? this.outputTableStructure[datestring]['loghot'] + 1 
+        : 1;
+
+      if (!this.tableData.includes(datestring)) {
+        this.tableData.push(datestring);
+      }
+    }
+  });
+
+  this.ngAfterViewInit();
+});
+
+//super opportunities
+this.firestore.collection('superhotopportunities').get().toPromise().then(snap => {
+  snap.docs.forEach((doc: any) => {
+    const element = doc.data();
+    
+    if (element['entrydate'] != undefined) {
+      let datestring = new Date(new Date(element['entrydate'].toDate()).getTime() + 330 * 60000)
+        .toISOString()
+        .substring(0, 10);
+
+      this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || {};
+      this.outputTableStructure[datestring]['date'] = datestring;
+      this.outputTableStructure[datestring]['superopportunity'] = this.outputTableStructure[datestring]['superopportunity'] != undefined 
+        ? this.outputTableStructure[datestring]['superopportunity'] + 1 
+        : 1;
+
+      if (!this.tableData.includes(datestring)) {
+        this.tableData.push(datestring);
+      }
+    }
+  });
+
+  this.ngAfterViewInit();
+});
+
+//sales
+this.firestore.collection('leads').get().toPromise().then(snap => {
+  snap.docs.forEach((doc: any) => {
+    const element = doc.data();
+
+    if (element['purchasedate'] != undefined) {
+      let day = new firebase.firestore.Timestamp(
+        element['purchasedate']['_seconds'], 
+        element['purchasedate']['_nanoseconds']
+      );
+      let datestring = new Date(new Date(day.toDate()).getTime() + 330 * 60000)
+        .toISOString()
+        .substring(0, 10);
+
+      this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || {};
+      this.outputTableStructure[datestring]['date'] = datestring;
+      this.outputTableStructure[datestring]['sales'] = this.outputTableStructure[datestring]['sales'] != undefined 
+        ? this.outputTableStructure[datestring]['sales'] + 1 
+        : 1;
+
+      if (!this.tableData.includes(datestring)) {
+        this.tableData.push(datestring);
+      }
+    }
+  });
+
+  this.ngAfterViewInit();
+});
+
+//sales totalpurchasevalue
+this.firestore.collection('leads').get().toPromise().then(snap => {
+  snap.docs.forEach((doc: any) => {
+    const element = doc.data();
+
+    if (element['purchasedate'] != undefined) {
+      let day = new firebase.firestore.Timestamp(
+        element['purchasedate']['_seconds'], 
+        element['purchasedate']['_nanoseconds']
+      );
+      let datestring = new Date(new Date(day.toDate()).getTime() + 330 * 60000)
+        .toISOString()
+        .substring(0, 10);
+
+      this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || {};
+      this.outputTableStructure[datestring]['date'] = datestring;
+      
+      this.outputTableStructure[datestring]['totalpurchasevalue'] = 
+        this.outputTableStructure[datestring]['totalpurchasevalue'] != undefined && this.outputTableStructure[datestring]['totalpurchasevalue'] !== null
+        ? this.outputTableStructure[datestring]['totalpurchasevalue'] + element['totalpurchasevalue']
+        : element['totalpurchasevalue'];
+
+      if (!this.tableData.includes(datestring)) {
+        this.tableData.push(datestring);
+      }
+    }
+  });
+
+  this.ngAfterViewInit();
+});
+
+//sales initial payment
+this.firestore.collection('leads').get().toPromise().then(snap => {
+  snap.docs.forEach((doc: any) => {
+    const element = doc.data();
+
+    if (element['purchasedate'] != undefined) {
+      let day = new firebase.firestore.Timestamp(
+        element['purchasedate']['_seconds'], 
+        element['purchasedate']['_nanoseconds']
+      );
+      let datestring = new Date(new Date(day.toDate()).getTime() + 330 * 60000)
+        .toISOString()
+        .substring(0, 10);
+
+      this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || {};
+      this.outputTableStructure[datestring]['date'] = datestring;
+
+      this.outputTableStructure[datestring]['initialpayment'] =
+        this.outputTableStructure[datestring]['initialpayment'] != undefined && this.outputTableStructure[datestring]['initialpayment'] !== null
+        ? this.outputTableStructure[datestring]['initialpayment'] + element['initialpayment']
+        : element['initialpayment'];
+
+      if (!this.tableData.includes(datestring)) {
+        this.tableData.push(datestring);
+      }
+    }
+  });
+
+  this.ngAfterViewInit();
+});
+
+//total amount ad spend
+this.firestore.collection('adsinsight').get().toPromise().then(snap => {
+  snap.docs.forEach((doc: any) => {
+    const element = doc.data();
+    
+    if (element['docdate'] != undefined) {
+      let datestring = new Date(new Date(element['docdate'].toDate()).getTime() + 330 * 60000)
+        .toISOString()
+        .substring(0, 10);
+
+      this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || {};
+      this.outputTableStructure[datestring]['date'] = datestring;
+
+      this.outputTableStructure[datestring]['amountSpend'] =
+        this.outputTableStructure[datestring]['amountSpend'] != undefined && this.outputTableStructure[datestring]['amountSpend'] !== null
+        ? this.outputTableStructure[datestring]['amountSpend'] + element['amountSpend']
+        : element['amountSpend'];
+
+      if (!this.tableData.includes(datestring)) {
+        this.tableData.push(datestring);
+      }
+    }
+  });
+
+  this.ngAfterViewInit();
+});
+
     //let loadingref = this.loadingdialog
 //lyl attended from homepage
 this.firestore.collection('lylwebinarattended').get().toPromise().then(async snap => {
@@ -260,24 +520,8 @@ this.firestore.collection('lylwebinarattended').get().toPromise().then(async sna
     }).catch(error => {
       console.error('Error getting documents: ', error);
     });
-//lyl webinar complete watch
-    this.firestore.collection('lylwebcompletewatch').get().toPromise().then(snap => {
-      for (let i = 0; i < snap.docs.length; i++) {
-        const element:any = snap.docs[i].data();
-       
-        if (element['entrydate'] != undefined ){
 
-          let datestring = new Date(new Date(element['entrydate'].toDate()).getTime() + 330 * 60000).toISOString().substring(0,10)
-          this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || {};
-          this.outputTableStructure[datestring]['date'] =  datestring
-          this.outputTableStructure[datestring]['lylcomwat'] = this.outputTableStructure[datestring]['lylcomwat'] != undefined ? this.outputTableStructure[datestring]['lylcomwat']+1 :1;
-          if(!this.tableData.includes(datestring)){
-            this.tableData.push(datestring)
-          }
-        }
-      }
-      this.ngAfterViewInit()
-    })
+
 //lyl com watch from homepage
     this.firestore.collection('lylwebcompletewatch').get().toPromise().then(async snap => {
       snap.docs.forEach(async doc => {
@@ -360,24 +604,7 @@ this.firestore.collection('lylwebcompletewatch').get().toPromise().then(async sn
   });
   this.ngAfterViewInit();
 });
-//lyl application
-    this.firestore.collection('lylapplied').get().toPromise().then(snap => {
-      for (let i = 0; i < snap.docs.length; i++) {
-        const element:any = snap.docs[i].data();
-       
-        if (element['entrydate'] != undefined ){
 
-          let datestring = new Date(new Date(element['entrydate'].toDate()).getTime() + 330 * 60000).toISOString().substring(0,10)
-          this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || {};
-          this.outputTableStructure[datestring]['date'] =  datestring
-          this.outputTableStructure[datestring]['lylapplied'] = this.outputTableStructure[datestring]['lylapplied'] != undefined ? this.outputTableStructure[datestring]['lylapplied']+1 :1;
-          if(!this.tableData.includes(datestring)){
-            this.tableData.push(datestring)
-          }
-        }
-      }
-      this.ngAfterViewInit()
-    })
 //lyl application from homepage
 this.firestore.collection('lylapplied').get().toPromise().then(async snap => {
   snap.docs.forEach(async doc => {
@@ -460,60 +687,7 @@ if (element['entrydate'] != undefined) {
 });
 this.ngAfterViewInit();
 });
-//loghot 
-    this.firestore.collection('loghot').get().toPromise().then(snap => {
-      for (let i = 0; i < snap.docs.length; i++) {
-        const element:any = snap.docs[i].data();
-       
-        if (element['entrydate'] != undefined ){
 
-          let datestring = new Date(new Date(element['entrydate'].toDate()).getTime() + 330 * 60000).toISOString().substring(0,10)
-          this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || {};
-          this.outputTableStructure[datestring]['date'] =  datestring
-          this.outputTableStructure[datestring]['loghot'] = this.outputTableStructure[datestring]['loghot'] != undefined ? this.outputTableStructure[datestring]['loghot']+1 :1;
-          if(!this.tableData.includes(datestring)){
-            this.tableData.push(datestring)
-          }
-        }
-      }
-      this.ngAfterViewInit()
-    })
-//super opportunities
-    this.firestore.collection('superhotopportunities').get().toPromise().then(snap => {
-      for (let i = 0; i < snap.docs.length; i++) {
-        const element:any = snap.docs[i].data();
-       
-        if (element['entrydate'] != undefined ){
-
-          let datestring = new Date(new Date(element['entrydate'].toDate()).getTime() + 330 * 60000).toISOString().substring(0,10)
-          this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || {};
-          this.outputTableStructure[datestring]['date'] =  datestring
-          this.outputTableStructure[datestring]['superopportunity'] = this.outputTableStructure[datestring]['superopportunity'] != undefined ? this.outputTableStructure[datestring]['superopportunity']+1 :1;
-          if(!this.tableData.includes(datestring)){
-            this.tableData.push(datestring)
-          }
-        }
-      }
-      this.ngAfterViewInit()
-    })
-//sales
-    this.firestore.collection('leads').get().toPromise().then(snap => {
-      for (let i = 0; i < snap.docs.length; i++) {
-        const element:any = snap.docs[i].data();
-       
-        if (element['purchasedate'] != undefined ){
-          let day = new firebase.firestore.Timestamp(element['purchasedate']['_seconds'],element['purchasedate']['_nanoseconds'] )
-          let datestring = new Date(new Date(day.toDate()).getTime() + 330 * 60000).toISOString().substring(0,10)
-          this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || {};
-          this.outputTableStructure[datestring]['date'] =  datestring
-          this.outputTableStructure[datestring]['sales'] = this.outputTableStructure[datestring]['sales'] != undefined ? this.outputTableStructure[datestring]['sales']+1 :1;
-          if(!this.tableData.includes(datestring)){
-            this.tableData.push(datestring)
-          }
-        }
-      }
-      this.ngAfterViewInit()
-    })
 //sales from homepage
     this.firestore.collection('leads').get().toPromise().then(async snap => {
       snap.docs.forEach(async doc => {
@@ -595,24 +769,7 @@ this.firestore.collection('leads').get().toPromise().then(async snap => {
   });
   this.ngAfterViewInit();
 });
-//sales totalpurchasevalue
-    this.firestore.collection('leads').get().toPromise().then(snap => {
-      for (let i = 0; i < snap.docs.length; i++) {
-        const element:any = snap.docs[i].data();
-       
-        if (element['purchasedate'] != undefined ){
-          let day = new firebase.firestore.Timestamp(element['purchasedate']['_seconds'],element['purchasedate']['_nanoseconds'] )
-          let datestring = new Date(new Date(day.toDate()).getTime() + 330 * 60000).toISOString().substring(0,10)
-          this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || {};
-          this.outputTableStructure[datestring]['date'] =  datestring;
-          this.outputTableStructure[datestring]['totalpurchasevalue'] = this.outputTableStructure[datestring]['totalpurchasevalue'] != undefined || null ? this.outputTableStructure[datestring]['totalpurchasevalue'] + element['totalpurchasevalue'] :  element['totalpurchasevalue'];
-          if(!this.tableData.includes(datestring)){
-            this.tableData.push(datestring)
-          }
-        }
-      }
-      this.ngAfterViewInit()
-    })
+
 //sales totalpurchasevalue from homepage
 this.firestore.collection('leads').get().toPromise().then(async snap => {
   snap.docs.forEach(async doc => {
@@ -696,24 +853,7 @@ if (element['purchasedate'] != undefined) {
 });
 this.ngAfterViewInit();
 });
-//sales initial payment
-    this.firestore.collection('leads').get().toPromise().then(snap => {
-      for (let i = 0; i < snap.docs.length; i++) {
-        const element:any = snap.docs[i].data();
-       
-        if (element['purchasedate'] != undefined ){
-          let day = new firebase.firestore.Timestamp(element['purchasedate']['_seconds'],element['purchasedate']['_nanoseconds'] )
-          let datestring = new Date(new Date(day.toDate()).getTime() + 330 * 60000).toISOString().substring(0,10)
-          this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || {};
-          this.outputTableStructure[datestring]['date'] =  datestring;
-          this.outputTableStructure[datestring]['initialpayment'] = this.outputTableStructure[datestring]['initialpayment'] != undefined || null ? this.outputTableStructure[datestring]['initialpayment'] + element['initialpayment'] :  element['initialpayment'];
-          if(!this.tableData.includes(datestring)){
-            this.tableData.push(datestring)
-          }
-        }
-      }
-      this.ngAfterViewInit()
-    })
+
 //sales initialpayment from homepage
 this.firestore.collection('leads').get().toPromise().then(async snap => {
   snap.docs.forEach(async doc => {
@@ -797,35 +937,18 @@ if (element['purchasedate'] != undefined) {
 });
 this.ngAfterViewInit();
 });
-//total amount ad spend
-    this.firestore.collection('adsinsight').get().toPromise().then(snap => {
-      for (let i = 0; i < snap.docs.length; i++) {
-        const element:any = snap.docs[i].data();
-       
-        if (element['docdate'] != undefined ){
 
-          let datestring = new Date(new Date(element['docdate'].toDate()).getTime() + 330 * 60000).toISOString().substring(0,10)
-          this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || {};
-          this.outputTableStructure[datestring]['date'] =  datestring;
-          this.outputTableStructure[datestring]['amountSpend'] = this.outputTableStructure[datestring]['amountSpend'] != undefined || null ? this.outputTableStructure[datestring]['amountSpend'] + element['amountSpend'] :  element['amountSpend'];
-          if(!this.tableData.includes(datestring)){
-            this.tableData.push(datestring)
-          }
-        }
-      }
-      this.ngAfterViewInit()
-    });
 
-    this.firestore.collection('leads').get().toPromise().then(snap => {
-      for (let i = 0; i < snap.docs.length; i++) {
-        const element:any = snap.docs[0].data();
+    // this.firestore.collection('leads').get().toPromise().then(snap => {
+    //   for (let i = 0; i < snap.docs.length; i++) {
+    //     const element:any = snap.docs[0].data();
 
-         //const date = new Date(element['purchasedate']['_seconds'] * 1000);
-         const date = new firebase.firestore.Timestamp(element['purchasedate']['_seconds'],element['purchasedate']['_nanoseconds'] )
-         console.log('date',date,element['email'],element['purchasedate'],element['converteddate'])
-        break;
-      }
-    });
+    //      //const date = new Date(element['purchasedate']['_seconds'] * 1000);
+    //      const date = new firebase.firestore.Timestamp(element['purchasedate']['_seconds'],element['purchasedate']['_nanoseconds'] )
+    //      console.log('date',date,element['email'],element['purchasedate'],element['converteddate'])
+    //     break;
+    //   }
+    // });
 
    }
    getFormattedDate(timestamp): string {
