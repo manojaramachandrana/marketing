@@ -9,14 +9,21 @@ import { MatDialogRef } from '@angular/material/dialog';
   styleUrls: ['./conversion-dialog.component.css']
 })
 export class ConversionDialogComponent implements OnInit {
-  displayedColumns: string[] = [ 'name', 'email','phone', 'daydifference', 'createddate', 'converteddate', 'url'];
+  displayedColumns: string[] = [ 'name', 'email','phone','product', 'daydifference', 'createddate', 'converteddate', 'url'];
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<ConversionDialogComponent>) {}
 
   ngOnInit(): void {
   }
+
+  extractUTMParam(url: string, param: string): string {
+    const urlParams = new URLSearchParams(new URL(url).search);
+    return urlParams.get(param) || 'N/A'; 
+  }
+  
+  
   onClose(): void {
     this.dialogRef.close();
   }
-
+ 
 }

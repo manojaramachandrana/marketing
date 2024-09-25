@@ -1038,3 +1038,207 @@ haveSameProperties(item1: FacebookData, item2: FacebookData): boolean {
   }
 
 }
+
+// import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+// import { AngularFirestore } from '@angular/fire/firestore';
+// import { MatTableDataSource } from '@angular/material/table';
+// import { MatPaginator } from '@angular/material/paginator';
+// import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
+// import { Observable, Subject } from 'rxjs';
+// import { combineLatest, takeUntil } from 'rxjs/operators';
+// import firebase from 'firebase/app';
+// import 'firebase/firestore';
+
+// interface FacebookData {
+//   campaignSets: any;
+//   campaignBudget: any;
+//   campaignId: any;
+//   campaignName: string;
+//   campaignActive: number;
+//   docDate: firebase.firestore.Timestamp;
+//   adsets: AdsetType[];
+//   adaccount: string;
+// }
+
+// interface AdsetType {
+//   adaccount: string | null;
+//   adsetBudget: any;
+//   adsetName: any;
+//   adName: string;
+//   ads: AdType[];
+// }
+
+// interface AdType {
+//   adId: string;
+//   adName: string;
+//   insights: InsightType[];
+// }
+
+// interface InsightType {
+//   reach: string;
+//   impressions: string;
+//   frequency: string;
+//   amountSpend: string;
+//   videoPlays25: string;
+//   videoPlays50: string;
+//   videoPlays75: string;
+//   videoPlays100: string;
+//   videoPlayActions: string;
+// }
+
+// interface FacebookSet {
+//   formattedDate: string;
+//   campaignSets: FacebookData[];
+// }
+
+// @Component({
+//   selector: 'app-fb-data',
+//   templateUrl: './fb-data.component.html',
+//   styleUrls: ['./fb-data.component.css'],
+//   changeDetection: ChangeDetectionStrategy.OnPush,
+// })
+// export class FbDataComponent implements OnInit, OnDestroy {
+//   private ngUnsubscribe = new Subject<void>();
+//   dataSource = new MatTableDataSource<FacebookData>();
+//   facebookset: FacebookSet[] = [];
+//   selectedStartDate: Date | null = null;
+//   selectedEndDate: Date | null = null;
+//   form: FormGroup;
+
+//   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
+
+//   constructor(private firestore: AngularFirestore, private fb: FormBuilder) {
+//     this.form = this.fb.group({
+//       daterange: this.fb.group({
+//         start: new FormControl(),
+//         end: new FormControl(),
+//       }),
+//     });
+//   }
+
+//   ngOnInit(): void {
+//     this.fetchData();
+//     this.setupForm();
+//   }
+
+//   ngOnDestroy(): void {
+//     this.ngUnsubscribe.next();
+//     this.ngUnsubscribe.complete();
+//   }
+
+//   private setupForm(): void {
+//     const dateRange = this.form.get('daterange');
+//     dateRange?.get('start')?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((date: Date) => {
+//       this.selectedStartDate = date;
+//       this.applyDateRangeFilter();
+//     });
+
+//     dateRange?.get('end')?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((date: Date) => {
+//       this.selectedEndDate = date;
+//       this.applyDateRangeFilter();
+//     });
+//   }
+
+//   private fetchData(): void {
+//     // Fetching all required data at once
+//     const facebookAdsData$ = this.firestore.collection<FacebookData>('facebookadsdata').valueChanges();
+//     const entries$ = this.firestore.collection<any>('entries').valueChanges();
+//     const lylregistration$ = this.firestore.collection<any>('lylregistration').valueChanges();
+
+//     // Merging all data streams
+//     combineLatest([facebookAdsData$, entries$, lylregistration$])
+//       .pipe(takeUntil(this.ngUnsubscribe))
+//       .subscribe(([facebookAdsData, entriesData, lylregistrationData]) => {
+//         this.processData(facebookAdsData);
+//         // Further processing of entriesData and lylregistrationData if needed...
+//       });
+//   }
+
+//   private processData(facebookAdsData: FacebookData[]): void {
+//     this.facebookset = this.groupFacebookDataByFormattedDate(facebookAdsData);
+//     this.dataSource.data = this.facebookset;
+//     this.dataSource.paginator = this.paginator;
+//   }
+
+//   private groupFacebookDataByFormattedDate(data: FacebookData[]): FacebookSet[] {
+//     const groupedData: FacebookSet[] = [];
+
+//     data.forEach(item => {
+//       if (item.docDate && item.campaignActive !== 0) {
+//         const formattedDate = this.getFormattedDate(item.docDate);
+//         const existingSet = groupedData.find(set => set.formattedDate === formattedDate);
+
+//         if (existingSet) {
+//           if (!existingSet.campaignSets.some(existingItem => this.haveSameCampaignId(existingItem, item) && this.haveSameProperties(existingItem, item))) {
+//             existingSet.campaignSets.push(item);
+//           }
+//         } else {
+//           groupedData.push({ formattedDate, campaignSets: [item] });
+//         }
+//       }
+//     });
+
+//     // Optimize removal of duplicate sets
+//     this.removeDuplicateSets(groupedData);
+//     return groupedData;
+//   }
+
+//   private removeDuplicateSets(groupedData: FacebookSet[]): void {
+//     for (let i = 0; i < groupedData.length; i++) {
+//       const currentSet = groupedData[i];
+
+//       for (let j = i + 1; j < groupedData.length; j++) {
+//         const nextSet = groupedData[j];
+        
+//         if (this.haveSameSets(currentSet, nextSet)) {
+//           groupedData.splice(j, 1);
+//           j--; // Adjust index after removal
+//         }
+//       }
+//     }
+//   }
+
+//   private haveSameSets(set1: FacebookSet, set2: FacebookSet): boolean {
+//     return set1.campaignSets.every(currentCampaignSet => 
+//       set2.campaignSets.some(nextCampaignSet => 
+//         this.haveSameCampaignId(currentCampaignSet, nextCampaignSet) &&
+//         this.haveSameProperties(currentCampaignSet, nextCampaignSet)
+//       )
+//     );
+//   }
+
+//   private haveSameCampaignId(set1: FacebookData, set2: FacebookData): boolean {
+//     return set1.campaignId === set2.campaignId;
+//   }
+
+//   private haveSameProperties(item1: FacebookData, item2: FacebookData): boolean {
+//     return (
+//       item1.campaignName === item2.campaignName &&
+//       this.compareArrays(item1.adsets.map(adset => adset.adsetName), item2.adsets.map(adset => adset.adsetName)) &&
+//       this.compareArrays(
+//         item1.adsets.flatMap(adset => adset.ads.map(ad => ad.adName)), 
+//         item2.adsets.flatMap(adset => adset.ads.map(ad => ad.adName))
+//       ) &&
+//       this.compareArrays(item1.adsets.map(adset => adset.adsetBudget), item2.adsets.map(adset => adset.adsetBudget)) &&
+//       item1.campaignBudget === item2.campaignBudget
+//     );
+//   }
+
+//   private compareArrays(arr1: any[], arr2: any[]): boolean {
+//     return arr1.length === arr2.length && arr1.every((value, index) => value === arr2[index]);
+//   }
+
+//   private applyDateRangeFilter(): void {
+//     const startDate = this.selectedStartDate?.getTime() || 0;
+//     const endDate = this.selectedEndDate ? this.selectedEndDate.getTime() + 86400000 : Date.now(); // +1 day for inclusive end
+
+//     this.dataSource.filter = this.facebookset.filter(set => {
+//       const setDate = new Date(set.formattedDate).getTime();
+//       return setDate >= startDate && setDate <= endDate;
+//     });
+//   }
+
+//   private getFormattedDate(timestamp: firebase.firestore.Timestamp): string {
+//     return new Date(timestamp.seconds * 1000).toLocaleDateString(); // Example formatting
+//   }
+// }

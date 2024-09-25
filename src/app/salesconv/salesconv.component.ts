@@ -13,6 +13,7 @@ interface CampaignData {
   month: string;
   leads: number;
   sales: number;
+  salesArray: any[];
   conversion30: number;
   conversion60: number;
   conversion90: number;
@@ -90,20 +91,33 @@ export class SalesconvComponent implements OnInit {
   async processLeadsCollection(): Promise<void> {
     try {
       const snap = await this.firestore.collection('leads').get().toPromise();
+      const entriesMap = new Map<string, { createddate: Date, url: string }>();
+  
+      const entriesSnapshot = await this.firestore.collection('entries').get().toPromise();
+      entriesSnapshot.docs.forEach((doc: any) => {
+        const element = doc.data();
+        const email = element['email'];
+        const createdDate = this.convertToDate(element['createddate']);
+        const url = element['url'] || '';
+  
+        if (email && createdDate) {
+          entriesMap.set(email, { createddate: createdDate, url });
+        }
+      });
+  
       snap.docs.forEach((doc: any) => {
         const element = doc.data();
-        // const date = 
-        // this.convertToDate(element['purchasedate'])
-        
-        const date = this.convertToDate(element['converteddate']);
-
-        if (date) {
-          const monthYear = this.formatDateToMonthYear(date);
+        const convertedDate = this.convertToDate(element['converteddate']);
+        const email = element['email'];
+  
+        if (convertedDate) {
+          const monthYear = this.formatDateToMonthYear(convertedDate);
           if (!this.outputTableStructure[monthYear]) {
             this.outputTableStructure[monthYear] = {
               month: monthYear,
               sales: 0,
               leads: 0,
+              salesArray: [],
               conversion30: 0,
               conversion60: 0,
               conversion90: 0,
@@ -118,7 +132,25 @@ export class SalesconvComponent implements OnInit {
               conversion360conv: []
             };
           }
-          this.outputTableStructure[monthYear]['sales'] =  this.outputTableStructure[monthYear]['sales'] + 1;
+  
+          const entryDetails = entriesMap.get(email);
+          const createdDate = entryDetails ? entryDetails.createddate : null;
+          const url = entryDetails ? entryDetails.url : '';
+          
+          const dayDifference = createdDate ? Math.floor((convertedDate.getTime() - createdDate.getTime()) / (1000 * 60 * 60 * 24)) : null;
+  
+          this.outputTableStructure[monthYear]['sales']++;
+          this.outputTableStructure[monthYear]['salesArray'].push({
+            email: email,
+            name: element['name'],
+            phone: element['mobile'],
+            product: element['journeyname'],
+            converteddate: convertedDate,
+            createddate: createdDate, 
+            url: url, 
+            daydifference: dayDifference 
+          });
+  
           if (!this.tableData.includes(monthYear)) {
             this.tableData.push(monthYear);
           }
@@ -128,6 +160,57 @@ export class SalesconvComponent implements OnInit {
       console.error('Error fetching leads data:', error);
     }
   }
+  
+
+  // async processLeadsCollection(): Promise<void> {
+  //   try {
+  //     const snap = await this.firestore.collection('leads').get().toPromise();
+  //     snap.docs.forEach((doc: any) => {
+  //       const element = doc.data();
+  //       // const date = 
+  //       // this.convertToDate(element['purchasedate'])
+        
+  //       const date = this.convertToDate(element['converteddate']);
+
+  //       if (date) {
+  //         const monthYear = this.formatDateToMonthYear(date);
+  //         if (!this.outputTableStructure[monthYear]) {
+  //           this.outputTableStructure[monthYear] = {
+  //             month: monthYear,
+  //             sales: 0,
+  //             leads: 0,
+  //             salesArray: [],
+  //             conversion30: 0,
+  //             conversion60: 0,
+  //             conversion90: 0,
+  //             conversion120: 0,
+  //             conversion240: 0,
+  //             conversion360: 0,
+  //             conversion30conv: [],
+  //             conversion60conv: [],
+  //             conversion90conv: [],
+  //             conversion120conv: [],
+  //             conversion240conv: [],
+  //             conversion360conv: []
+  //           };
+  //         }
+  //         this.outputTableStructure[monthYear]['sales'] =  this.outputTableStructure[monthYear]['sales'] + 1;
+  //         this.outputTableStructure[monthYear]['salesArray'].push({
+  //           email: element['email'],
+  //           name: element['name'],
+  //           phone: element['mobile'],
+  //           product: element['journeyname'],
+  //           converteddate: date
+  //         });
+  //         if (!this.tableData.includes(monthYear)) {
+  //           this.tableData.push(monthYear);
+  //         }
+  //       }
+  //     });
+  //   } catch (error) {
+  //     console.error('Error fetching leads data:', error);
+  //   }
+  // }
 
   async processCollection(collectionName: string, dateField: string): Promise<void> {
     try {
@@ -215,6 +298,7 @@ export class SalesconvComponent implements OnInit {
         const email = element['email'];
         const name = element['name'] || ''; 
         const phone = element['mobile'] || '';
+        const product = element['journeyname'] || '';
         const convertedDate: Date | null = this.convertToDate(element['converteddate']);
   
         if (convertedDate) {
@@ -259,6 +343,7 @@ export class SalesconvComponent implements OnInit {
                     email,
                     name,
                     phone,
+                    product,
                     daydifference: diffDays,
                     url, 
                     createddate: entryDate.toISOString(),
@@ -270,6 +355,7 @@ export class SalesconvComponent implements OnInit {
                     email,
                     name,
                     phone,
+                    product,
                     daydifference: diffDays,
                     url, 
                     createddate: entryDate.toISOString(),
@@ -281,6 +367,7 @@ export class SalesconvComponent implements OnInit {
                     email,
                     name,
                     phone,
+                    product,
                     daydifference: diffDays,
                     url, 
                     createddate: entryDate.toISOString(),
@@ -292,6 +379,7 @@ export class SalesconvComponent implements OnInit {
                     email,
                     name,
                     phone,
+                    product,
                     daydifference: diffDays,
                     url, 
                     createddate: entryDate.toISOString(),
@@ -303,6 +391,7 @@ export class SalesconvComponent implements OnInit {
                     email,
                     name,
                     phone,
+                    product,
                     daydifference: diffDays,
                     url, 
                     createddate: entryDate.toISOString(),
@@ -314,6 +403,7 @@ export class SalesconvComponent implements OnInit {
                     email,
                     name,
                     phone,
+                    product,
                     daydifference: diffDays,
                     url, 
                     createddate: entryDate.toISOString(),
@@ -333,7 +423,10 @@ export class SalesconvComponent implements OnInit {
 
   onRowClick(row: any, conversion: any): void {
     let conversionData = [];
-    
+
+    if ( conversion === 'sales') {
+      if (row.salesArray) conversionData = conversionData.concat(row.salesArray);
+    }
     if (conversion.includes('30')) {
       if (row.conversion30conv) conversionData = conversionData.concat(row.conversion30conv);
     }
