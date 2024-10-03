@@ -9,7 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrls: ['./salesdialog.component.css']
 })
 export class SalesdialogComponent implements OnInit {
-  displayedColumns: string[] = ['name', 'email', 'mobile', 'purchaseDate', 'totalPurchaseValue', 'initialPayment'];
+  displayedColumns: string[] = ['name', 'email', 'mobile','product', 'purchaseDate', 'totalPurchaseValue', 'initialPayment'];
 
   constructor( @Inject(MAT_DIALOG_DATA) public data: { leads: any[] }) { }
 

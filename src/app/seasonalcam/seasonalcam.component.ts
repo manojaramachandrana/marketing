@@ -138,6 +138,7 @@ export class SeasonalcamComponent implements OnInit {
                   name: leadElement['name'],
                   email: leadElement['email'],
                   mobile: leadElement['mobile'],
+                  product: leadElement['journeyname'],
                   purchaseDate: purchaseDate,
                   totalPurchaseValue: leadElement['totalpurchasevalue'],
                   initialPayment: leadElement['initialpayment']
