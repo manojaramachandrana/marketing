@@ -50,6 +50,9 @@ import { SeasonalcamComponent } from './seasonalcam/seasonalcam.component';
 import { SalesdialogComponent } from './salesdialog/salesdialog.component';
 import { SalesconvComponent } from './salesconv/salesconv.component';
 import { ConversionDialogComponent } from './conversion-dialog/conversion-dialog.component';
+import { LeadsconvComponent } from './leadsconv/leadsconv.component';
+import { LeadconvDialogComponent } from './leadconv-dialog/leadconv-dialog.component';
+import { CampaignanalyticsComponent } from './campaignanalytics/campaignanalytics.component';
 
 @NgModule({
   declarations: [
@@ -73,6 +76,9 @@ import { ConversionDialogComponent } from './conversion-dialog/conversion-dialog
     SalesdialogComponent,
     SalesconvComponent,
     ConversionDialogComponent,
+    LeadsconvComponent,
+    LeadconvDialogComponent,
+    CampaignanalyticsComponent,
   ],
   imports: [
     BrowserModule,

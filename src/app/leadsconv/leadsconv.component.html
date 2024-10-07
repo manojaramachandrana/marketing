@@ -1,0 +1,102 @@
+<div class="filter-container">
+    <form [formGroup]="form">
+      <mat-form-field>
+        <mat-label>Enter a date range</mat-label>
+        <mat-date-range-input [rangePicker]="picker" formGroupName="daterange">
+          <input matStartDate placeholder="Start date" formControlName="start" />
+          <input matEndDate placeholder="End date" formControlName="end" />
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+  
+      <button mat-button (click)="onSubmit()">Search</button>
+    </form>
+  </div>
+  
+  <div *ngIf="form.get('daterange.start').value && form.get('daterange.end').value && isSearchClicked" class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" id="exampleTable" matSort matSortActive="created" matSortDisableClear matSortDirection="desc">
+      
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Date</th>
+        <td mat-cell *matCellDef="let row">{{ row }}</td>
+      </ng-container>
+  
+      <ng-container matColumnDef="lylreg">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>LYLRegistration</th>
+        <td mat-cell *matCellDef="let row"  (click)="onRowClick(outputTableStructure[row],'lylregistered')">
+          {{ outputTableStructure[row] && outputTableStructure[row]['lylregister'] !== undefined
+              ? (outputTableStructure[row]['lylregister'] == 0 ? '-' : outputTableStructure[row]['lylregister'])
+              : '-' }}
+        </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="lylattend">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>LYLAttended</th>
+        <td mat-cell *matCellDef="let row" (click)="onRowClick(outputTableStructure[row],'lylattend')">
+          {{ outputTableStructure[row] != undefined
+              ? outputTableStructure[row]['lylattended'] != undefined
+                ? outputTableStructure[row]['lylattended'] == 0
+                  ? '-'
+                  : outputTableStructure[row]['lylattended']
+                : '-'
+              : '-' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="lylattendedtoday">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>LYLAttendedToday</th>
+        <td mat-cell *matCellDef="let row" (click)="onRowClick(outputTableStructure[row],'lylattendedtoday')">
+          {{ outputTableStructure[row] != undefined
+              ? outputTableStructure[row]['lylattendedtoday'] != undefined
+                ? outputTableStructure[row]['lylattendedtoday'] == 0
+                  ? '-'
+                  : outputTableStructure[row]['lylattendedtoday']
+                : '-'
+              : '-' }}
+        </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="lylcomwat">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>LYLCompleteWatch</th>
+        <td mat-cell *matCellDef="let row"  (click)="onRowClick(outputTableStructure[row],'lylcomwat')">
+          {{ outputTableStructure[row] != undefined
+              ? outputTableStructure[row]['lylcomwat'] != undefined
+                ? outputTableStructure[row]['lylcomwat'] == 0
+                  ? '-'
+                  : outputTableStructure[row]['lylcomwat']
+                : '-'
+              : '-' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="lylcomwattoday">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>LYLCompleteWatchToday</th>
+        <td mat-cell *matCellDef="let row" (click)="onRowClick(outputTableStructure[row],'lylcomwattoday')">
+          {{ outputTableStructure[row] != undefined
+              ? outputTableStructure[row]['lylcomwattoday'] != undefined
+                ? outputTableStructure[row]['lylcomwattoday'] == 0
+                  ? '-'
+                  : outputTableStructure[row]['lylcomwattoday']
+                : '-'
+              : '-' }}
+        </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="lylapplied">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>LYLApplication</th>
+        <td mat-cell *matCellDef="let row" (click)="onRowClick(outputTableStructure[row],'lylapplied')">{{ outputTableStructure[row] != undefined ? outputTableStructure[row]['lylapplied'] != undefined ? outputTableStructure[row]['lylapplied'] == 0 ? '-': outputTableStructure[row]['lylapplied'] : '-' : '-'}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="lylappliedtoday">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>LYLApplicationToday</th>
+        <td mat-cell *matCellDef="let row" (click)="onRowClick(outputTableStructure[row],'lylappliedtoday')">{{ outputTableStructure[row] != undefined ? outputTableStructure[row]['lylappliedtoday'] != undefined ? outputTableStructure[row]['lylappliedtoday'] == 0 ? '-': outputTableStructure[row]['lylappliedtoday'] : '-' : '-'}} </td>
+      </ng-container>
+  
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  
+    <!-- <mat-paginator #paginator [pageSizeOptions]="[10, 25, 50, 75, 100, tableData.length]" [pageSize]="pageSize" aria-label="Select page of users"></mat-paginator> -->
+  </div>
+  

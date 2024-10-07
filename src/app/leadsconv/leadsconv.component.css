@@ -11,10 +11,9 @@ table{
     font-weight: bolder;
   }
 
-  .mat-cell {
+  .mat-cell{
     text-align: center;
   }
-
 .filter-container {
     display: flex;
     align-items: center; 

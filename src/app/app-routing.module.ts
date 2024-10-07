@@ -19,6 +19,8 @@ import { SeasonalcamComponent } from './seasonalcam/seasonalcam.component';
 import { SalesdialogComponent } from './salesdialog/salesdialog.component';
 import { SalesconvComponent } from './salesconv/salesconv.component';
 import { ConversionDialogComponent } from './conversion-dialog/conversion-dialog.component';
+import { LeadsconvComponent } from './leadsconv/leadsconv.component';
+import { CampaignanalyticsComponent } from './campaignanalytics/campaignanalytics.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -40,7 +42,9 @@ const routes: Routes = [
   { path: 'seasonalcampaign', component: SeasonalcamComponent},
   { path: 'salesdialog', component: SalesdialogComponent},
   { path: 'salesconv', component: SalesconvComponent},
-  { path: 'conversiondialog', component: ConversionDialogComponent}
+  { path: 'conversiondialog', component: ConversionDialogComponent},
+  { path: 'leadsconv', component: LeadsconvComponent},
+  { path: 'campaignanalytics', component: CampaignanalyticsComponent}
 
 ];
 

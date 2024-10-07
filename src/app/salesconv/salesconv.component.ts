@@ -8,19 +8,22 @@ import {MatSort} from '@angular/material/sort';
 import { ConversionDialogComponent } from '../conversion-dialog/conversion-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 
-
 interface CampaignData {
   month: string;
   leads: number;
   sales: number;
   salesArray: any[];
+  conversion20: number;
+  conversion45: number;
   conversion30: number;
   conversion60: number;
   conversion90: number;
   conversion120: number;
   conversion240: number;
   conversion360: number;
+  conversion20conv: any[];
   conversion30conv: any[];
+  conversion45conv: any[];
   conversion60conv: any[];
   conversion90conv: any[];
   conversion120conv: any[];
@@ -35,7 +38,7 @@ interface CampaignData {
 })
 export class SalesconvComponent implements OnInit {
   dataSource = new MatTableDataSource<CampaignData>();
-  displayedColumns: string[] = ['month', 'leads', 'sales', 'conversion30', 'conversion60', 'conversion90','conversion120', 'conversion240', 'conversion360',];
+  displayedColumns: string[] = ['month', 'leads', 'sales','conversion20', 'conversion30','conversion45', 'conversion60', 'conversion90','conversion120', 'conversion240', 'conversion360',];
   outputTableStructure:any = {};
   tableData: any[] = [];
 
@@ -62,8 +65,6 @@ export class SalesconvComponent implements OnInit {
   ngOnInit(): void {
     this.fetchAndProcessSalesData();
   }
-
-
 
   async fetchAndProcessSalesData(): Promise<void> {
     try {
@@ -118,13 +119,17 @@ export class SalesconvComponent implements OnInit {
               sales: 0,
               leads: 0,
               salesArray: [],
+              conversion20:0,
               conversion30: 0,
+              conversion45:0,
               conversion60: 0,
               conversion90: 0,
               conversion120: 0,
               conversion240: 0,
               conversion360: 0,
+              conversion20conv: [],
               conversion30conv: [],
+              conversion45conv: [],
               conversion60conv: [],
               conversion90conv: [],
               conversion120conv: [],
@@ -238,13 +243,17 @@ export class SalesconvComponent implements OnInit {
             month: monthYear,
             sales: count,
             leads: 0,
+            conversion20:0,
             conversion30: 0,
+            conversion45:0,
             conversion60: 0,
             conversion90: 0,
             conversion120: 0,
             conversion240: 0,
             conversion360: 0,
+            conversion20conv: [],
             conversion30conv: [],
+            conversion45conv: [],
             conversion60conv: [],
             conversion90conv: [],
             conversion120conv: [],
@@ -323,13 +332,17 @@ export class SalesconvComponent implements OnInit {
                     month: entryMonthYear,
                     sales: 0,
                     leads: 0,
+                    conversion20:0,
                     conversion30: 0,
+                    conversion45:0,
                     conversion60: 0,
                     conversion90: 0,
                     conversion120: 0,
                     conversion240: 0,
                     conversion360: 0,
+                    conversion20conv: [],
                     conversion30conv: [],
+                    conversion45conv: [],
                     conversion60conv: [],
                     conversion90conv: [],
                     conversion120conv: [],
@@ -337,7 +350,20 @@ export class SalesconvComponent implements OnInit {
                     conversion360conv: []
                   };
                 }
-                if (diffDays <= 30) {
+               if (diffDays <= 20) {
+                  this.outputTableStructure[entryMonthYear]['conversion20'] += 1;
+                  this.outputTableStructure[entryMonthYear]['conversion20conv'].push({
+                    email,
+                    name,
+                    phone,
+                    product,
+                    daydifference: diffDays,
+                    url, 
+                    createddate: entryDate.toISOString(),
+                    converteddate: convertedDate.toISOString()
+                  });
+                }
+                else if (diffDays <= 30) {
                   this.outputTableStructure[entryMonthYear]['conversion30'] += 1;
                   this.outputTableStructure[entryMonthYear]['conversion30conv'].push({
                     email,
@@ -349,7 +375,20 @@ export class SalesconvComponent implements OnInit {
                     createddate: entryDate.toISOString(),
                     converteddate: convertedDate.toISOString()
                   });
-                } else if (diffDays <= 60) {
+                } else   if (diffDays <= 45) {
+                  this.outputTableStructure[entryMonthYear]['conversion45'] += 1;
+                  this.outputTableStructure[entryMonthYear]['conversion45conv'].push({
+                    email,
+                    name,
+                    phone,
+                    product,
+                    daydifference: diffDays,
+                    url, 
+                    createddate: entryDate.toISOString(),
+                    converteddate: convertedDate.toISOString()
+                  });
+                }
+                else if (diffDays <= 60) {
                   this.outputTableStructure[entryMonthYear]['conversion60'] += 1;
                   this.outputTableStructure[entryMonthYear]['conversion60conv'].push({
                     email,
@@ -427,8 +466,14 @@ export class SalesconvComponent implements OnInit {
     if ( conversion === 'sales') {
       if (row.salesArray) conversionData = conversionData.concat(row.salesArray);
     }
+    if (conversion.includes('20')) {
+      if (row.conversion20conv) conversionData = conversionData.concat(row.conversion20conv);
+    }
     if (conversion.includes('30')) {
       if (row.conversion30conv) conversionData = conversionData.concat(row.conversion30conv);
+    }
+    if (conversion.includes('45')) {
+      if (row.conversion45conv) conversionData = conversionData.concat(row.conversion45conv);
     }
     if (conversion.includes('60')) {
       if (row.conversion60conv) conversionData = conversionData.concat(row.conversion60conv);

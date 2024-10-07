@@ -41,7 +41,10 @@ export class AppComponent implements OnInit{
         this.pageTitle = ' MarkTech North Star'
       } else if ( this.pageTitle === 'seasonalcampaign'){
         this.pageTitle = ' Seasonal Campaign'
-      }else {
+      } else if ( this.pageTitle === 'leadsconv'){
+        this.pageTitle = ' Webinar Analytics'
+      }
+      else {
         this.pageTitle = ''
       }
     });

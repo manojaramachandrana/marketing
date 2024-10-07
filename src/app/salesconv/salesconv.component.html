@@ -18,10 +18,20 @@
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Sales </th>
         <td mat-cell *matCellDef="let row" (click)="onRowClick(row,'sales')">{{ row.sales }}</td>
       </ng-container>
+
+      <ng-container matColumnDef="conversion20">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header > Conversion20 </th>
+        <td mat-cell *matCellDef="let row" (click)="onRowClick(row,'conversion20')">{{ row.conversion20 }}</td>
+      </ng-container>
   
       <ng-container matColumnDef="conversion30">
         <th mat-header-cell *matHeaderCellDef mat-sort-header > Conversion30 </th>
         <td mat-cell *matCellDef="let row" (click)="onRowClick(row,'conversion30')">{{ row.conversion30 }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="conversion45">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header > Conversion45 </th>
+        <td mat-cell *matCellDef="let row" (click)="onRowClick(row,'conversion45')">{{ row.conversion45 }}</td>
       </ng-container>
   
       <ng-container matColumnDef="conversion60">
