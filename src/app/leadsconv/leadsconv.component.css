@@ -11,9 +11,10 @@ table{
     font-weight: bolder;
   }
 
-  .mat-cell{
+  .mat-cell, .mat-footer-cell{
     text-align: center;
   }
+
 .filter-container {
     display: flex;
     align-items: center; 
@@ -53,6 +54,7 @@ table{
     margin: auto;
     font-family: 'Times New Roman', Times, serif;
   }
+  
   .hide{
     display: none;
   }

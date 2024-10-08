@@ -375,6 +375,56 @@ this.firestore.collection('lylapplied').get().toPromise().then(snap => {
 
   }
 
+  getlylregister(): number {
+    if ( !this.tableData.length) {
+      return 0;
+    } 
+    this.data = this.dataSource.data;
+    return (this.data).map(date => this.outputTableStructure[date]?.lylregister || 0).reduce((acc, value) => acc + value, 0);
+  }
+  getlylattend(): number {
+    if ( !this.tableData.length) {
+      return 0;
+    } 
+    this.data = this.dataSource.data;
+    return (this.data).map(date => this.outputTableStructure[date]?.lylattended || 0).reduce((acc, value) => acc + value, 0);
+  }
+  getlylattendedtoday(): number {
+    if ( !this.tableData.length) {
+      return 0;
+    } 
+    this.data = this.dataSource.data;
+    return (this.data).map(date => this.outputTableStructure[date]?.lylattendedtoday || 0).reduce((acc, value) => acc + value, 0);
+  }
+  getlylcomwat(): number {
+    if ( !this.tableData.length) {
+      return 0;
+    } 
+    this.data = this.dataSource.data;
+    return (this.data).map(date => this.outputTableStructure[date]?.lylcomwat || 0).reduce((acc, value) => acc + value, 0);
+  }
+  getlylcomwattoday(): number {
+    if ( !this.tableData.length) {
+      return 0;
+    } 
+    this.data = this.dataSource.data;
+    return (this.data).map(date => this.outputTableStructure[date]?.lylcomwattoday || 0).reduce((acc, value) => acc + value, 0);
+  }
+  getlylapplied(): number {
+    if ( !this.tableData.length) {
+      return 0;
+    } 
+    this.data = this.dataSource.data;
+    return (this.data).map(date => this.outputTableStructure[date]?.lylapplied || 0).reduce((acc, value) => acc + value, 0);
+  }
+  getlylappliedtoday(): number {
+    if ( !this.tableData.length) {
+      return 0;
+    } 
+    this.data = this.dataSource.data;
+    return (this.data).map(date => this.outputTableStructure[date]?.lylappliedtoday || 0).reduce((acc, value) => acc + value, 0);
+  }
+
   onSubmit() {
     if (this.form.value.daterange && this.form.value.daterange.start && this.form.value.daterange.end) {
       this.selectedStartDate = this.form.value.daterange.start;
