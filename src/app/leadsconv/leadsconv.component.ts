@@ -26,7 +26,7 @@ interface TableData {
   styleUrls: ['./leadsconv.component.css']
 })
 export class LeadsconvComponent implements OnInit {
-  displayedColumns: string[] = ['date','lylreg','lylattend','lylcomwat','lylapplied'];
+  displayedColumns: string[] = ['date','lylreg','lyl30mins','lylattend','lylcomwat','lylapplied'];
     //,'lylattendedtoday','lylcomwattoday', 'lylappliedtoday'];
   displayedColumn: string[] = ['date','lylreg'];
   data: any[];
@@ -69,7 +69,8 @@ export class LeadsconvComponent implements OnInit {
               name: element['name'],      
               email: element['email'],    
               phone: element['phone'],     
-              url: element['url']       
+              url: element['url'],
+              date: datestring  
             });
     
           if (!this.tableData.includes(datestring)) {
@@ -82,98 +83,98 @@ export class LeadsconvComponent implements OnInit {
       this.ngAfterViewInit();
     });
 
-    this.firestore.collection('lylwebinarattended').get().toPromise().then(snap => {
-      snap.docs.forEach((doc: any) => {
-        const element = doc.data();
+    // this.firestore.collection('lylwebinarattended').get().toPromise().then(snap => {
+    //   snap.docs.forEach((doc: any) => {
+    //     const element = doc.data();
         
-        if (element['entrydate'] != undefined) {
-          let datestring = new Date(new Date(element['entrydate'].toDate()).getTime() + 330 * 60000)
-            .toISOString()
-            .substring(0, 10);
+    //     if (element['entrydate'] != undefined) {
+    //       let datestring = new Date(new Date(element['entrydate'].toDate()).getTime() + 330 * 60000)
+    //         .toISOString()
+    //         .substring(0, 10);
 
-          this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || {};
-          this.outputTableStructure[datestring]['date'] = datestring;
-          this.outputTableStructure[datestring]['lylattendedtoday'] = this.outputTableStructure[datestring]['lylattendedtoday'] != undefined
-            ? this.outputTableStructure[datestring]['lylattendedtoday'] + 1
-            : 1;
-            this.outputTableStructure[datestring]['lylattendedtodaylead'] = this.outputTableStructure[datestring]['lylattendedtodaylead'] || [];
-            this.outputTableStructure[datestring]['lylattendedtodaylead'].push({
-              name: element['name'],      
-              email: element['email'],    
-              phone: element['phone'],           
-            });
+    //       this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || {};
+    //       this.outputTableStructure[datestring]['date'] = datestring;
+    //       this.outputTableStructure[datestring]['lylattendedtoday'] = this.outputTableStructure[datestring]['lylattendedtoday'] != undefined
+    //         ? this.outputTableStructure[datestring]['lylattendedtoday'] + 1
+    //         : 1;
+    //         this.outputTableStructure[datestring]['lylattendedtodaylead'] = this.outputTableStructure[datestring]['lylattendedtodaylead'] || [];
+    //         this.outputTableStructure[datestring]['lylattendedtodaylead'].push({
+    //           name: element['name'],      
+    //           email: element['email'],    
+    //           phone: element['phone'],           
+    //         });
 
-          if (!this.tableData.includes(datestring)) {
-            this.tableData.push(datestring);
-          }
-        }
-      });
+    //       if (!this.tableData.includes(datestring)) {
+    //         this.tableData.push(datestring);
+    //       }
+    //     }
+    //   });
 
-      this.ngAfterViewInit();
-    });
+    //   this.ngAfterViewInit();
+    // });
 
     //lyl webinar complete watch
-this.firestore.collection('lylwebcompletewatch').get().toPromise().then(snap => {
-  snap.docs.forEach((doc: any) => {
-    const element = doc.data();
+// this.firestore.collection('lylwebcompletewatch').get().toPromise().then(snap => {
+//   snap.docs.forEach((doc: any) => {
+//     const element = doc.data();
 
-    if (element['entrydate'] != undefined) {
-      let datestring = new Date(new Date(element['entrydate'].toDate()).getTime() + 330 * 60000)
-        .toISOString()
-        .substring(0, 10);
+//     if (element['entrydate'] != undefined) {
+//       let datestring = new Date(new Date(element['entrydate'].toDate()).getTime() + 330 * 60000)
+//         .toISOString()
+//         .substring(0, 10);
 
-      this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || {};
-      this.outputTableStructure[datestring]['date'] = datestring;
-      this.outputTableStructure[datestring]['lylcomwattoday'] = this.outputTableStructure[datestring]['lylcomwattoday'] != undefined
-        ? this.outputTableStructure[datestring]['lylcomwattoday'] + 1
-        : 1;
-        this.outputTableStructure[datestring]['lylcomwattodaylead'] = this.outputTableStructure[datestring]['lylcomwattodaylead'] || [];
-        this.outputTableStructure[datestring]['lylcomwattodaylead'].push({
-          name: element['name'],      
-          email: element['email'],    
-          phone: element['phone'],           
-        });
+//       this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || {};
+//       this.outputTableStructure[datestring]['date'] = datestring;
+//       this.outputTableStructure[datestring]['lylcomwattoday'] = this.outputTableStructure[datestring]['lylcomwattoday'] != undefined
+//         ? this.outputTableStructure[datestring]['lylcomwattoday'] + 1
+//         : 1;
+//         this.outputTableStructure[datestring]['lylcomwattodaylead'] = this.outputTableStructure[datestring]['lylcomwattodaylead'] || [];
+//         this.outputTableStructure[datestring]['lylcomwattodaylead'].push({
+//           name: element['name'],      
+//           email: element['email'],    
+//           phone: element['phone'],           
+//         });
 
-      if (!this.tableData.includes(datestring)) {
-        this.tableData.push(datestring);
-      }
-    }
-  });
+//       if (!this.tableData.includes(datestring)) {
+//         this.tableData.push(datestring);
+//       }
+//     }
+//   });
 
-  this.ngAfterViewInit();
-});
+//   this.ngAfterViewInit();
+// });
 
 //lyl application
-this.firestore.collection('lylapplied').get().toPromise().then(snap => {
-  snap.docs.forEach((doc: any) => {
-    const element = doc.data();
+// this.firestore.collection('lylapplied').get().toPromise().then(snap => {
+//   snap.docs.forEach((doc: any) => {
+//     const element = doc.data();
     
-    if (element['entrydate'] != undefined) {
-      let datestring = new Date(new Date(element['entrydate'].toDate()).getTime() + 330 * 60000)
-        .toISOString()
-        .substring(0, 10);
+//     if (element['entrydate'] != undefined) {
+//       let datestring = new Date(new Date(element['entrydate'].toDate()).getTime() + 330 * 60000)
+//         .toISOString()
+//         .substring(0, 10);
 
-      this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || {};
-      this.outputTableStructure[datestring]['date'] = datestring;
-      this.outputTableStructure[datestring]['lylappliedtoday'] = this.outputTableStructure[datestring]['lylappliedtoday'] != undefined 
-        ? this.outputTableStructure[datestring]['lylappliedtoday'] + 1 
-        : 1;
-        this.outputTableStructure[datestring]['lylappliedtodaylead'] = this.outputTableStructure[datestring]['lylappliedtodaylead'] || [];
+//       this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || {};
+//       this.outputTableStructure[datestring]['date'] = datestring;
+//       this.outputTableStructure[datestring]['lylappliedtoday'] = this.outputTableStructure[datestring]['lylappliedtoday'] != undefined 
+//         ? this.outputTableStructure[datestring]['lylappliedtoday'] + 1 
+//         : 1;
+//         this.outputTableStructure[datestring]['lylappliedtodaylead'] = this.outputTableStructure[datestring]['lylappliedtodaylead'] || [];
 
-        this.outputTableStructure[datestring]['lylappliedtodaylead'].push({
-          name: element['name'],      
-          email: element['email'],    
-          phone: element['phone'],           
-        });
+//         this.outputTableStructure[datestring]['lylappliedtodaylead'].push({
+//           name: element['name'],      
+//           email: element['email'],    
+//           phone: element['phone'],           
+//         });
 
-      if (!this.tableData.includes(datestring)) {
-        this.tableData.push(datestring);
-      }
-    }
-  });
+//       if (!this.tableData.includes(datestring)) {
+//         this.tableData.push(datestring);
+//       }
+//     }
+//   });
 
-  this.ngAfterViewInit();
-});
+//   this.ngAfterViewInit();
+// });
 
     this.firestore.collection('lylregistration').get().toPromise().then(async snap => {
       snap.docs.forEach(async doc => {
@@ -195,18 +196,22 @@ this.firestore.collection('lylapplied').get().toPromise().then(snap => {
 
           let m = 'false';
           let a,b,c;
-          let leadDetails: { name?: string, email?: string, phone?: string } = {};
+          let leadDetails: { name?: string, email?: string, phone?: string , date?: string} = {};
 
           let webinarSnap = await this.firestore.collection('lylwebinarattended').get().toPromise();
           webinarSnap.docs.forEach(webinarDoc => {
             const webinarElement = webinarDoc.data();
             let webinaremail = webinarElement['email'].trim();
             if (webinarElement['entrydate'] != undefined && webinarElement['entrydate'] >= date && webinaremail == email) {
+              const dateelement = new Date(new Date(webinarElement['entrydate'].toDate()).getTime() + 330 * 60000)
+              .toISOString()
+              .substring(0, 10);
               m = 'true';
               leadDetails = {
                 name: webinarElement['name'],
                 email: webinarElement['email'],
-                phone: webinarElement['phone']
+                phone: webinarElement['phone'],
+                date: dateelement,
               };
             }
           });
@@ -246,18 +251,77 @@ this.firestore.collection('lylapplied').get().toPromise().then(snap => {
     
           let m = 'false';
           let a,b,c;
-          let leadDetails: { name?: string, email?: string, phone?: string } = {};
+          let leadDetails: { name?: string, email?: string, phone?: string, date?: string } = {};
+    
+          let webinarSnap = await this.firestore.collection('lylweb30minswatch').get().toPromise();
+          webinarSnap.docs.forEach(webinarDoc => {
+            const webinarElement = webinarDoc.data();
+            let webinaremail = webinarElement['email'].trim();
+            if (webinarElement['entrydate'] != undefined && webinarElement['entrydate'] >= date && webinaremail == email) {
+              const dateelement = new Date(new Date(webinarElement['entrydate'].toDate()).getTime() + 330 * 60000)
+              .toISOString()
+              .substring(0, 10);
+              m = 'true';
+              leadDetails = {
+                name: webinarElement['name'],
+                email: webinarElement['email'],
+                phone: webinarElement['phone'],
+                date: dateelement
+              };
+            }
+          });
+    
+          if (m == 'true') {
+            this.outputTableStructure[datestring]['lylwatch30'] = this.outputTableStructure[datestring]['lylwatch30'] != undefined ? this.outputTableStructure[datestring]['lylwatch30'] + 1 : 1;
+            this.outputTableStructure[datestring]['lylwatch30lead'] = this.outputTableStructure[datestring]['lylwatch30lead'] || [];
+            this.outputTableStructure[datestring]['lylwatch30lead'].push(leadDetails);
+            if (!this.tableData.includes(datestring)) {
+              this.tableData.push(datestring);
+            }
+          }
+        }
+      });
+      // console.log('lylnf', this.outputTableStructure);
+      // console.log('tabnf', this.tableData);
+      this.ngAfterViewInit();
+    });
+
+    this.firestore.collection('lylregistration').get().toPromise().then(async snap => {
+      snap.docs.forEach(async doc => {
+        const element = doc.data();
+    
+        this.maplylregistration[element['entrydata']] = element;
+    
+        Object.keys(this.maplylregistration).forEach(key => {
+          //console.log(element[element['entrydata']]);
+        });
+    
+        if (element['entrydata'] != undefined && element['event'] == 'lylregistration') {
+    
+          let email = element['email'];
+          let date = element['entrydata'];
+          let datestring = new Date(new Date(element['entrydata'].toDate()).getTime() + 330 * 60000).toISOString().substring(0, 10);
+          this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || { date: "", lylcomwat: 0, lylcomwatleads: [] };
+          this.outputTableStructure[datestring]['date'] = datestring;
+    
+          let m = 'false';
+          let a,b,c;
+          let leadDetails: { name?: string, email?: string, phone?: string, date?: string } = {};
     
           let webinarSnap = await this.firestore.collection('lylwebcompletewatch').get().toPromise();
           webinarSnap.docs.forEach(webinarDoc => {
             const webinarElement = webinarDoc.data();
             let webinaremail = webinarElement['email'].trim();
             if (webinarElement['entrydate'] != undefined && webinarElement['entrydate'] >= date && webinaremail == email) {
+              const dateelement = new Date(new Date(webinarElement['entrydate'].toDate()).getTime() + 330 * 60000)
+              .toISOString()
+              .substring(0, 10);
               m = 'true';
               leadDetails = {
                 name: webinarElement['name'],
                 email: webinarElement['email'],
-                phone: webinarElement['phone']
+                phone: webinarElement['phone'],
+                date: dateelement
               };
             }
           });
@@ -297,18 +361,22 @@ this.firestore.collection('lylapplied').get().toPromise().then(snap => {
     
           let m = 'false';
           let a,b,c;
-          let leadDetails: { name?: string, email?: string, phone?: string } = {};
+          let leadDetails: { name?: string, email?: string, phone?: string, date?: string } = {};
     
           let webinarSnap = await this.firestore.collection('lylapplied').get().toPromise();
           webinarSnap.docs.forEach(webinarDoc => {
             const webinarElement = webinarDoc.data();
             let webinaremail = webinarElement['email'].trim();
             if (webinarElement['entrydate'] != undefined && webinarElement['entrydate'] >= date && webinaremail == email) {
+              const dateelement = new Date(new Date(webinarElement['entrydate'].toDate()).getTime() + 330 * 60000)
+              .toISOString()
+              .substring(0, 10);
               m = 'true';
               leadDetails = {
                 name: webinarElement['name'],
                 email: webinarElement['email'],
-                phone: webinarElement['phone']
+                phone: webinarElement['phone'],
+                date: dateelement
               };
             }
           });
@@ -348,6 +416,8 @@ this.firestore.collection('lylapplied').get().toPromise().then(snap => {
       if (row.lylappliedlead) conversionData = conversionData.concat(row.lylappliedlead);
     }else if ( conversion === 'lylappliedtoday') {
       if (row.lylappliedtodaylead) conversionData = conversionData.concat(row.lylappliedtodaylead);
+    }else if ( conversion === 'lylwatch30lead') {
+      if (row.lylwatch30lead) conversionData = conversionData.concat(row.lylwatch30lead);
     }
     
     this.dialog.open(LeadconvDialogComponent, {
@@ -404,6 +474,13 @@ this.firestore.collection('lylapplied').get().toPromise().then(snap => {
     } 
     this.data = this.dataSource.data;
     return (this.data).map(date => this.outputTableStructure[date]?.lylcomwat || 0).reduce((acc, value) => acc + value, 0);
+  }
+  getlylattend30(): number {
+    if ( !this.tableData.length) {
+      return 0;
+    } 
+    this.data = this.dataSource.data;
+    return (this.data).map(date => this.outputTableStructure[date]?.lylwatch30 || 0).reduce((acc, value) => acc + value, 0);
   }
   getlylcomwattoday(): number {
     if ( !this.tableData.length) {

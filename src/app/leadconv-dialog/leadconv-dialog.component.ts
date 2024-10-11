@@ -10,7 +10,7 @@ import * as XLSX from 'xlsx';
   styleUrls: ['./leadconv-dialog.component.css']
 })
 export class LeadconvDialogComponent implements OnInit {
-  displayedColumns: string[] = ['name', 'email', 'phone', 'url'];  
+  displayedColumns: string[] = ['name', 'email', 'phone','date', 'url'];  
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { conversionData: any[] },  

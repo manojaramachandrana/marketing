@@ -19,7 +19,7 @@
       
       <ng-container matColumnDef="date">
         <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Date</th>
-        <td mat-cell *matCellDef="let row">{{ row }}</td>
+        <td mat-cell *matCellDef="let row">{{ row | date: 'dd-MM-yyyy' }}</td>
         <td mat-footer-cell *matFooterCellDef><strong> Total </strong> </td>
       </ng-container>
   
@@ -32,9 +32,23 @@
         </td>
         <td mat-footer-cell *matFooterCellDef><strong>{{ getlylregister() }}</strong></td>
       </ng-container>
+
+      <ng-container matColumnDef="lyl30mins">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>30Minutes Watched(after 11 oct)</th>
+        <td mat-cell *matCellDef="let row"  (click)="onRowClick(outputTableStructure[row],'lylwatch30lead')">
+          {{ outputTableStructure[row] != undefined
+              ? outputTableStructure[row]['lylwatch30'] != undefined
+                ? outputTableStructure[row]['lylwatch30'] == 0
+                  ? '-'
+                  : outputTableStructure[row]['lylwatch30']
+                : '-'
+              : '-' }}
+        </td>
+        <td mat-footer-cell *matFooterCellDef><strong>{{ getlylattend30() }}</strong></td>
+      </ng-container>
   
       <ng-container matColumnDef="lylattend">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>LYLAttended</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>40Minutes Watched</th>
         <td mat-cell *matCellDef="let row" (click)="onRowClick(outputTableStructure[row],'lylattend')">
           {{ outputTableStructure[row] != undefined
               ? outputTableStructure[row]['lylattended'] != undefined
@@ -62,7 +76,7 @@
       </ng-container> -->
   
       <ng-container matColumnDef="lylcomwat">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>LYLCompleteWatch</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>45Minutes Watched</th>
         <td mat-cell *matCellDef="let row"  (click)="onRowClick(outputTableStructure[row],'lylcomwat')">
           {{ outputTableStructure[row] != undefined
               ? outputTableStructure[row]['lylcomwat'] != undefined

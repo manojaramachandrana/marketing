@@ -23,6 +23,11 @@
         <th mat-header-cell *matHeaderCellDef> Phone </th>
         <td mat-cell *matCellDef="let row"> {{ row.phone ?? 'N/A' }} </td>
       </ng-container>
+
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef> EPdate </th>
+        <td mat-cell *matCellDef="let row"> {{ row.date | date: 'dd-MM-yyyy' ?? 'N/A' }} </td>
+      </ng-container>
 <!--   
       <ng-container matColumnDef="url">
         <th mat-header-cell *matHeaderCellDef> URL </th>
