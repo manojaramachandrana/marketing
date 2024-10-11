@@ -43,6 +43,8 @@ export class AppComponent implements OnInit{
         this.pageTitle = ' Seasonal Campaign'
       } else if ( this.pageTitle === 'leadsconv'){
         this.pageTitle = ' Webinar Analytics'
+      }  else if ( this.pageTitle === 'campaignanalytics'){
+        this.pageTitle = ' Campaign Metric'
       }
       else {
         this.pageTitle = ''

@@ -53,6 +53,7 @@ import { ConversionDialogComponent } from './conversion-dialog/conversion-dialog
 import { LeadsconvComponent } from './leadsconv/leadsconv.component';
 import { LeadconvDialogComponent } from './leadconv-dialog/leadconv-dialog.component';
 import { CampaignanalyticsComponent } from './campaignanalytics/campaignanalytics.component';
+import { CampaignanalyticsDialogComponent } from './campaignanalytics-dialog/campaignanalytics-dialog.component';
 
 @NgModule({
   declarations: [
@@ -79,6 +80,7 @@ import { CampaignanalyticsComponent } from './campaignanalytics/campaignanalytic
     LeadsconvComponent,
     LeadconvDialogComponent,
     CampaignanalyticsComponent,
+    CampaignanalyticsDialogComponent,
   ],
   imports: [
     BrowserModule,

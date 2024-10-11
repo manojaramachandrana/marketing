@@ -26,7 +26,9 @@ interface TableData {
   styleUrls: ['./leadsconv.component.css']
 })
 export class LeadsconvComponent implements OnInit {
-  displayedColumns: string[] = ['date','lylreg','lylattend','lylattendedtoday','lylcomwat','lylcomwattoday','lylapplied', 'lylappliedtoday'];
+  displayedColumns: string[] = ['date','lylreg','lylattend','lylcomwat','lylapplied'];
+    //,'lylattendedtoday','lylcomwattoday', 'lylappliedtoday'];
+  displayedColumn: string[] = ['date','lylreg'];
   data: any[];
 
   dataSource = new MatTableDataSource<TableData>();

@@ -1,4 +1,4 @@
-table{
+/* table{
     width: 100%;
     overflow: auto;
 }
@@ -54,7 +54,7 @@ table{
     margin: auto;
     font-family: 'Times New Roman', Times, serif;
   }
-  
+
   .hide{
     display: none;
   }
@@ -69,4 +69,69 @@ table{
 
   .lyl{
     display: block;
-  }
+  } */
+
+  /* styles.css */
+body {
+  background-color: #dbdfe3; /* Light background for contrast */
+  font-family: Arial, sans-serif; /* Simple, clean font */
+}
+
+.filter-container {
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for 3D effect */
+  margin-bottom: 20px;
+}
+
+.form-field {
+  width: 100%; /* Full width for the form field */
+  margin-bottom: 15px; /* Space between fields */
+}
+
+.search-button {
+  background-color: #a193b5; /* Primary color */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.3s, transform 0.2s; /* Smooth transitions */
+}
+
+.search-button:hover {
+  background-color: #3700b3; /* Darker shade on hover */
+  transform: translateY(-2px); /* Slight lift effect */
+}
+
+.table-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Stronger shadow for emphasis */
+  overflow: hidden; /* Prevents overflow of rounded corners */
+}
+
+table {
+  width: 100%; /* Full width for table */
+  border-collapse: collapse; /* Removes spacing between cells */
+}
+
+th {
+  background-color: #bdb2cb; /* Header background */
+  color: white; /* Header text color */
+  padding: 10px; /* Padding for header cells */
+  text-align: left; /* Align text to the left */
+}
+
+td {
+  padding: 10px; /* Padding for table cells */
+  transition: background-color 0.2s; /* Smooth background change */
+}
+
+td:hover {
+  background-color: #f5f5f5; /* Light background on hover */
+}
+
+.mat-footer-cell {
+  font-weight: bold; /* Bold footer text */
+}

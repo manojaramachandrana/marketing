@@ -1,0 +1,76 @@
+table {
+    width: 100%;
+  }
+
+/* .mat-dialog-content {
+    display: flex;
+    justify-content: center;
+    padding: 16px; 
+  } */
+
+  .mat-header-cell  {
+    text-align: center;
+    font: bolder;
+    font-size: large;
+    background-color: rgb(4, 4, 37);
+    color: white;
+  }
+
+  .table2 {
+    width: 60%;
+    .mat-header-cell {
+        text-align: center;
+    }
+  }
+
+  .mat-cell {
+    text-align: left;
+  }
+  
+  /* .mat-dialog-actions {
+    display: flex;
+    justify-content: center;
+    padding: 8px;
+  }
+  
+  button.mat-button {
+    margin: 0 8px;
+  } */
+  
+  .close-button {
+    position: absolute;
+    /* display: flex;
+    margin-left: auto;  */
+    /* top: 8px; */
+    right: 5rem;
+    margin-right: 10rem;
+   }
+
+   .mat-elevation-z8 {
+    display: flex;
+    width: 100%;
+  }
+  
+ 
+  .left-table-container {
+    flex: 1 1 40%;
+    margin-right: 10px; 
+  }
+  
+  .right-table-container {
+    flex: 0 0 60%;
+    height: 100%;
+    width: 100%;
+  }
+  
+  .right-table-container table {
+    width: 100%; 
+    border-collapse: collapse;
+  }
+  
+  .right-table-container th, .right-table-container td {
+    padding: 8px;
+    text-align: left;
+    border: 1px solid #ccc;
+  }
+  
