@@ -32,6 +32,21 @@ export class DashboardComponent implements OnInit {
   private currentmonthFunnelMCEmails = new Set<string>();
   private lastmonthFunnelMCEmails = new Set<string>();
 
+  currentSunday: Date;
+  currentSaturday: Date;
+  lastSunday: Date;
+  lastSaturday: Date;
+  lastLastSunday: Date;
+  lastLastSaturday: Date;
+
+  startOfCurrentMonths: Date;
+  endOfCurrentMonths: Date;
+  startOfLastMonths: Date;
+  endOfLastMonths: Date;
+  startOfLastLastMonths: Date;
+  endOfLastLastMonths: Date;
+
+
   constructor( private firestore: AngularFirestore, private dialog: MatDialog) {}
   dataSource = new MatTableDataSource< { date: string,currentweek: number,lastweek: number,lastlastweek:number,currentmonth: number,lastmonth: number,lastlastmonth:number,currentweeklead: number,lastlastweeklead:number, currentmonthlead: number,lastlastmonthlead:number, lastweeklead: number, lastmonthlead: number, currentweektpv: number, lastweektpv: number,lastlastweektpv: number,lastlastmonthtpv:number, currentmonthtpv: number, lastmonthtpv: number, currentweekecosystem:number,lastlastweekecosystem:number,lastlastmonthecosystem:number, lastweekecosystem: number, currentmonthecosystem: number, lastmonthecosystem: number, currentweekemiecosystem: number,lastlastweekemiecosystem:number,lastlastmonthemiecosystem: number, lastweekemiecosystem: number, currentmonthemiecosystem: number, lastmonthemiecosystem: number, currentweekparticipant: number,lastlastweekparticipant: number,lastlastmonthparticipant:number, lastweekparticipant: number, currentmonthparticipant:number, lastmonthparticipant: number, currentweekfreetopaid: number,lastlastweekfreetopaid: number,lastlastmonthfreetopaid: number, lastweekfreetopaid: number, currentmonthfreetopaid: number, lastmonthfreetopaid: number, lastmonthltv: number,lastlastmonthltv: number,lastlastweekltv: number, currentmonthltv: number, lastweekltv:number,currentweekltv:number, currentweekwou:number,lastlastweekwou:number,currentmonthwou:number,lastlastmonthwou:number, lastweekwou:number,lastmonthwou:number }>(); 
   displayedColumns: string[] = ['no', 'currentweek', 'lastweek','metrics'];
@@ -315,6 +330,7 @@ weekfreetopaid() {
     const averageTPV = totalCount !== 0 ? totalTPV / totalCount : 0;
     return averageTPV.toFixed(2);
   }
+
   
   fetchdata(){
     var currentDate = new Date();
@@ -332,31 +348,37 @@ weekfreetopaid() {
     sundayDate.setDate(currentDate.getDate() - sundayDiff);
     sundayDate.setHours(startOfDayHours);
     sundayDate.setMinutes(startOfDayMinutes);
+    this.currentSunday =sundayDate;
     
     var saturdayDate = new Date(currentDate);
     saturdayDate.setDate(currentDate.getDate() + saturdayDiff);
     saturdayDate.setHours(endOfDayHours);
     saturdayDate.setMinutes(endOfDayMinutes);
+    this.currentSaturday = saturdayDate;
     
     var lastSaturdayDate = new Date(currentDate);
     lastSaturdayDate.setDate(currentDate.getDate() - (dayOfWeek + 1)); 
     lastSaturdayDate.setHours(endOfDayHours);
     lastSaturdayDate.setMinutes(endOfDayMinutes);
+    this.lastSaturday = lastSaturdayDate;
     
     var lastSundayDate = new Date(lastSaturdayDate);
     lastSundayDate.setDate(lastSaturdayDate.getDate() - 6);
     lastSundayDate.setHours(startOfDayHours);
     lastSundayDate.setMinutes(startOfDayMinutes);
+    this.lastSunday = lastSundayDate;
     
     var lastlastSaturdayDate = new Date(currentDate);
     lastlastSaturdayDate.setDate(currentDate.getDate() - (dayOfWeek + 8)); 
     lastlastSaturdayDate.setHours(endOfDayHours);
     lastlastSaturdayDate.setMinutes(endOfDayMinutes);
+    this.lastLastSaturday = lastlastSaturdayDate;
     
     var lastlastSundayDate = new Date(lastlastSaturdayDate);
     lastlastSundayDate.setDate(lastlastSaturdayDate.getDate() - 6); 
     lastlastSundayDate.setHours(startOfDayHours);
     lastlastSundayDate.setMinutes(startOfDayMinutes);
+    this.lastLastSunday = lastlastSundayDate;
     
     console.log("currentSunday " , sundayDate);
     console.log("currentSaturday " , saturdayDate);
@@ -366,11 +388,17 @@ weekfreetopaid() {
      console.log("lastlastsaturday", lastlastSaturdayDate);
   
     var startOfCurrentMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+    this.startOfCurrentMonths = startOfCurrentMonth;
     var endOfCurrentMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+    this.endOfCurrentMonths = endOfCurrentMonth;
     var startOfLastMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+    this.startOfLastMonths = startOfLastMonth;
     var endOfLastMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
+    this.endOfLastMonths = endOfLastMonth;
     var startOflastlasttMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() -2, 1);
+    this.startOfLastLastMonths = startOflastlasttMonth;
     var endOflastlastMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() -1, 0);
+    this.endOfLastLastMonths = endOflastlastMonth;
  
   
     console.log("Start of current month:", startOfCurrentMonth);
@@ -810,7 +838,7 @@ async getecosystem(startDate: Date, endDate: Date, label: string, campaignName: 
          .where(dateField, '<=', firebase.firestore.Timestamp.fromDate(endDate))
     ).valueChanges().pipe(takeUntil(this.unsubscribe$)).subscribe(entries => {
       entries.forEach(entry => {
-        if ( entry.journeyname === 'uP!' || entry.journeyname === 'BiG' || entry.journeyname === 'FTM' || entry.journeyname === 'CPM upgrade' || entry.journeyname === 'CPM' || entry.journeyname === 'FastTrack Membership' || entry.journeyname === 'Launch Your Legacy L2') {
+        if ( entry.journeyname === 'uP!' || entry.journeyname === 'BiG' || entry.journeyname === 'FTM' || entry.journeyname === 'CPM upgrade' || entry.journeyname === 'CPM' || entry.journeyname === 'FastTrack Membership' || entry.journeyname === 'Launch Your Legacy L2', entry.journeyname === 'FTM with SLD CI') {
           count += 1;
         }
       });

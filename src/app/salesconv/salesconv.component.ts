@@ -13,6 +13,8 @@ interface CampaignData {
   leads: number;
   sales: number;
   salesArray: any[];
+  conversion1: number;
+  conversion7: number;
   conversion20: number;
   conversion45: number;
   conversion30: number;
@@ -21,6 +23,8 @@ interface CampaignData {
   conversion120: number;
   conversion240: number;
   conversion360: number;
+  conversion1conv: any[];
+  conversion7conv: any[];
   conversion20conv: any[];
   conversion30conv: any[];
   conversion45conv: any[];
@@ -38,7 +42,7 @@ interface CampaignData {
 })
 export class SalesconvComponent implements OnInit {
   dataSource = new MatTableDataSource<CampaignData>();
-  displayedColumns: string[] = ['month', 'leads', 'sales','conversion20', 'conversion30','conversion45', 'conversion60', 'conversion90','conversion120', 'conversion240', 'conversion360',];
+  displayedColumns: string[] = ['month', 'leads', 'sales','conversion1','conversion7','conversion20', 'conversion30','conversion45', 'conversion60', 'conversion90','conversion120', 'conversion240', 'conversion360'];
   outputTableStructure:any = {};
   tableData: any[] = [];
 
@@ -119,6 +123,8 @@ export class SalesconvComponent implements OnInit {
               sales: 0,
               leads: 0,
               salesArray: [],
+              conversion1:0,
+              conversion7:0,
               conversion20:0,
               conversion30: 0,
               conversion45:0,
@@ -127,6 +133,8 @@ export class SalesconvComponent implements OnInit {
               conversion120: 0,
               conversion240: 0,
               conversion360: 0,
+              conversion1conv: [],
+              conversion7conv: [],
               conversion20conv: [],
               conversion30conv: [],
               conversion45conv: [],
@@ -243,6 +251,8 @@ export class SalesconvComponent implements OnInit {
             month: monthYear,
             sales: count,
             leads: 0,
+            conversion1:0,
+            conversion7:0,
             conversion20:0,
             conversion30: 0,
             conversion45:0,
@@ -251,6 +261,8 @@ export class SalesconvComponent implements OnInit {
             conversion120: 0,
             conversion240: 0,
             conversion360: 0,
+            conversion1conv: [],
+            conversion7conv: [],
             conversion20conv: [],
             conversion30conv: [],
             conversion45conv: [],
@@ -332,6 +344,8 @@ export class SalesconvComponent implements OnInit {
                     month: entryMonthYear,
                     sales: 0,
                     leads: 0,
+                    conversion1:0,
+                    conversion7:0,
                     conversion20:0,
                     conversion30: 0,
                     conversion45:0,
@@ -340,6 +354,8 @@ export class SalesconvComponent implements OnInit {
                     conversion120: 0,
                     conversion240: 0,
                     conversion360: 0,
+                    conversion1conv: [],
+                    conversion7conv: [],
                     conversion20conv: [],
                     conversion30conv: [],
                     conversion45conv: [],
@@ -350,7 +366,32 @@ export class SalesconvComponent implements OnInit {
                     conversion360conv: []
                   };
                 }
-               if (diffDays <= 20) {
+                if (diffDays <= 1) {
+                  this.outputTableStructure[entryMonthYear]['conversion1'] += 1;
+                  this.outputTableStructure[entryMonthYear]['conversion1conv'].push({
+                    email,
+                    name,
+                    phone,
+                    product,
+                    daydifference: diffDays,
+                    url, 
+                    createddate: entryDate.toISOString(),
+                    converteddate: convertedDate.toISOString()
+                  });
+                } else  if (diffDays <= 7) {
+                  this.outputTableStructure[entryMonthYear]['conversion7'] += 1;
+                  this.outputTableStructure[entryMonthYear]['conversion7conv'].push({
+                    email,
+                    name,
+                    phone,
+                    product,
+                    daydifference: diffDays,
+                    url, 
+                    createddate: entryDate.toISOString(),
+                    converteddate: convertedDate.toISOString()
+                  });
+                }
+              else if (diffDays <= 20) {
                   this.outputTableStructure[entryMonthYear]['conversion20'] += 1;
                   this.outputTableStructure[entryMonthYear]['conversion20conv'].push({
                     email,
@@ -466,28 +507,34 @@ export class SalesconvComponent implements OnInit {
     if ( conversion === 'sales') {
       if (row.salesArray) conversionData = conversionData.concat(row.salesArray);
     }
-    if (conversion.includes('20')) {
+    if (conversion.includes('conversion1day')) {
+      if (row.conversion1conv) conversionData = conversionData.concat(row.conversion1conv);
+    }
+    if (conversion.includes('conversion7')) {
+      if (row.conversion7conv) conversionData = conversionData.concat(row.conversion7conv);
+    }
+    if (conversion.includes('conversion20')) {
       if (row.conversion20conv) conversionData = conversionData.concat(row.conversion20conv);
     }
-    if (conversion.includes('30')) {
+    if (conversion.includes('conversion30')) {
       if (row.conversion30conv) conversionData = conversionData.concat(row.conversion30conv);
     }
-    if (conversion.includes('45')) {
+    if (conversion.includes('conversion45')) {
       if (row.conversion45conv) conversionData = conversionData.concat(row.conversion45conv);
     }
-    if (conversion.includes('60')) {
+    if (conversion.includes('conversion60')) {
       if (row.conversion60conv) conversionData = conversionData.concat(row.conversion60conv);
     }
-    if (conversion.includes('90')) {
+    if (conversion.includes('conversion90')) {
       if (row.conversion90conv) conversionData = conversionData.concat(row.conversion90conv);
     }
-    if (conversion.includes('120')) {
+    if (conversion.includes('conversion120')) {
       if (row.conversion120conv) conversionData = conversionData.concat(row.conversion120conv);
     }
-    if (conversion.includes('240')) {
+    if (conversion.includes('conversion240')) {
       if (row.conversion240conv) conversionData = conversionData.concat(row.conversion240conv);
     }
-    if (conversion.includes('360')) {
+    if (conversion.includes('conversion360')) {
       if (row.conversion360conv) conversionData = conversionData.concat(row.conversion360conv);
     }
   

@@ -21,6 +21,7 @@ import { SalesconvComponent } from './salesconv/salesconv.component';
 import { ConversionDialogComponent } from './conversion-dialog/conversion-dialog.component';
 import { LeadsconvComponent } from './leadsconv/leadsconv.component';
 import { CampaignanalyticsComponent } from './campaignanalytics/campaignanalytics.component';
+import { CombinedleadsComponent } from './combinedleads/combinedleads.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -44,8 +45,8 @@ const routes: Routes = [
   { path: 'salesconv', component: SalesconvComponent},
   { path: 'conversiondialog', component: ConversionDialogComponent},
   { path: 'leadsconv', component: LeadsconvComponent},
-  { path: 'campaignanalytics', component: CampaignanalyticsComponent}
-
+  { path: 'campaignanalytics', component: CampaignanalyticsComponent},
+  { path: 'combinedleads', component: CombinedleadsComponent}
 ];
 
 @NgModule({

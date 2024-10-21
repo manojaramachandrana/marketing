@@ -1,0 +1,60 @@
+<div class="filter-container">
+    <form [formGroup]="form">
+        <mat-form-field>
+            <mat-label>Enter a date range</mat-label>
+            <mat-date-range-input [rangePicker]="picker" formGroupName="daterange">
+                <input matStartDate placeholder="Start date" formControlName="start" />
+                <input matEndDate placeholder="End date" formControlName="end" />
+            </mat-date-range-input>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+
+        <button mat-button (click)="onSubmit()" class="search-button">Search</button>
+    </form>
+</div>
+
+<mat-form-field appearance="fill">
+    <mat-label>Enter Email</mat-label>
+    <input matInput>
+  </mat-form-field>
+
+<br> <br> <br> <br> <br> <br> 
+
+<div *ngIf="form.get('daterange.start').value && form.get('daterange.end').value && isSearchClicked"
+    class="mat-elevation-z8 table-container">
+    <table mat-table [dataSource]="[{}]"  matSort matSortActive="created" matSortDisableClear
+        matSortDirection="desc">
+
+        <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Webinar</th>
+            <td mat-cell *matCellDef><strong>LYL</strong></td>
+        </ng-container>
+
+        <ng-container matColumnDef="lylreg">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>LYL <br> Registration</th>
+            <td mat-cell *matCellDef (click)="onRowClick(outputTableStructure,'lylregistered',form.get('daterange').value.start, form.get('daterange').value.end)"><strong>{{ getlylregister() }}</strong></td>
+        </ng-container>
+
+        <ng-container matColumnDef="lyl30">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Video Plays <br> at 30 mins</th>
+            <td mat-cell *matCellDef (click)="onRowClick(outputTableStructure,'lylattended30',form.get('daterange').value.start, form.get('daterange').value.end)"><strong>{{ getlylattend30() }}</strong></td>
+        </ng-container>
+
+        <ng-container matColumnDef="lyl40">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Video Plays <br> at 40 mins</th>
+            <td mat-cell *matCellDef  (click)="onRowClick(outputTableStructure,'lylattended',form.get('daterange').value.start, form.get('daterange').value.end)"><strong>{{ getlylattend() }}</strong></td>
+        </ng-container>
+
+        <ng-container matColumnDef="lyl100">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Video Plays <br> at 100%</th>
+            <td mat-cell *matCellDef   (click)="onRowClick(outputTableStructure,'lylcomwat',form.get('daterange').value.start, form.get('daterange').value.end)"><strong>{{ getlylcomwat() }}</strong></td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+</div>
+
+<mat-paginator #paginator [pageSizeOptions]="[10, 25, 50, 75, 100, 1]" [pageSize]="1"
+    aria-label="Select page of users"></mat-paginator>

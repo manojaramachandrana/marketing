@@ -8,7 +8,6 @@ import { Observable, Subject } from 'rxjs';
 import { Timestamp } from 'rxjs/internal/operators/timestamp';
 import * as XLSX from 'xlsx';
 
-
 interface CampaignData {
   month: string,
   CTD: number,
@@ -85,12 +84,12 @@ export class DashboarddialogComponent implements OnInit {
   dataArray: any[] = [];
   data$: Observable<any>;
   opportunities: Observable<any>;
-  dataSourceopportunities = new MatTableDataSource< {name:'string', phone: 'string', email: 'string', entrydate: 'any', combinations: 'string' }>();
-  displayedColumns: string[] = ['name', 'email', 'phone', 'entrydate', 'combinations']
+  dataSourceopportunities = new MatTableDataSource< {name:'string', phone: 'string', email: 'string', entrydate: 'any', url: 'string' }>();
+  displayedColumns: string[] = ['name', 'email', 'phone', 'entrydate', 'url']
 
   dataSource = new MatTableDataSource<CampaignData>();
   constructor(private firestore: AngularFirestore) { 
-    this.opportunities = this.firestore.collection<any>('superhotopportunities').valueChanges();
+    this.opportunities = this.firestore.collection<any>('lylapplied').valueChanges();
     this.opportunities.subscribe(data => {
       this.dataSourceopportunities.data = data;
     });

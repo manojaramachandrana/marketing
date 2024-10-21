@@ -36,8 +36,9 @@
       <th mat-header-cell *matHeaderCellDef> URL </th>
       <td mat-cell *matCellDef="let row">
         <ng-container *ngIf="row.url; else noUrl">
-          utm_medium: {{ extractUTMParam(row.url, 'utm_medium') }} <br>
-          utm_campaign: {{ extractUTMParam(row.url, 'utm_campaign') }}
+          Campaign: {{ extractUTMParam(row.url, 'utm_campaign') }} <br>
+          Adset: {{ extractUTMParam(row.url, 'utm_medium') }} <br>
+          Ad: {{ extractUTMParam(row.url, 'utm_content') }}
         </ng-container>
         <ng-template #noUrl>
           <span>No URL available</span>

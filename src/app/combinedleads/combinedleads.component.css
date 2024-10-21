@@ -1,0 +1,56 @@
+body {
+    background-color: #dbdfe3; 
+    font-family: Arial, sans-serif; 
+  }
+  
+  .filter-container {
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+  
+  .form-field {
+    width: 100%; 
+    margin-bottom: 15px; 
+  }
+  
+  .table-container {
+    display: flex;
+    justify-content: center; 
+    padding: 20px;
+  }
+  
+  table {
+    width: 100%; 
+    border-collapse: collapse;
+    background-color: black; 
+  }
+  
+  th {
+    background-color: grey; 
+    color: white; 
+    font-size: larger;
+    font :bold;
+    padding: 10px; 
+    text-align: left; 
+  }
+  
+  td {
+    background-color: black;
+    color: white; 
+    font-size: larger;
+    font :bold;
+    padding: 10px;
+    transition: background-color 0.2s; 
+  }
+  
+  td:hover {
+    background-color: #444;
+  }
+  
+  .mat-footer-cell {
+    font-weight: bold; 
+  }
+  

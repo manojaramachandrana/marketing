@@ -8,7 +8,7 @@
 
 <!-- <h1>Growth Metrics</h1> -->
 <br><br>
-<h2>Average Order Value </h2><br><br>
+<h2 matTooltip="AOV = (sum of totalpurchase value that made in a specific week or month / total number of orders)" matTooltipPosition="below">Average Order Value </h2><br><br>
 <div  class="table">
     <table mat-table [dataSource]="dataSource" id="exampleTable" class="mat-elevation-z8" matSort>
         <!-- <ng-container matColumnDef="check">
@@ -19,27 +19,30 @@
             <td mat-footer-cell *matFooterCellDef="let element"> <mat-checkbox  (click)="openDialog(element)"></mat-checkbox></td> -->
         <!-- </ng-container> --> 
         <ng-container matColumnDef="lastlastweek">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Penultimate</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header >Penultimate </th>
+                <!-- <br>W: {{ lastLastSunday | date:'dd/MM/YYYY' }} - {{ lastLastSaturday | date:'dd/MM/YYYY' }}  <br>M: {{ startOfLastLastMonths | date:'dd/MM/YYYY' }} - {{ endOfLastLastMonths | date:'dd/MM/YYYY' }} </th> -->
             <td mat-cell *matCellDef="let element">{{ lastlastweektpv() }}</td>
             <td mat-footer-cell *matFooterCellDef="let element"> {{lastlastmonthtpv()}} </td>
         </ng-container>
         <ng-container matColumnDef="currentweek">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Previous</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header >Previous </th>
+                 <!-- <br>W: {{ lastSunday | date:'dd/MM/YYYY' }} - {{ lastSaturday | date:'dd/MM/YYYY' }}  <br>M: {{ startOfLastMonths | date:'dd/MM/YYYY' }} - {{ endOfLastMonths | date:'dd/MM/YYYY' }}</th> -->
             <td mat-cell *matCellDef="let element">{{ lastweektpv() }}</td>
             <td mat-footer-cell *matFooterCellDef="let element"> {{lastmonthtpv()}} </td>
         </ng-container>
         <ng-container matColumnDef="lastweek">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Current</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Current </th>
+                <!-- <br>W: {{ currentSunday | date:'dd/MM/YYYY' }} - {{ currentSaturday | date:'dd/MM/YYYY' }}  <br>M: {{ startOfCurrentMonths | date:'dd/MM/YYYY' }} - {{ endOfCurrentMonths | date:'dd/MM/YYYY' }}</th> -->
             <td mat-cell *matCellDef="let element">{{ currentweektpv() }}</td>
             <td mat-footer-cell *matFooterCellDef="let element"> {{ currentmonthtpv()}} </td>
         </ng-container>
         <ng-container matColumnDef="no">
             <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
-            <td mat-cell *matCellDef="let element">Week</td>
+            <td mat-cell *matCellDef="let element">Week </td>
             <td mat-footer-cell *matFooterCellDef> Month </td>
         </ng-container>
-        <ng-container matColumnDef="metrics">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Metrics</th>
+        <ng-container matColumnDef="metrics" >
+            <th mat-header-cell *matHeaderCellDef mat-sort-header matTooltip="Metric = ((Previous - Penultimate) / Penultimate ) * 100" matTooltipPosition="above" >Metrics</th>
 
             <td mat-cell *matCellDef="let element">
                 <div *ngIf="weekorder() >= 0; else downArrow">
@@ -66,7 +69,7 @@
     </table>
 </div><br><br>
 
-<h2>Average LifeTime Value </h2><br><br>
+<h2 matTooltip="ALV = (Sum of the total purchase value made from 2018 to a specific end of the week or month / total number of participants)" matTooltipPosition="below">Average LifeTime Value </h2><br><br>
 <div  class="table">
     <table mat-table [dataSource]="dataSource" id="exampleTable" class="mat-elevation-z8" matSort>
         <ng-container matColumnDef="currentweek">
@@ -84,8 +87,8 @@
             <td mat-cell *matCellDef="let element">Week</td>
             <td mat-footer-cell *matFooterCellDef> Month </td>
         </ng-container>
-        <ng-container matColumnDef="metrics">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Metrics</th>
+        <ng-container matColumnDef="metrics" >
+            <th mat-header-cell *matHeaderCellDef mat-sort-header matTooltip="Metric = ((Previous - Penultimate) / Penultimate ) * 100" matTooltipPosition="above">Metrics</th>
             <td mat-cell *matCellDef="let element">
                 <div *ngIf="weeklifetime() >= 0; else downArrow">
                     {{ weeklifetime() }}% <span class="green-text"><mat-icon>arrow_upward</mat-icon></span>
@@ -156,22 +159,25 @@
 </div><br><br> -->
 
 
-<h2>Increase in Number of Paid Users</h2><br><br>
+<h2 matTooltip="In a specific period focusing on new DFU (CTD, SMP, EIStarterpack, BTExtreme, EISolution, HealthExplorative, A&HCustomSolution, EISubscription, WISH, A&HLight, CriticalSupport), DFU+A&H (uP!, FTM, BiG & Continuity, CPM & upgrade, FTM & BiG SLD CI) and Funnel ( CTD, SMP, NLP MS) product" matTooltipPosition="below">Increase in Number of Paid Users</h2><br><br>
 
 <div  class="table">
     <table mat-table [dataSource]="dataSource" id="exampleTable" class="mat-elevation-z8" matSort>
         <ng-container matColumnDef="lastlastweek">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Penultimate</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header >Penultimate </th>
+                <!-- <br>W: {{ lastLastSunday | date:'dd/MM/YYYY' }} - {{ lastLastSaturday | date:'dd/MM/YYYY' }}  <br>M: {{ startOfLastLastMonths | date:'dd/MM/YYYY' }} - {{ endOfLastLastMonths | date:'dd/MM/YYYY' }} </th> -->
             <td mat-cell *matCellDef="let element">{{ element.lastlastweekwou }}</td>
             <td mat-footer-cell *matFooterCellDef="let element"> {{lastlastmonth()}} </td>
         </ng-container>
         <ng-container matColumnDef="currentweek">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Previous</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header >Previous  </th>
+                <!-- <br>W: {{ lastSunday | date:'dd/MM/YYYY' }} - {{ lastSaturday | date:'dd/MM/YYYY' }}  <br>M: {{ startOfLastMonths | date:'dd/MM/YYYY' }} - {{ endOfLastMonths | date:'dd/MM/YYYY' }}</th> -->
             <td mat-cell *matCellDef="let element">{{ element.lastweekwou }}</td>
             <td mat-footer-cell *matFooterCellDef="let element"> {{lastmonth()}} </td>
         </ng-container>
         <ng-container matColumnDef="lastweek">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Current</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header >Current </th>
+                <!-- <br>W: {{ currentSunday | date:'dd/MM/YYYY' }} - {{ currentSaturday | date:'dd/MM/YYYY' }}  <br>M: {{ startOfCurrentMonths | date:'dd/MM/YYYY' }} - {{ endOfCurrentMonths | date:'dd/MM/YYYY' }}</th> -->
             <td mat-cell *matCellDef="let element">{{ element.currentweekwou }}</td>
             <td mat-footer-cell *matFooterCellDef="let element"> {{ currentmonth()}} </td>
         </ng-container>
@@ -180,8 +186,8 @@
             <td mat-cell *matCellDef="let element">Week</td>
             <td mat-footer-cell *matFooterCellDef> Month </td>
         </ng-container>
-        <ng-container matColumnDef="metrics">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Metrics</th>
+        <ng-container matColumnDef="metrics" >
+            <th mat-header-cell *matHeaderCellDef mat-sort-header matTooltip="Metric = ((Previous - Penultimate) / Penultimate ) * 100" matTooltipPosition="above">Metrics</th>
             <td mat-cell *matCellDef="let element">
                 <div *ngIf="+weekpaiduser() >= 0; else downArrow">
                     {{ weekpaiduser() }}% <span class="green-text"><mat-icon>arrow_upward</mat-icon></span>
@@ -208,21 +214,24 @@
     </table>
 </div><br><br>
 
-<h2>Increase in Number of People in Subscription of Ecosystem Product</h2><br><br>
+<h2 matTooltip="In a specific period focusing on  DFU+A&H (uP!, FTM, BiG & Continuity, CPM & upgrade, FTM & BiG SLD CI, LYL L2) product" matTooltipPosition="below">Increase in Number of People in Subscription of Ecosystem Product</h2><br><br>
 <div class="table">
     <table mat-table [dataSource]="dataSource" id="exampleTable" class="mat-elevation-z8" matSort>
         <ng-container matColumnDef="lastlastweek">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Penultimate</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header >Penultimate </th>
+                <!-- <br>W: {{ lastLastSunday | date:'dd/MM/YYYY' }} - {{ lastLastSaturday | date:'dd/MM/YYYY' }}  <br>M: {{ startOfLastLastMonths | date:'dd/MM/YYYY' }} - {{ endOfLastLastMonths | date:'dd/MM/YYYY' }} </th> -->
             <td mat-cell *matCellDef="let element">{{ element.lastlastweekecosystem }}</td>
             <td mat-footer-cell *matFooterCellDef="let element"> {{lastlastmonthecosystem()}} </td>
         </ng-container>
         <ng-container matColumnDef="currentweek">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Previous</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header >Previous  </th>
+                <!-- <br>W: {{ lastSunday | date:'dd/MM/YYYY' }} - {{ lastSaturday | date:'dd/MM/YYYY' }}  <br>M: {{ startOfLastMonths | date:'dd/MM/YYYY' }} - {{ endOfLastMonths | date:'dd/MM/YYYY' }}</th> -->
             <td mat-cell *matCellDef="let element">{{ element.lastweekecosystem }}</td>
             <td mat-footer-cell *matFooterCellDef="let element"> {{lastmonthecosystem()}} </td>
         </ng-container>
         <ng-container matColumnDef="lastweek">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Current</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header >Current </th>
+                <!-- <br>W: {{ currentSunday | date:'dd/MM/YYYY' }} - {{ currentSaturday | date:'dd/MM/YYYY' }}  <br>M: {{ startOfCurrentMonths | date:'dd/MM/YYYY' }} - {{ endOfCurrentMonths | date:'dd/MM/YYYY' }}</th> -->
             <td mat-cell *matCellDef="let element">{{ element.currentweekecosystem }}</td>
             <td mat-footer-cell *matFooterCellDef="let element"> {{ currentmonthecosystem()}} </td>
         </ng-container>
@@ -231,8 +240,8 @@
             <td mat-cell *matCellDef="let element">Week</td>
             <td mat-footer-cell *matFooterCellDef> Month </td>
         </ng-container>
-        <ng-container matColumnDef="metrics">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Metrics</th>
+        <ng-container matColumnDef="metrics" >
+            <th mat-header-cell *matHeaderCellDef mat-sort-header matTooltip="Metric = ((Previous - Penultimate) / Penultimate ) * 100" matTooltipPosition="above">Metrics</th>
             <td mat-cell *matCellDef="let element">
                 <div *ngIf="+weekecosystem() >= 0; else downArrow">
                     {{ weekecosystem() }}% <span class="green-text"><mat-icon>arrow_upward</mat-icon></span>
@@ -258,21 +267,24 @@
     </table>
 </div><br><br>
 
-<h2>Increase in Number of Active Participant in EMI </h2><br><br>
+<h2 matTooltip="In a specific period focusing on  DFU+A&H (uP!, FTM, BiG & Continuity, CPM & upgrade, FTM & BiG SLD CI, LYL L2) product with EMI Subscription" matTooltipPosition="below">Increase in Number of Active Participant in EMI </h2><br><br>
 <div  class="table">
     <table mat-table [dataSource]="dataSource" id="exampleTable" class="mat-elevation-z8" matSort>
         <ng-container matColumnDef="lastlastweek">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Penultimate</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header >Penultimate </th>
+                <!-- <br>W: {{ lastLastSunday | date:'dd/MM/YYYY' }} - {{ lastLastSaturday | date:'dd/MM/YYYY' }}  <br>M: {{ startOfLastLastMonths | date:'dd/MM/YYYY' }} - {{ endOfLastLastMonths | date:'dd/MM/YYYY' }} </th> -->
             <td mat-cell *matCellDef="let element">{{ element.lastlastweekemiecosystem }}</td>
             <td mat-footer-cell *matFooterCellDef="let element"> {{lastlastmonthemiecosystem()}} </td>
         </ng-container>
         <ng-container matColumnDef="currentweek">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Previous</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header >Previous  </th>
+                <!-- <br>W: {{ lastSunday | date:'dd/MM/YYYY' }} - {{ lastSaturday | date:'dd/MM/YYYY' }}  <br>M: {{ startOfLastMonths | date:'dd/MM/YYYY' }} - {{ endOfLastMonths | date:'dd/MM/YYYY' }}</th> -->
             <td mat-cell *matCellDef="let element">{{ element.lastweekemiecosystem }}</td>
             <td mat-footer-cell *matFooterCellDef="let element"> {{lastmonthemiecosystem()}} </td>
         </ng-container>
         <ng-container matColumnDef="lastweek">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Current</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header >Current </th>
+                <!-- <br>W: {{ currentSunday | date:'dd/MM/YYYY' }} - {{ currentSaturday | date:'dd/MM/YYYY' }}  <br>M: {{ startOfCurrentMonths | date:'dd/MM/YYYY' }} - {{ endOfCurrentMonths | date:'dd/MM/YYYY' }}</th> -->
             <td mat-cell *matCellDef="let element">{{ element.currentweekemiecosystem }}</td>
             <td mat-footer-cell *matFooterCellDef="let element"> {{ currentmonthemiecosystem()}} </td>
         </ng-container>
@@ -281,8 +293,8 @@
             <td mat-cell *matCellDef="let element">Week</td>
             <td mat-footer-cell *matFooterCellDef> Month </td>
         </ng-container>
-        <ng-container matColumnDef="metrics">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Metrics</th>
+        <ng-container matColumnDef="metrics" >
+            <th mat-header-cell *matHeaderCellDef mat-sort-header matTooltip="Metric = ((Previous - Penultimate) / Penultimate ) * 100" matTooltipPosition="above">Metrics</th>
             <td mat-cell *matCellDef="let element">
                 <div *ngIf="+weekemiecosystem() >= 0; else downArrow">
                     {{ weekemiecosystem() }}% <span class="green-text"><mat-icon>arrow_upward</mat-icon></span>

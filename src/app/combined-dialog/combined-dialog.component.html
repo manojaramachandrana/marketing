@@ -1,0 +1,54 @@
+<button mat-icon-button class="close-button" (click)="onClose()">
+    <mat-icon class="close-icon" color="warn">close</mat-icon>
+  </button>
+
+  <button mat-button (click)="exportexcel()" class="export-excel-btn">Export</button>
+  
+  <h1 mat-dialog-title>Lyl Registered Leads</h1>
+  
+  <div mat-dialog-content>
+    <table mat-table [dataSource]="data.conversionData" id="exampleTable" class="mat-elevation-z8">
+      
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Name </th>
+        <td mat-cell *matCellDef="let row"> {{ row.name ?? 'N/A' }} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef> Email </th>
+        <td mat-cell *matCellDef="let row"> {{ row.email ?? 'N/A' }} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="phone">
+        <th mat-header-cell *matHeaderCellDef> Phone </th>
+        <td mat-cell *matCellDef="let row"> {{ row.phone ?? 'N/A' }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef> EPdate </th>
+        <td mat-cell *matCellDef="let row"> {{ row.date | date: 'dd-MM-yyyy' ?? 'N/A' }} </td>
+      </ng-container>
+<!--   
+      <ng-container matColumnDef="url">
+        <th mat-header-cell *matHeaderCellDef> URL </th>
+        <td mat-cell *matCellDef="let row"> {{ row.url ?? 'N/A' }} </td>
+      </ng-container> -->
+
+      <ng-container matColumnDef="url">
+        <th mat-header-cell *matHeaderCellDef> Campaign </th>
+        <td mat-cell *matCellDef="let row">
+          <ng-container *ngIf="row.url; else noUrl">
+            <!-- utm_medium: {{ extractUTMParam(row.url, 'utm_medium') }} <br> -->
+         {{ extractUTMParam(row.url, 'utm_campaign') }}
+          </ng-container>
+          <ng-template #noUrl>
+            <span>No URL available</span>
+          </ng-template>
+        </td>
+      </ng-container>
+  
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+  

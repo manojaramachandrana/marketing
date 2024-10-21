@@ -42,8 +42,10 @@ export class AppComponent implements OnInit{
       } else if ( this.pageTitle === 'seasonalcampaign'){
         this.pageTitle = ' Seasonal Campaign'
       } else if ( this.pageTitle === 'leadsconv'){
+        this.pageTitle = ' LYL Registration Data'
+      }  else if ( this.pageTitle === 'combinedleads'){
         this.pageTitle = ' Webinar Analytics'
-      }  else if ( this.pageTitle === 'campaignanalytics'){
+      } else if ( this.pageTitle === 'campaignanalytics'){
         this.pageTitle = ' Campaign Metric'
       }
       else {

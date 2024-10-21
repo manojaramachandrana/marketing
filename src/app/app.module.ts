@@ -24,6 +24,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -54,6 +55,8 @@ import { LeadsconvComponent } from './leadsconv/leadsconv.component';
 import { LeadconvDialogComponent } from './leadconv-dialog/leadconv-dialog.component';
 import { CampaignanalyticsComponent } from './campaignanalytics/campaignanalytics.component';
 import { CampaignanalyticsDialogComponent } from './campaignanalytics-dialog/campaignanalytics-dialog.component';
+import { CombinedleadsComponent } from './combinedleads/combinedleads.component';
+import { CombinedDialogComponent } from './combined-dialog/combined-dialog.component';
 
 @NgModule({
   declarations: [
@@ -81,6 +84,8 @@ import { CampaignanalyticsDialogComponent } from './campaignanalytics-dialog/cam
     LeadconvDialogComponent,
     CampaignanalyticsComponent,
     CampaignanalyticsDialogComponent,
+    CombinedleadsComponent,
+    CombinedDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -97,6 +102,7 @@ import { CampaignanalyticsDialogComponent } from './campaignanalytics-dialog/cam
     MatInputModule,
     ReactiveFormsModule,
     MatTableModule,
+    MatTooltipModule,
     MatSnackBarModule,
     HttpClientModule,
     Ng2SearchPipeModule,
