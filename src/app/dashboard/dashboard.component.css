@@ -28,6 +28,52 @@ h1 {
     width: 100%;
   }
 
+  /* .mat-tooltip {
+    font-size: 16px !important;
+    color: black !important;
+    background-color: white !important;
+    border: 1px solid #ccc !important;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1) !important;
+  } */
+  
+  /* ::ng-deep .mat-tooltip {
+    font-size: 16px !important; 
+    color: black !important; 
+    background-color: white !important; 
+    border: 1px solid #ccc !important; 
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1) !important;
+    padding: 8px !important; 
+    max-width: none !important; 
+    word-wrap: break-word !important; 
+    position: absolute !important; 
+    right: 80 !important; 
+  } */
+
+  ::ng-deep .mat-tooltip {
+    font-size: 16px !important; 
+    color: black !important; 
+    background-color: white !important; 
+    border: 1px solid #ccc !important; 
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1) !important;
+    padding: 8px !important; 
+    word-wrap: break-word !important; 
+    position: absolute !important; 
+    left: 50% !important; 
+    transform: translateX(-50%) !important;     
+    min-width: 280px !important;  
+    max-width: 700px !important; 
+    min-height: 80px !important;  
+    max-height: 500px !important; 
+}
+
+  .tooltip-custom {
+    display: inline-block;
+    position: relative;
+  }
+  
+  
+  
+
   .progress-container {
     position: fixed;
     top: 50%;

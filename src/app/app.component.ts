@@ -14,6 +14,7 @@ export class AppComponent implements OnInit{
   displayRegister: boolean = false;
   displayResetPassword: boolean = false;
   pageTitle: string = ''; 
+  showLinks: boolean = false;
 
   constructor(private router: Router, private authService: AuthService,private activatedRoute: ActivatedRoute) {
     this.router.events.pipe(
@@ -33,7 +34,7 @@ export class AppComponent implements OnInit{
         this.pageTitle = 'Growth Metrics';
       } else if ( this.pageTitle === 'fb-data'){
         this.pageTitle = 'Ads Campaign Sets'
-      } else if ( this.pageTitle === 'sample'){
+      } else if ( this.pageTitle === 'leadsandsales'){
         this.pageTitle = 'Daily Leads & Sales'
       } else if ( this.pageTitle === 'salesconv'){
         this.pageTitle = ' Sales Conversion Cycle'
@@ -41,9 +42,9 @@ export class AppComponent implements OnInit{
         this.pageTitle = ' MarkTech North Star'
       } else if ( this.pageTitle === 'seasonalcampaign'){
         this.pageTitle = ' Seasonal Campaign'
-      } else if ( this.pageTitle === 'leadsconv'){
-        this.pageTitle = ' LYL Registration Data'
-      }  else if ( this.pageTitle === 'combinedleads'){
+      } else if ( this.pageTitle === 'lylregistration'){
+        this.pageTitle = ' LYL Registration'
+      }  else if ( this.pageTitle === 'webinaranalytics'){
         this.pageTitle = ' Webinar Analytics'
       } else if ( this.pageTitle === 'campaignanalytics'){
         this.pageTitle = ' Campaign Metric'
@@ -52,6 +53,10 @@ export class AppComponent implements OnInit{
         this.pageTitle = ''
       }
     });
+  }
+
+  toggleLinks() {
+    this.showLinks = !this.showLinks;
   }
 
 

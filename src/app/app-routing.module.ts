@@ -22,31 +22,32 @@ import { ConversionDialogComponent } from './conversion-dialog/conversion-dialog
 import { LeadsconvComponent } from './leadsconv/leadsconv.component';
 import { CampaignanalyticsComponent } from './campaignanalytics/campaignanalytics.component';
 import { CombinedleadsComponent } from './combinedleads/combinedleads.component';
+import { AuthGuard } from './auth.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent},
   { path: 'register', component: RegisterComponent},
-  { path: 'dashboard', component: DashboardComponent},
-  { path: 'fbga', component:FbgaComponent},
-  { path: 'fb-data', component: FbDataComponent},
-  { path: 'facebook-data', component: FacebookDataComponent}, 
-  { path: 'fbadsdata', component: FbadsdataComponent},
-  { path: 'leaddialog', component: LeaddialogComponent},
-  { path: 'reset-password', component: ResetPasswordComponent},
-  { path: 'northstar', component: NorthstarComponent},
-  { path: 'dashboarddialog', component: DashboarddialogComponent},
-  { path: 'sample', component: SampleComponent},
-  { path: 'spinner', component: SpinnerComponent},
-  { path: 'doc', component: DocComponent},
-  { path: 'gpt', component: GptComponent},
-  { path: 'seasonalcampaign', component: SeasonalcamComponent},
-  { path: 'salesdialog', component: SalesdialogComponent},
-  { path: 'salesconv', component: SalesconvComponent},
-  { path: 'conversiondialog', component: ConversionDialogComponent},
-  { path: 'leadsconv', component: LeadsconvComponent},
-  { path: 'campaignanalytics', component: CampaignanalyticsComponent},
-  { path: 'combinedleads', component: CombinedleadsComponent}
+  { path: 'dashboard', component: DashboardComponent , canActivate: [AuthGuard] },
+  { path: 'fbga', component:FbgaComponent , canActivate: [AuthGuard] },
+  { path: 'fb-data', component: FbDataComponent , canActivate: [AuthGuard] },
+  { path: 'facebook-data', component: FacebookDataComponent , canActivate: [AuthGuard] }, 
+  { path: 'fbadsdata', component: FbadsdataComponent , canActivate: [AuthGuard] },
+  { path: 'leaddialog', component: LeaddialogComponent , canActivate: [AuthGuard] },
+  { path: 'reset-password', component: ResetPasswordComponent , canActivate: [AuthGuard] },
+  { path: 'northstar', component: NorthstarComponent , canActivate: [AuthGuard] },
+  { path: 'dashboarddialog', component: DashboarddialogComponent , canActivate: [AuthGuard] },
+  { path: 'leadsandsales', component: SampleComponent , canActivate: [AuthGuard] },
+  { path: 'spinner', component: SpinnerComponent , canActivate: [AuthGuard] },
+  { path: 'doc', component: DocComponent , canActivate: [AuthGuard] },
+  { path: 'gpt', component: GptComponent , canActivate: [AuthGuard] },
+  { path: 'seasonalcampaign', component: SeasonalcamComponent , canActivate: [AuthGuard] },
+  { path: 'salesdialog', component: SalesdialogComponent , canActivate: [AuthGuard] },
+  { path: 'salesconv', component: SalesconvComponent , canActivate: [AuthGuard] },
+  { path: 'conversiondialog', component: ConversionDialogComponent , canActivate: [AuthGuard] },
+  { path: 'lylregistration', component: LeadsconvComponent , canActivate: [AuthGuard] },
+  { path: 'campaignanalytics', component: CampaignanalyticsComponent , canActivate: [AuthGuard] },
+  { path: 'webinaranalytics', component: CombinedleadsComponent , canActivate: [AuthGuard] }
 ];
 
 @NgModule({

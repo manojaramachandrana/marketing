@@ -791,7 +791,7 @@ async gettotalsales(startDate: Date, endDate: Date, label: string, campaignName:
          .where(dateField, '<=', firebase.firestore.Timestamp.fromDate(endDate))
     ).valueChanges().pipe(takeUntil(this.unsubscribe$)).subscribe(entries => {
       entries.forEach(entry => {
-        if (campaignName === 'leads' && (entry.journeyname !== 'FTO') ) {
+        if (campaignName === 'leads' && (entry.journeyname !== 'FTO' && entry.journeyname !== 'Research') ) {
           count += 1 || 0;
           //console.log(entry.email)
         } else if (campaignName === 'funnelmc') {
@@ -815,7 +815,7 @@ async gettotalpurchase(startDate: Date, endDate: Date, label: string, campaignNa
          .where(dateField, '<=', firebase.firestore.Timestamp.fromDate(endDate))
     ).valueChanges().pipe(takeUntil(this.unsubscribe$)).subscribe(entries => {
       entries.forEach(entry => {
-        if (campaignName === 'leads' && entry.journeyname !== 'FTO' && entry.saletype !== 'upgrade') {
+        if (campaignName === 'leads' && entry.journeyname !== 'FTO' && entry.saletype !== 'upgrade' && entry.journeyname !== 'Research') {
           count += 1 ;
         } else if (campaignName === 'funnelmc') {
           count += 1 ;
@@ -838,7 +838,7 @@ async getecosystem(startDate: Date, endDate: Date, label: string, campaignName: 
          .where(dateField, '<=', firebase.firestore.Timestamp.fromDate(endDate))
     ).valueChanges().pipe(takeUntil(this.unsubscribe$)).subscribe(entries => {
       entries.forEach(entry => {
-        if ( entry.journeyname === 'uP!' || entry.journeyname === 'BiG' || entry.journeyname === 'FTM' || entry.journeyname === 'CPM upgrade' || entry.journeyname === 'CPM' || entry.journeyname === 'FastTrack Membership' || entry.journeyname === 'Launch Your Legacy L2', entry.journeyname === 'FTM with SLD CI') {
+        if ( entry.journeyname === 'uP!' || entry.journeyname === 'BiG' || entry.journeyname === 'FTM' || entry.journeyname === 'CPM upgrade' || entry.journeyname === 'CPM' || entry.journeyname === 'FastTrack Membership' || entry.journeyname === 'Launch Your Legacy L2', entry.journeyname === 'FTM with SLD CI'|| entry.journeyname === 'BiG with SLD CI') {
           count += 1;
         }
       });
@@ -1061,7 +1061,7 @@ async getemiecosystem(startDate: Date, endDate: Date, label: string, campaignNam
          .where(dateField, '<=', firebase.firestore.Timestamp.fromDate(endDate))
     ).valueChanges().pipe(takeUntil(this.unsubscribe$)).subscribe(entries => {
       entries.forEach(entry => {
-        if ( (entry.totalpurchasevalue > entry.initialpayment) && ( entry.emiagreed !== ""  ) && ( entry.totalpurchasevalue !== entry.initialpayment) && ( entry.journeyname === 'uP!' || entry.journeyname === 'BiG' || entry.journeyname === 'FTM' || entry.journeyname === 'CPM upgrade' || entry.journeyname === 'FastTrack Membership' || entry.journeyname === 'CPM' || entry.journeyname === 'Launch Your Legacy L2')) {
+        if ( (entry.totalpurchasevalue > entry.initialpayment) && ( entry.emiagreed !== ""  ) && ( entry.journeyname === 'uP!' || entry.journeyname === 'BiG' || entry.journeyname === 'FTM' || entry.journeyname === 'CPM upgrade' || entry.journeyname === 'FastTrack Membership' || entry.journeyname === 'CPM' || entry.journeyname === 'Launch Your Legacy L2' || entry.journeyname === 'FTM with SLD CI' || entry.journeyname === 'BiG with SLD CI')) {
           count += 1;
         }
       });

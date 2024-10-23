@@ -29,20 +29,23 @@
         <!-- <a mat-list-item (click)="refreshPage()" >
           <span>Sales Conversion Cycle</span>
         </a> -->
-        <a mat-list-item routerLink="/sample" >
+        <a mat-list-item routerLink="/leadsandsales" >
           <span> Daily Leads & Sales</span>
         </a>
         <a mat-list-item routerLink="/seasonalcampaign" >
           <span> Seasonal Campaign </span>
         </a>
-        <a mat-list-item routerLink="/leadsconv" >
-          <span> LYL Registration Data </span>
+        <a mat-list-item  (click)="toggleLinks()">
+          <span>WEBINAR</span>
         </a>
-        <a mat-list-item routerLink="/combinedleads" >
-          <span> Webinar Analytics </span>
+        <a mat-list-item *ngIf="showLinks" routerLink="/lylregistration" >
+          <span><li> LYL Registration</li> </span>
         </a>
-        <a mat-list-item routerLink="/campaignanalytics" >
-          <span> Campaign Metrics </span>
+        <a mat-list-item *ngIf="showLinks" routerLink="/webinaranalytics" >
+          <span> <li> Webinar Analytics </li></span>
+        </a>
+        <a mat-list-item *ngIf="showLinks" routerLink="/campaignanalytics" >
+          <span> <li>Campaign Metrics</li> </span>
         </a>
       </mat-nav-list>
     </mat-sidenav>
