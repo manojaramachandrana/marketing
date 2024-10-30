@@ -84,12 +84,12 @@ export class DashboarddialogComponent implements OnInit {
   dataArray: any[] = [];
   data$: Observable<any>;
   opportunities: Observable<any>;
-  dataSourceopportunities = new MatTableDataSource< {name:'string', phone: 'string', email: 'string', entrydate: 'any', url: 'string' }>();
-  displayedColumns: string[] = ['name', 'email', 'phone', 'entrydate', 'url']
+  dataSourceopportunities = new MatTableDataSource< {name:'string', phone: 'string', email: 'string' }>();
+  displayedColumns: string[] = ['name', 'email', 'phone']
 
   dataSource = new MatTableDataSource<CampaignData>();
   constructor(private firestore: AngularFirestore) { 
-    this.opportunities = this.firestore.collection<any>('lylapplied').valueChanges();
+    this.opportunities = this.firestore.collection<any>('superhotopportunities').valueChanges();
     this.opportunities.subscribe(data => {
       this.dataSourceopportunities.data = data;
     });

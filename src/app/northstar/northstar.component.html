@@ -1,22 +1,25 @@
 <div class="container">
   <div class="content">
     <div class="style">
-      MarkTech North Star from {{ last30day | date }} - {{ today | date }}
+     <div  matTooltip="•  The total spend, divide it by 20, and multiply this result by the difference between the returns divided by total spend and the product of (20 minus total spend) and 2. &#10;" 
+     matTooltipPosition="below"> <strong>MARKTECH NORTH STAR </strong> </div><br><br>
+     <div>(TotalSpend/20)(Returns/TotalSpend -  ((20-TotalSpend)*2))</div> <br><br><br><br><br><br>
+      MarkTech North Star calculated from <strong> {{ last30day | date }} - {{ today | date }} </strong> 
     </div>
     <br><br>
 
     <div class="style">
-      Total Spend: {{ totalAmountSpent | currency:'INR':'symbol':'1.0-0' }}
+      Total Amount of AdsSpend: {{ totalAmountSpent | currency:'INR':'symbol':'1.0-0' }}
     </div>
     <br>
 
     <div class="style">
-      Total Return: {{ totalReturn | currency:'INR':'symbol':'1.0-0' }}
+      Total Purchase Value: {{ totalReturn | currency:'INR':'symbol':'1.0-0' }}
     </div>
     <br><br>
 
     <div class="final-result">
-      Final Result: {{ finalResult }}
+      BEY Brand Equity Yield : {{ finalResult }}
     </div>
     <br><br><br>
 
@@ -25,3 +28,4 @@
     </div>
   </div>
 </div>
+ 

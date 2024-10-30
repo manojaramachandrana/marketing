@@ -8,14 +8,17 @@ import { switchMap } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
+
 export class AuthService {
 
   private currentUserSubject = new BehaviorSubject<any>(null);
   currentUser$: Observable<any> = this.currentUserSubject.asObservable();
+  authInitialized = false; 
 
   constructor(private auth: AngularFireAuth, private router: Router, private firestore: AngularFirestore) { 
     this.auth.authState.pipe(
       switchMap(user => {
+        this.authInitialized = true;
         if (user) {
           return this.firestore.doc<any>(`users/${user.uid}`).valueChanges();
         } else {
@@ -28,6 +31,7 @@ export class AuthService {
   }
 
   async register(user: any) {
+
     try {
       if (user.password !== user.confirmPassword) {
         throw new Error('Password and Confirm Password do not match.');
@@ -56,24 +60,50 @@ export class AuthService {
     }
   }
 
+  // async login(email: string, password: string) {
+
+  //   try {
+  //     const result = await this.auth.signInWithEmailAndPassword(email, password);
+
+  //     if (result.user) {
+  //       this.router.navigate(['/dashboard']);
+  //     } else {
+  //       throw new Error('Authentication failed.');
+  //     }
+
+  //     return result;
+  //   } catch (error) {
+  //     console.error('Error logging in:', error);
+  //     throw error;
+  //   }
+  // }
+
   async login(email: string, password: string) {
     try {
       const result = await this.auth.signInWithEmailAndPassword(email, password);
-
+  
       if (result.user) {
-        this.router.navigate(['/dashboard']);
+        const userDoc = await this.firestore.doc<any>(`users/${result.user.uid}`).get().toPromise();
+        const userData = userDoc?.data();
+  
+        if (userData && userData.approved === true) {
+          this.router.navigate(['/dashboard']);
+          return result;
+        } else {
+          throw new Error('Your account has not been approved by an admin.');
+        }
       } else {
         throw new Error('Authentication failed.');
       }
-
-      return result;
     } catch (error) {
       console.error('Error logging in:', error);
       throw error;
     }
   }
+  
 
   async forgotPassword(email: string) {
+
     try {
       await this.auth.sendPasswordResetEmail(email);
     } catch (error) {

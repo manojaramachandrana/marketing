@@ -57,6 +57,7 @@ import { CampaignanalyticsComponent } from './campaignanalytics/campaignanalytic
 import { CampaignanalyticsDialogComponent } from './campaignanalytics-dialog/campaignanalytics-dialog.component';
 import { CombinedleadsComponent } from './combinedleads/combinedleads.component';
 import { CombinedDialogComponent } from './combined-dialog/combined-dialog.component';
+import { AdcampaignComponent } from './adcampaign/adcampaign.component';
 
 @NgModule({
   declarations: [
@@ -86,6 +87,7 @@ import { CombinedDialogComponent } from './combined-dialog/combined-dialog.compo
     CampaignanalyticsDialogComponent,
     CombinedleadsComponent,
     CombinedDialogComponent,
+    AdcampaignComponent,
   ],
   imports: [
     BrowserModule,

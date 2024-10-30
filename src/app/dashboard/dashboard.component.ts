@@ -485,7 +485,7 @@ weekfreetopaid() {
     totalltpurchasevalue = await this.getltpurchasevalue(adjuststartdate,endDate,label,campaignName);
     totalsalewou = await this.gettotalpurchase(startDate,endDate,label,campaignName);
   }
-  
+
   const existingDataIndex = this.dataSource.data.findIndex(d => d.date === 'data');
   if (existingDataIndex !== -1) {
 
@@ -838,7 +838,7 @@ async getecosystem(startDate: Date, endDate: Date, label: string, campaignName: 
          .where(dateField, '<=', firebase.firestore.Timestamp.fromDate(endDate))
     ).valueChanges().pipe(takeUntil(this.unsubscribe$)).subscribe(entries => {
       entries.forEach(entry => {
-        if ( entry.journeyname === 'uP!' || entry.journeyname === 'BiG' || entry.journeyname === 'FTM' || entry.journeyname === 'CPM upgrade' || entry.journeyname === 'CPM' || entry.journeyname === 'FastTrack Membership' || entry.journeyname === 'Launch Your Legacy L2', entry.journeyname === 'FTM with SLD CI'|| entry.journeyname === 'BiG with SLD CI') {
+        if ( entry.journeyname === 'uP!' || entry.journeyname === 'BiG' || entry.journeyname === 'FTM' || entry.journeyname === 'CPM upgrade' || entry.journeyname === 'CPM' || entry.journeyname === 'FastTrack Membership' || entry.journeyname === 'Launch Your Legacy L2' || entry.journeyname === 'FTM with SLD CI'|| entry.journeyname === 'BiG with SLD CI') {
           count += 1;
         }
       });

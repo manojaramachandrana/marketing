@@ -23,6 +23,7 @@ import { LeadsconvComponent } from './leadsconv/leadsconv.component';
 import { CampaignanalyticsComponent } from './campaignanalytics/campaignanalytics.component';
 import { CombinedleadsComponent } from './combinedleads/combinedleads.component';
 import { AuthGuard } from './auth.guard';
+import { AdcampaignComponent } from './adcampaign/adcampaign.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -47,7 +48,8 @@ const routes: Routes = [
   { path: 'conversiondialog', component: ConversionDialogComponent , canActivate: [AuthGuard] },
   { path: 'lylregistration', component: LeadsconvComponent , canActivate: [AuthGuard] },
   { path: 'campaignanalytics', component: CampaignanalyticsComponent , canActivate: [AuthGuard] },
-  { path: 'webinaranalytics', component: CombinedleadsComponent , canActivate: [AuthGuard] }
+  { path: 'webinaranalytics', component: CombinedleadsComponent , canActivate: [AuthGuard] },
+  { path: 'adcampaign', component: AdcampaignComponent, canActivate: [AuthGuard]}
 ];
 
 @NgModule({

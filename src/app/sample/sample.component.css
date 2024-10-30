@@ -11,7 +11,7 @@ table{
     font-weight: bolder;
   }
 
-  .mat-cell {
+  .mat-cell, .mat-footer-cell {
     text-align: center;
   }
 

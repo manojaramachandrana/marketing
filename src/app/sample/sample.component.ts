@@ -88,10 +88,22 @@ export class SampleComponent implements OnInit {
             .toISOString()
             .substring(0, 10);
     
-          this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || { date: "", homepage: 0 };
-          this.outputTableStructure[datestring]['date'] = datestring;
-          this.outputTableStructure[datestring]['homepage'] = this.outputTableStructure[datestring]['homepage'] + 1;
+          // Initialize date entry if it doesn't exist
+          this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || { 
+            date: datestring, 
+            homepage: 0, 
+            homepageleads: []  // Initialize homepageleads as an empty array
+          };
+          
+          // Increment homepage count and add lead details to homepageleads array
+          this.outputTableStructure[datestring]['homepage'] += 1;
+          this.outputTableStructure[datestring]['homepageleads'].push({
+            name: element['name'] || 'N/A',  // Replace 'name', 'email', and 'phone' with the actual field names
+            email: element['email'] || 'N/A',
+            phone: element['phone'] || 'N/A'
+          });
     
+          // Add the date to tableData if not already included
           if (!this.tableData.includes(datestring)) {
             this.tableData.push(datestring);
           }
@@ -100,6 +112,7 @@ export class SampleComponent implements OnInit {
     
       this.ngAfterViewInit();
     });
+    
     
 //lylregistration
 this.firestore.collection('lylregistration').get().toPromise().then(snap => {
@@ -807,6 +820,7 @@ this.firestore.collection('leads').get().toPromise().then(async snap => {
           this.tableData.push(datestring);
         }
       }
+      console.log(this.tableData, this.outputTableStructure)
     }
   });
   this.ngAfterViewInit();
