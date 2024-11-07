@@ -30,6 +30,7 @@ export class LoginComponent implements OnInit {
           this.loginError = 'Invalid email or password.';
         });
     }
+    // Your account has not been approved by an admin
   }
 
   // forgotPassword() {

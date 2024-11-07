@@ -80,7 +80,7 @@ export class AuthService {
 
   async login(email: string, password: string) {
     try {
-      const result = await this.auth.signInWithEmailAndPassword(email, password);
+      const result = await this.auth.signInWithEmailAndPassword(email, password,);
   
       if (result.user) {
         const userDoc = await this.firestore.doc<any>(`users/${result.user.uid}`).get().toPromise();

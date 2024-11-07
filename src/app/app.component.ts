@@ -32,12 +32,14 @@ export class AppComponent implements OnInit{
       this.pageTitle = route.snapshot.data.title || route.snapshot.routeConfig?.path;
       if (this.pageTitle === 'dashboard'){
         this.pageTitle = 'Growth Metrics';
-      } else if ( this.pageTitle === 'fb-data'){
+      } else if ( this.pageTitle === 'adcampaign'){
         this.pageTitle = 'Ads Campaign Sets'
       } else if ( this.pageTitle === 'leadsandsales'){
         this.pageTitle = 'Daily Leads & Sales'
       } else if ( this.pageTitle === 'salesconv'){
         this.pageTitle = ' Sales Conversion Cycle'
+      } else if ( this.pageTitle === 'dashboarddialog'){
+        this.pageTitle = ' Sales Captured'
       } else if ( this.pageTitle === 'northstar'){
         this.pageTitle = ' MarkTech North Star'
       } else if ( this.pageTitle === 'seasonalcampaign'){

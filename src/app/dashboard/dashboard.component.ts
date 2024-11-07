@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy,Input, HostListener, ViewChild  } from '@angular/core';
 import { Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
 import firebase from 'firebase/app';
@@ -9,6 +9,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { DashboarddialogComponent } from '../dashboarddialog/dashboarddialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,6 +18,8 @@ import { MatDialog } from '@angular/material/dialog';
 })
 
 export class DashboardComponent implements OnInit {
+  @ViewChild('tooltip', { static: false }) tooltip: MatTooltip | undefined;
+  tooltipVisible = false;
   loading: boolean = true;
   private unsubscribe$ = new Subject<void>();
   private currrentweeklylRegOrEntriesEmails = new Set<string>(); 
@@ -61,6 +64,22 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  showTooltip() {
+    this.tooltipVisible = true;
+    setTimeout(() => {
+      this.tooltip?.show();
+    });
+  }
+
+  hideTooltip() {
+    this.tooltipVisible = false;
+    setTimeout(() => {
+      if (!this.tooltipVisible) {
+        this.tooltip?.hide();
+      }
+    }, 300); 
+  }
+
   openDialog(element: any): void {
     const dialogRef = this.dialog.open(DashboarddialogComponent, {
       width: '400px', 
@@ -68,7 +87,7 @@ export class DashboardComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result: any) => {
-      console.log('The dialog was closed');
+      console.log('The dialog was closed');element.lastmonthtpv
     });
   }
 
@@ -136,6 +155,54 @@ export class DashboardComponent implements OnInit {
         return 0;
     }
     const percentageChange = ((currentMonthTotal - lastMonthTotal) / lastMonthTotal) * 100;
+    return percentageChange.toFixed(0);
+  }
+  weekpurchase() {
+    const lastWeekTotal = this.dataSource.data.reduce((total, item) => total + item.lastlastweektpv, 0);
+    const currentWeekTotal = this.dataSource.data.reduce((total, item) => total + item.lastweektpv, 0);
+    const percentageChange = ((currentWeekTotal - lastWeekTotal ) / lastWeekTotal) * 100;
+    return percentageChange.toFixed(0);
+  }
+  monthpurchase() {
+    const lastWeekTotal = this.dataSource.data.reduce((total, item) => total + item.lastmonthtpv, 0);
+    const currentWeekTotal = this.dataSource.data.reduce((total, item) => total + item.currentmonthtpv, 0);
+    const percentageChange = ((currentWeekTotal - lastWeekTotal ) / lastWeekTotal) * 100;
+    return percentageChange.toFixed(0);
+  }
+  weekpurchaselt() {
+    const lastWeekTotal = this.dataSource.data.reduce((total, item) => total + item.lastweekltv, 0);
+    const currentWeekTotal = this.dataSource.data.reduce((total, item) => total + item.currentweekltv, 0);
+    const percentageChange = ((currentWeekTotal - lastWeekTotal ) / lastWeekTotal) * 100;
+    return percentageChange.toFixed(0);
+  }
+  monthpurchaselt() {
+    const lastWeekTotal = this.dataSource.data.reduce((total, item) => total + item.lastlastmonthltv, 0);
+    const currentWeekTotal = this.dataSource.data.reduce((total, item) => total + item.lastmonthltv, 0);
+    const percentageChange = ((currentWeekTotal - lastWeekTotal ) / lastWeekTotal) * 100;
+    return percentageChange.toFixed(0);
+  }
+  weekpurchaselt18() {
+    const lastWeekTotal = this.dataSource.data.reduce((total, item) => total + item.lastweekparticipant, 0);
+    const currentWeekTotal = this.dataSource.data.reduce((total, item) => total + item.currentweekparticipant, 0);
+    const percentageChange = ((currentWeekTotal - lastWeekTotal ) / lastWeekTotal) * 100;
+    return percentageChange.toFixed(0);
+  }
+  monthpurchaselt18() {
+    const lastWeekTotal = this.dataSource.data.reduce((total, item) => total + item.lastmonthparticipant, 0);
+    const currentWeekTotal = this.dataSource.data.reduce((total, item) => total + item.currentmonthparticipant, 0);
+    const percentageChange = ((currentWeekTotal - lastWeekTotal ) / lastWeekTotal) * 100;
+    return percentageChange.toFixed(0);
+  }
+  weeksale() {
+    const lastWeekTotal = this.dataSource.data.reduce((total, item) => total + item.lastlastweek, 0);
+    const currentWeekTotal = this.dataSource.data.reduce((total, item) => total + item.lastweek, 0);
+    const percentageChange = ((currentWeekTotal - lastWeekTotal ) / lastWeekTotal) * 100;
+    return percentageChange.toFixed(0);
+  }
+  monthsale() {
+    const lastWeekTotal = this.dataSource.data.reduce((total, item) => total + item.lastlastmonth, 0);
+    const currentWeekTotal = this.dataSource.data.reduce((total, item) => total + item.lastmonth, 0);
+    const percentageChange = ((currentWeekTotal - lastWeekTotal ) / lastWeekTotal) * 100;
     return percentageChange.toFixed(0);
   }
   weekorder() {
@@ -268,6 +335,36 @@ weekfreetopaid() {
   }
   lastlastmonthemiecosystem() {
     return this.dataSource.data.map(t => t.lastlastmonthemiecosystem);
+  }
+  currenttpv() {
+    return this.dataSource.data.map(t => t.currentmonthtpv);
+  }
+  lasttpv() {
+    return this.dataSource.data.map(t => t.lastmonthtpv);
+  }
+  currenttp() {
+    return this.dataSource.data.map(t => t.currentmonthltv);
+  }
+  lasttp() {
+    return this.dataSource.data.map(t => t.lastmonthltv);
+  }
+  currenttp18() {
+    return this.dataSource.data.map(t => t.currentmonthparticipant);
+  }
+  lasttp18() {
+    return this.dataSource.data.map(t => t.lastmonthparticipant);
+  }
+  lastlasttpv() {
+    return this.dataSource.data.map(t => t.lastlastmonthtpv);
+  }
+  currentsale() {
+    return this.dataSource.data.map(t => t.currentmonth);
+  }
+  lastsale() {
+    return this.dataSource.data.map(t => t.lastmonth);
+  }
+  lastlastsale() {
+    return this.dataSource.data.map(t => t.lastlastmonth);
   }
   currentweektpv() {
     const totalTPV = this.dataSource.data.reduce((sum, entry) => sum + entry.currentweektpv, 0);

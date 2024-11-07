@@ -8,9 +8,14 @@
 
 <!-- <h1>Growth Metrics</h1> -->
 <br><br>
-<h2 matTooltip="•  The Average Order Value (AOV) is calculated by dividing the total purchase value made in a specific week or month by the total number of orders, taking from the increase in the number of paid users. &#10; Formula: AOV = Total Purchase Value / Total Number of Orders" 
-    matTooltipPosition="below">
-  Average Order Value
+<h2
+  matTooltip="• AOV = Total Purchase Value / Total Number of Sales"
+  matTooltipPosition="below"
+  #tooltip="matTooltip"
+  (mouseenter)="showTooltip()"
+  (mouseleave)="hideTooltip()"
+>
+  Average Sale Value
 </h2>
 
   <br><br>
@@ -25,21 +30,18 @@
         <!-- </ng-container> --> 
         <ng-container matColumnDef="lastlastweek">
             <th mat-header-cell *matHeaderCellDef mat-sort-header matTooltip="Last to previous week: {{ lastLastSunday | date:'dd/MM/YYYY' }} - {{ lastLastSaturday | date:'dd/MM/YYYY' }}  Last to previous month: {{ startOfLastLastMonths | date:'dd/MM/YYYY' }} - {{ endOfLastLastMonths | date:'dd/MM/YYYY' }}" matTooltipPosition="below" >Penultimate </th>
-                <!-- <br>W: {{ lastLastSunday | date:'dd/MM/YYYY' }} - {{ lastLastSaturday | date:'dd/MM/YYYY' }}  <br>M: {{ startOfLastLastMonths | date:'dd/MM/YYYY' }} - {{ endOfLastLastMonths | date:'dd/MM/YYYY' }} </th> -->
             <td mat-cell *matCellDef="let element">{{ lastlastweektpv() | currency:'INR':'symbol':'1.0-0' }}</td>
             <td mat-footer-cell *matFooterCellDef="let element"> {{lastlastmonthtpv() | currency:'INR':'symbol':'1.0-0' }} </td>
         </ng-container>
         <ng-container matColumnDef="currentweek">
             <th mat-header-cell *matHeaderCellDef mat-sort-header matTooltip="Last week: {{ lastSunday | date:'dd/MM/YYYY' }} - {{ lastSaturday | date:'dd/MM/YYYY' }}  Last month: {{ startOfLastMonths | date:'dd/MM/YYYY' }} - {{ endOfLastMonths | date:'dd/MM/YYYY' }}" matTooltipPosition="below">Previous </th>
-                 <!-- <br>W: {{ lastSunday | date:'dd/MM/YYYY' }} - {{ lastSaturday | date:'dd/MM/YYYY' }}  <br>M: {{ startOfLastMonths | date:'dd/MM/YYYY' }} - {{ endOfLastMonths | date:'dd/MM/YYYY' }}</th> -->
-            <td mat-cell *matCellDef="let element">{{ lastweektpv() | currency:'INR':'symbol':'1.0-0' }}</td>
+            <td mat-cell *matCellDef="let element" >{{ lastweektpv() | currency:'INR':'symbol':'1.0-0' }}</td>
             <td mat-footer-cell *matFooterCellDef="let element"> {{lastmonthtpv() | currency:'INR':'symbol':'1.0-0' }} </td>
         </ng-container>
         <ng-container matColumnDef="lastweek">
             <th mat-header-cell *matHeaderCellDef mat-sort-header matTooltip="Current week: {{ currentSunday | date:'dd/MM/YYYY' }} - {{ currentSaturday | date:'dd/MM/YYYY' }}  Current month: {{ startOfCurrentMonths | date:'dd/MM/YYYY' }} - {{ endOfCurrentMonths | date:'dd/MM/YYYY' }}" matTooltipPosition="below">Current </th>
-                <!-- <br>W: {{ currentSunday | date:'dd/MM/YYYY' }} - {{ currentSaturday | date:'dd/MM/YYYY' }}  <br>M: {{ startOfCurrentMonths | date:'dd/MM/YYYY' }} - {{ endOfCurrentMonths | date:'dd/MM/YYYY' }}</th> -->
-            <td mat-cell *matCellDef="let element">{{ currentweektpv() | currency:'INR':'symbol':'1.0-0' }}</td>
-            <td mat-footer-cell *matFooterCellDef="let element"> {{ currentmonthtpv() | currency:'INR':'symbol':'1.0-0' }} </td>
+            <td mat-cell *matCellDef="let element" >{{ currentweektpv() | currency:'INR':'symbol':'1.0-0' }}</td>
+            <td mat-footer-cell *matFooterCellDef="let element" > {{ currentmonthtpv() | currency:'INR':'symbol':'1.0-0' }} </td>
         </ng-container>
         <ng-container matColumnDef="no">
             <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
@@ -74,7 +76,133 @@
     </table>
 </div><br><br>
 
-<h2 matTooltip="•  The Average Lifetime Value (ALV) is calculated by dividing the sum of the total purchase value made from 2018 to the end of a specific week or month by the total number of participants. &#10;" matTooltipPosition="below">Average LifeTime Value </h2><br><br>
+<h2>
+  Total Purchase Value
+</h2>
+
+  <br><br>
+<div  class="table">
+    <table mat-table [dataSource]="dataSource" id="exampleTable" class="mat-elevation-z8" matSort>
+        <!-- <ng-container matColumnDef="check">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+            <td mat-cell *matCellDef="let element">td>
+            <td mat-footer-cell *matFooterCellDef="let element"> </td>
+            <td mat-cell *matCellDef="let element"><mat-checkbox></mat-checkbox></td>
+            <td mat-footer-cell *matFooterCellDef="let element"> <mat-checkbox  (click)="openDialog(element)"></mat-checkbox></td> -->
+        <!-- </ng-container> --> 
+        <ng-container matColumnDef="lastlastweek">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header matTooltip="Last to previous week: {{ lastLastSunday | date:'dd/MM/YYYY' }} - {{ lastLastSaturday | date:'dd/MM/YYYY' }}  Last to previous month: {{ startOfLastLastMonths | date:'dd/MM/YYYY' }} - {{ endOfLastLastMonths | date:'dd/MM/YYYY' }}" matTooltipPosition="below" >Penultimate </th>
+            <td mat-cell *matCellDef="let element">{{ element.lastlastweektpv | currency:'INR':'symbol':'1.0-0' }}</td>
+            <td mat-footer-cell *matFooterCellDef="let element"> {{lastlasttpv()[0] | currency:'INR':'symbol':'1.0-0' }} </td>
+        </ng-container>
+        <ng-container matColumnDef="currentweek">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header matTooltip="Last week: {{ lastSunday | date:'dd/MM/YYYY' }} - {{ lastSaturday | date:'dd/MM/YYYY' }}  Last month: {{ startOfLastMonths | date:'dd/MM/YYYY' }} - {{ endOfLastMonths | date:'dd/MM/YYYY' }}" matTooltipPosition="below">Previous </th>
+            <td mat-cell *matCellDef="let element">{{ element.lastweektpv | currency:'INR':'symbol':'1.0-0' }}</td>
+            <td mat-footer-cell *matFooterCellDef="let element"> {{lasttpv()[0] | currency:'INR':'symbol':'1.0-0' }} </td>
+        </ng-container>
+        <ng-container matColumnDef="lastweek">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header matTooltip="Current week: {{ currentSunday | date:'dd/MM/YYYY' }} - {{ currentSaturday | date:'dd/MM/YYYY' }}  Current month: {{ startOfCurrentMonths | date:'dd/MM/YYYY' }} - {{ endOfCurrentMonths | date:'dd/MM/YYYY' }}" matTooltipPosition="below">Current </th>
+            <td mat-cell *matCellDef="let element">{{ element.currentweektpv | currency:'INR':'symbol':'1.0-0' }}</td>
+            <td mat-footer-cell *matFooterCellDef="let element" > {{ currenttpv()[0] | currency:'INR':'symbol':'1.0-0' }} </td>
+        </ng-container>
+        <ng-container matColumnDef="no">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+            <td mat-cell *matCellDef="let element">Week </td>
+            <td mat-footer-cell *matFooterCellDef> Month </td>
+        </ng-container>
+        <ng-container matColumnDef="metrics">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+                matTooltip="The metric is calculated by dividing the difference between the previous value and the penultimate value by the penultimate value, then multiplying the result by 100."
+                matTooltipPosition="below">Metrics
+            </th>
+            <td mat-cell *matCellDef="let element">
+                <ng-container *ngIf="+weekpurchase() >= 0; else downArrow">
+                    {{ weekpurchase() }}% <span class="green-text"><mat-icon>arrow_upward</mat-icon></span>
+                </ng-container>
+                <ng-template #downArrow>
+                    {{ weekpurchase() }}% <span class="red-text"><mat-icon>arrow_downward</mat-icon></span>
+                </ng-template>
+            </td>
+            <td mat-footer-cell *matFooterCellDef>
+                <ng-container *ngIf="+monthpurchase() >= 0; else downArrowFooter">
+                    {{ monthpurchase() }}% <span class="green-text"><mat-icon>arrow_upward</mat-icon></span>
+                </ng-container>
+                <ng-template #downArrowFooter>
+                    {{ monthpurchase() }}% <span class="red-text"><mat-icon>arrow_downward</mat-icon></span>
+                </ng-template>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumn"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumn;"></tr>
+        <tr mat-footer-row *matFooterRowDef="displayedColumn"></tr>
+    </table>
+</div><br><br>
+
+<h2>
+    Total No.of Sales
+  </h2>
+  
+    <br><br>
+  <div  class="table">
+      <table mat-table [dataSource]="dataSource" id="exampleTable" class="mat-elevation-z8" matSort>
+          <!-- <ng-container matColumnDef="check">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+              <td mat-cell *matCellDef="let element">td>
+              <td mat-footer-cell *matFooterCellDef="let element"> </td>
+              <td mat-cell *matCellDef="let element"><mat-checkbox></mat-checkbox></td>
+              <td mat-footer-cell *matFooterCellDef="let element"> <mat-checkbox  (click)="openDialog(element)"></mat-checkbox></td> -->
+          <!-- </ng-container> --> 
+          <ng-container matColumnDef="lastlastweek">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header matTooltip="Last to previous week: {{ lastLastSunday | date:'dd/MM/YYYY' }} - {{ lastLastSaturday | date:'dd/MM/YYYY' }}  Last to previous month: {{ startOfLastLastMonths | date:'dd/MM/YYYY' }} - {{ endOfLastLastMonths | date:'dd/MM/YYYY' }}" matTooltipPosition="below" >Penultimate </th>
+              <td mat-cell *matCellDef="let element">{{ element.lastlastweek | currency:'INR':'symbol':'1.0-0' }}</td>
+              <td mat-footer-cell *matFooterCellDef="let element"> {{lastlastsale()[0] | currency:'INR':'symbol':'1.0-0' }} </td>
+          </ng-container>
+          <ng-container matColumnDef="currentweek">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header matTooltip="Last week: {{ lastSunday | date:'dd/MM/YYYY' }} - {{ lastSaturday | date:'dd/MM/YYYY' }}  Last month: {{ startOfLastMonths | date:'dd/MM/YYYY' }} - {{ endOfLastMonths | date:'dd/MM/YYYY' }}" matTooltipPosition="below">Previous </th>
+              <td mat-cell *matCellDef="let element">{{ element.lastweek | currency:'INR':'symbol':'1.0-0' }}</td>
+              <td mat-footer-cell *matFooterCellDef="let element"> {{lastsale()[0] | currency:'INR':'symbol':'1.0-0' }} </td>
+          </ng-container>
+          <ng-container matColumnDef="lastweek">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header matTooltip="Current week: {{ currentSunday | date:'dd/MM/YYYY' }} - {{ currentSaturday | date:'dd/MM/YYYY' }}  Current month: {{ startOfCurrentMonths | date:'dd/MM/YYYY' }} - {{ endOfCurrentMonths | date:'dd/MM/YYYY' }}" matTooltipPosition="below">Current </th>
+              <td mat-cell *matCellDef="let element">{{ element.currentweek | currency:'INR':'symbol':'1.0-0' }}</td>
+              <td mat-footer-cell *matFooterCellDef="let element" > {{ currentsale()[0] | currency:'INR':'symbol':'1.0-0' }} </td>
+          </ng-container>
+          <ng-container matColumnDef="no">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+              <td mat-cell *matCellDef="let element">Week </td>
+              <td mat-footer-cell *matFooterCellDef> Month </td>
+          </ng-container>
+          <ng-container matColumnDef="metrics">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header
+                  matTooltip="The metric is calculated by dividing the difference between the previous value and the penultimate value by the penultimate value, then multiplying the result by 100."
+                  matTooltipPosition="below">Metrics
+              </th>
+              <td mat-cell *matCellDef="let element">
+                  <ng-container *ngIf="+weeksale() >= 0; else downArrow">
+                      {{ weeksale() }}% <span class="green-text"><mat-icon>arrow_upward</mat-icon></span>
+                  </ng-container>
+                  <ng-template #downArrow>
+                      {{ weeksale() }}% <span class="red-text"><mat-icon>arrow_downward</mat-icon></span>
+                  </ng-template>
+              </td>
+              <td mat-footer-cell *matFooterCellDef>
+                  <ng-container *ngIf="+monthsale() >= 0; else downArrowFooter">
+                      {{ monthsale() }}% <span class="green-text"><mat-icon>arrow_upward</mat-icon></span>
+                  </ng-container>
+                  <ng-template #downArrowFooter>
+                      {{ monthsale() }}% <span class="red-text"><mat-icon>arrow_downward</mat-icon></span>
+                  </ng-template>
+              </td>
+          </ng-container>
+  
+          <tr mat-header-row *matHeaderRowDef="displayedColumn"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumn;"></tr>
+          <tr mat-footer-row *matFooterRowDef="displayedColumn"></tr>
+      </table>
+  </div><br><br>
+
+<h2 matTooltip="• The Average Lifetime Value (ALV) is calculated by dividing the sum of the total purchase value made from 2018 to the end of a specific week or month by the total number of participants. &#10; ALV = Total Purchase Value / Total no.of Participants" matTooltipPosition="below">Average LifeTime Value </h2><br><br>
 <div  class="table">
     <table mat-table [dataSource]="dataSource" id="exampleTable" class="mat-elevation-z8" matSort>
         <ng-container matColumnDef="currentweek">
@@ -118,6 +246,124 @@
         <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
     </table>
 </div><br><br>
+
+<h2>
+    Total Purchase Value From 2018 To Specific Period
+  </h2>
+  
+    <br><br>
+  <div  class="table">
+      <table mat-table [dataSource]="dataSource" id="exampleTable" class="mat-elevation-z8" matSort>
+          <!-- <ng-container matColumnDef="check">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+              <td mat-cell *matCellDef="let element">td>
+              <td mat-footer-cell *matFooterCellDef="let element"> </td>
+              <td mat-cell *matCellDef="let element"><mat-checkbox></mat-checkbox></td>
+              <td mat-footer-cell *matFooterCellDef="let element"> <mat-checkbox  (click)="openDialog(element)"></mat-checkbox></td> -->
+          <!-- </ng-container> --> 
+          
+          <ng-container matColumnDef="currentweek">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header matTooltip="Last week: {{ lastSunday | date:'dd/MM/YYYY' }} - {{ lastSaturday | date:'dd/MM/YYYY' }}  Last month: {{ startOfLastMonths | date:'dd/MM/YYYY' }} - {{ endOfLastMonths | date:'dd/MM/YYYY' }}" matTooltipPosition="below">Previous </th>
+              <td mat-cell *matCellDef="let element">{{ element.lastweekltv | currency:'INR':'symbol':'1.0-0' }}</td>
+              <td mat-footer-cell *matFooterCellDef="let element"> {{lasttp()[0] | currency:'INR':'symbol':'1.0-0' }} </td>
+          </ng-container>
+          <ng-container matColumnDef="lastweek">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header matTooltip="Current week: {{ currentSunday | date:'dd/MM/YYYY' }} - {{ currentSaturday | date:'dd/MM/YYYY' }}  Current month: {{ startOfCurrentMonths | date:'dd/MM/YYYY' }} - {{ endOfCurrentMonths | date:'dd/MM/YYYY' }}" matTooltipPosition="below">Current </th>
+              <td mat-cell *matCellDef="let element">{{ element.currentweekltv | currency:'INR':'symbol':'1.0-0' }}</td>
+              <td mat-footer-cell *matFooterCellDef="let element" > {{ currenttp()[0] | currency:'INR':'symbol':'1.0-0' }} </td>
+          </ng-container>
+          <ng-container matColumnDef="no">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+              <td mat-cell *matCellDef="let element">Week </td>
+              <td mat-footer-cell *matFooterCellDef> Month </td>
+          </ng-container>
+          <ng-container matColumnDef="metrics">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header
+                  matTooltip="The metric is calculated by dividing the difference between the previous value and the penultimate value by the penultimate value, then multiplying the result by 100."
+                  matTooltipPosition="below">Metrics
+              </th>
+              <td mat-cell *matCellDef="let element">
+                  <ng-container *ngIf="+weekpurchaselt() >= 0; else downArrow">
+                      {{ weekpurchaselt() }}% <span class="green-text"><mat-icon>arrow_upward</mat-icon></span>
+                  </ng-container>
+                  <ng-template #downArrow>
+                      {{ weekpurchaselt() }}% <span class="red-text"><mat-icon>arrow_downward</mat-icon></span>
+                  </ng-template>
+              </td>
+              <td mat-footer-cell *matFooterCellDef>
+                  <ng-container *ngIf="+monthpurchaselt() >= 0; else downArrowFooter">
+                      {{ monthpurchaselt() }}% <span class="green-text"><mat-icon>arrow_upward</mat-icon></span>
+                  </ng-container>
+                  <ng-template #downArrowFooter>
+                      {{ monthpurchaselt() }}% <span class="red-text"><mat-icon>arrow_downward</mat-icon></span>
+                  </ng-template>
+              </td>
+          </ng-container>
+  
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+      </table>
+  </div><br><br>
+
+  <h2>
+    Total No.of Participant From 2018 To Specific Period
+  </h2>
+  
+    <br><br>
+  <div  class="table">
+      <table mat-table [dataSource]="dataSource" id="exampleTable" class="mat-elevation-z8" matSort>
+          <!-- <ng-container matColumnDef="check">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+              <td mat-cell *matCellDef="let element">td>
+              <td mat-footer-cell *matFooterCellDef="let element"> </td>
+              <td mat-cell *matCellDef="let element"><mat-checkbox></mat-checkbox></td>
+              <td mat-footer-cell *matFooterCellDef="let element"> <mat-checkbox  (click)="openDialog(element)"></mat-checkbox></td> -->
+          <!-- </ng-container> --> 
+          
+          <ng-container matColumnDef="currentweek">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header matTooltip="Last week: {{ lastSunday | date:'dd/MM/YYYY' }} - {{ lastSaturday | date:'dd/MM/YYYY' }}  Last month: {{ startOfLastMonths | date:'dd/MM/YYYY' }} - {{ endOfLastMonths | date:'dd/MM/YYYY' }}" matTooltipPosition="below">Previous </th>
+              <td mat-cell *matCellDef="let element">{{ element.lastweekparticipant | currency:'INR':'symbol':'1.0-0' }}</td>
+              <td mat-footer-cell *matFooterCellDef="let element"> {{lasttp18()[0] | currency:'INR':'symbol':'1.0-0' }} </td>
+          </ng-container>
+          <ng-container matColumnDef="lastweek">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header matTooltip="Current week: {{ currentSunday | date:'dd/MM/YYYY' }} - {{ currentSaturday | date:'dd/MM/YYYY' }}  Current month: {{ startOfCurrentMonths | date:'dd/MM/YYYY' }} - {{ endOfCurrentMonths | date:'dd/MM/YYYY' }}" matTooltipPosition="below">Current </th>
+              <td mat-cell *matCellDef="let element">{{ element.currentweekparticipant | currency:'INR':'symbol':'1.0-0' }}</td>
+              <td mat-footer-cell *matFooterCellDef="let element" > {{ currenttp18()[0] | currency:'INR':'symbol':'1.0-0' }} </td>
+          </ng-container>
+          <ng-container matColumnDef="no">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+              <td mat-cell *matCellDef="let element">Week </td>
+              <td mat-footer-cell *matFooterCellDef> Month </td>
+          </ng-container>
+          <ng-container matColumnDef="metrics">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header
+                  matTooltip="The metric is calculated by dividing the difference between the previous value and the penultimate value by the penultimate value, then multiplying the result by 100."
+                  matTooltipPosition="below">Metrics
+              </th>
+              <td mat-cell *matCellDef="let element">
+                  <ng-container *ngIf="+weekpurchaselt18() >= 0; else downArrow">
+                      {{ weekpurchaselt18() }}% <span class="green-text"><mat-icon>arrow_upward</mat-icon></span>
+                  </ng-container>
+                  <ng-template #downArrow>
+                      {{ weekpurchaselt18() }}% <span class="red-text"><mat-icon>arrow_downward</mat-icon></span>
+                  </ng-template>
+              </td>
+              <td mat-footer-cell *matFooterCellDef>
+                  <ng-container *ngIf="+monthpurchaselt18() >= 0; else downArrowFooter">
+                      {{ monthpurchaselt18() }}% <span class="green-text"><mat-icon>arrow_upward</mat-icon></span>
+                  </ng-container>
+                  <ng-template #downArrowFooter>
+                      {{ monthpurchaselt18() }}% <span class="red-text"><mat-icon>arrow_downward</mat-icon></span>
+                  </ng-template>
+              </td>
+          </ng-container>
+  
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+      </table>
+  </div><br><br>
 
 <!-- <h2>Increase in Number of Free to Paid User </h2><br><br>
 <div  class="table">
@@ -163,11 +409,33 @@
     </table>
 </div><br><br> -->
 
+<h2 matTooltip="•  During a specific period, purchases were made on the following products:
 
-<h2 matTooltip="•  During a specific period, the focus is on the following products:
-New DFU: CTD, SMP, EIStarterpack, BTExtreme, EISolution, HealthExplorative, A&H Custom Solution, EISubscription, WISH, A&H Light, and Critical Support.
-DFU+A&H: uP!, FTM, BiG & Continuity, CPM & Upgrade, FTM & BiG SLD CI.
-Funnel: CTD, SMP, and NLP Mc &#10;" matTooltipPosition="below">Increase in Number of Paid Users</h2><br><br>
+New DFU:
+
+CTD,
+SMP,
+EI Starter Pack,
+BT Extreme,
+EI Solution,
+Health Explorative,
+A&H Custom Solution,
+EI Subscription,
+WISH,
+A&H Light,
+Critical Support
+DFU + A&H:
+
+uP!,
+FTM,
+BiG & Continuity,
+CPM & Upgrade,
+FTM & BiG SLD CI
+Funnel:
+
+CTD,
+SMP,
+NLP Mc &#10;" matTooltipPosition="below">Increase in Number of Paid Users</h2><br><br>
 
 <div  class="table">
     <table mat-table [dataSource]="dataSource" id="exampleTable" class="mat-elevation-z8" matSort>
@@ -222,7 +490,7 @@ Funnel: CTD, SMP, and NLP Mc &#10;" matTooltipPosition="below">Increase in Numbe
     </table>
 </div><br><br>
 
-<h2 matTooltip="•  During a specific period, the focus is on DFU+A&H products, which include uP!, FTM, BiG & Continuity, CPM & upgrade, FTM & BiG SLD CI, and LYL L2. &#10;" matTooltipPosition="below">Increase in Number of People in Subscription of Ecosystem Product</h2><br><br>
+<h2 matTooltip="•  During a specific period, purchases were made on the following DFU+A&H products, which include uP!, FTM, BiG & Continuity, CPM & upgrade, FTM & BiG SLD CI, and LYL L2. &#10;" matTooltipPosition="below">Increase in Number of People in Subscription of Ecosystem Product</h2><br><br>
 <div class="table">
     <table mat-table [dataSource]="dataSource" id="exampleTable" class="mat-elevation-z8" matSort>
         <ng-container matColumnDef="lastlastweek">
@@ -275,7 +543,7 @@ Funnel: CTD, SMP, and NLP Mc &#10;" matTooltipPosition="below">Increase in Numbe
     </table>
 </div><br><br>
 
-<h2 matTooltip="•  During a specific period, the focus is on DFU+A&H products (including uP!, FTM, BiG & Continuity, CPM & upgrade, FTM & BiG with SLD CI, and LYL L2) with EMI subscription." matTooltipPosition="below">Increase in Number of Active Participant in EMI </h2><br><br>
+<h2 matTooltip="•  During a specific period, purchases were made on the following DFU+A&H products (which including uP!, FTM, BiG & Continuity, CPM & upgrade, FTM & BiG with SLD CI, and LYL L2) with EMI subscription." matTooltipPosition="below">Increase in Number of Active Participant in EMI </h2><br><br>
 <div  class="table">
     <table mat-table [dataSource]="dataSource" id="exampleTable" class="mat-elevation-z8" matSort>
         <ng-container matColumnDef="lastlastweek">

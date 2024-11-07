@@ -20,8 +20,8 @@
         </div>
     </div> -->
 
-<div class="container" *ngFor="let item of dataSource.data">
-    <div class="data-item">
+<!-- <div class="container" *ngFor="let item of dataSource.data">
+    <div class="data-item"> -->
       <!-- <div class="data-row">
         <span class="value">Penultimate Month</span>
         <span class="value">CTD: {{penultimateMonthData.CTD}}</span>
@@ -58,7 +58,7 @@
         <span class="label">EI Subscription For Entrepreneurs: {{item.lEISubscriptionforEntrepreneurs}}</span>
       </div> -->
   
-      <div class="data-row">
+      <!-- <div class="data-row">
         <span class="value">Current Month</span>
         <span class="label">CTD: {{item.CTD}}</span>
         <span class="label">Critical Support: {{item.CriticalSupport}}</span>
@@ -76,7 +76,7 @@
         <span class="label">EI Subscription For Entrepreneurs: {{item.EISubscriptionforEntrepreneurs}}</span>
       </div>
     </div>
-  </div>
+  </div> -->
   
   <button mat-button (click)="exportexcel()" class="export-excel-btn">Export</button>
 
@@ -93,9 +93,24 @@
       <td mat-cell *matCellDef="let element"> {{element.email}} </td>
     </ng-container>
 
-    <ng-container matColumnDef="phone">
+    <ng-container matColumnDef="mobile">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Phone </th>
-      <td mat-cell *matCellDef="let element"> {{element.phone}} </td>
+      <td mat-cell *matCellDef="let element"> {{element.mobile}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="journeyname">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> JourneyName </th>
+      <td mat-cell *matCellDef="let element"> {{element.journeyname}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="totalpurchasevalue">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> TotalPurchaseValue </th>
+      <td mat-cell *matCellDef="let element"> {{element.totalpurchasevalue}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="converteddate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Convrteddate </th>
+      <td mat-cell *matCellDef="let element"> {{element.converteddate.toDate() | date:'dd/MM/yyyy' }} </td>
     </ng-container>
 
     <!-- <ng-container matColumnDef="entrydate">

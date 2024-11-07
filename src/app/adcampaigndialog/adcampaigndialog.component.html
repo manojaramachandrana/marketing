@@ -1,0 +1,13 @@
+<h1 mat-dialog-title>Campaign Details</h1>
+<div mat-dialog-content>
+  <p><strong>Date:</strong> {{ data.date }}</p>
+  <p><strong>Campaigns:</strong></p>
+  <ul>
+    <li *ngFor="let campaign of data.campaigns">
+      {{ campaign.name }} - {{ campaign.adaccount }}
+    </li>
+  </ul>
+</div>
+<div mat-dialog-actions>
+  <button mat-button mat-dialog-close>Close</button>
+</div>
