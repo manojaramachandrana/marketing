@@ -537,12 +537,156 @@ export class SalesconvComponent implements OnInit {
     if (conversion.includes('conversion360')) {
       if (row.conversion360conv) conversionData = conversionData.concat(row.conversion360conv);
     }
-  
+
     this.dialog.open(ConversionDialogComponent, {
       data: { conversionData },
       width: '80%',
       height: '80%'
     });
+  }
+
+  getleads(): number {
+    if (!this.outputTableStructure) {
+      console.log("outputTableStructure is empty or undefined");
+      return 0;
+    }
+  
+    console.log("outputTableStructure:", this.outputTableStructure);
+    return Object.values(this.outputTableStructure)
+      .map((item: any) => item.leads || 0)
+      .reduce((acc, value) => acc + value, 0);
+  }
+
+  getsales(): number {
+    if (!this.outputTableStructure) {
+      console.log("outputTableStructure is empty or undefined");
+      return 0;
+    }
+  
+    console.log("outputTableStructure:", this.outputTableStructure);
+    return Object.values(this.outputTableStructure)
+      .map((item: any) => item.sales || 0)
+      .reduce((acc, value) => acc + value, 0);
+  }
+
+  getconversion1(): number {
+    if (!this.outputTableStructure) {
+      console.log("outputTableStructure is empty or undefined");
+      return 0;
+    }
+  
+    console.log("outputTableStructure:", this.outputTableStructure);
+    return Object.values(this.outputTableStructure)
+      .map((item: any) => item.conversion1 || 0)
+      .reduce((acc, value) => acc + value, 0);
+  }
+
+  getconversion7(): number {
+    if (!this.outputTableStructure) {
+      console.log("outputTableStructure is empty or undefined");
+      return 0;
+    }
+  
+    console.log("outputTableStructure:", this.outputTableStructure);
+    return Object.values(this.outputTableStructure)
+      .map((item: any) => item.conversion7 || 0)
+      .reduce((acc, value) => acc + value, 0);
+  }
+
+  getconversion20(): number {
+    if (!this.outputTableStructure) {
+      console.log("outputTableStructure is empty or undefined");
+      return 0;
+    }
+  
+    console.log("outputTableStructure:", this.outputTableStructure);
+    return Object.values(this.outputTableStructure)
+      .map((item: any) => item.conversion20 || 0)
+      .reduce((acc, value) => acc + value, 0);
+  }
+
+  getconversion30(): number {
+    if (!this.outputTableStructure) {
+      console.log("outputTableStructure is empty or undefined");
+      return 0;
+    }
+  
+    console.log("outputTableStructure:", this.outputTableStructure);
+    return Object.values(this.outputTableStructure)
+      .map((item: any) => item.conversion30 || 0)
+      .reduce((acc, value) => acc + value, 0);
+  }
+
+  getconversion45(): number {
+    if (!this.outputTableStructure) {
+      console.log("outputTableStructure is empty or undefined");
+      return 0;
+    }
+  
+    console.log("outputTableStructure:", this.outputTableStructure);
+    return Object.values(this.outputTableStructure)
+      .map((item: any) => item.conversion45 || 0)
+      .reduce((acc, value) => acc + value, 0);
+  }
+
+  getconversion60(): number {
+    if (!this.outputTableStructure) {
+      console.log("outputTableStructure is empty or undefined");
+      return 0;
+    }
+  
+    console.log("outputTableStructure:", this.outputTableStructure);
+    return Object.values(this.outputTableStructure)
+      .map((item: any) => item.conversion60 || 0)
+      .reduce((acc, value) => acc + value, 0);
+  }
+
+  getconversion90(): number {
+    if (!this.outputTableStructure) {
+      console.log("outputTableStructure is empty or undefined");
+      return 0;
+    }
+  
+    console.log("outputTableStructure:", this.outputTableStructure);
+    return Object.values(this.outputTableStructure)
+      .map((item: any) => item.conversion90 || 0)
+      .reduce((acc, value) => acc + value, 0);
+  }
+
+  getconversion120(): number {
+    if (!this.outputTableStructure) {
+      console.log("outputTableStructure is empty or undefined");
+      return 0;
+    }
+  
+    console.log("outputTableStructure:", this.outputTableStructure);
+    return Object.values(this.outputTableStructure)
+      .map((item: any) => item.conversion120 || 0)
+      .reduce((acc, value) => acc + value, 0);
+  }
+
+  getconversion240(): number {
+    if (!this.outputTableStructure) {
+      console.log("outputTableStructure is empty or undefined");
+      return 0;
+    }
+  
+    console.log("outputTableStructure:", this.outputTableStructure);
+    return Object.values(this.outputTableStructure)
+      .map((item: any) => item.conversion240 || 0)
+      .reduce((acc, value) => acc + value, 0);
+  }
+
+  getconversion360(): number {
+    if (!this.outputTableStructure) {
+      console.log("outputTableStructure is empty or undefined");
+      return 0;
+    }
+  
+    console.log("outputTableStructure:", this.outputTableStructure);
+    return Object.values(this.outputTableStructure)
+      .map((item: any) => item.conversion360 || 0)
+      .reduce((acc, value) => acc + value, 0);
   }
   
 
@@ -560,12 +704,10 @@ export class SalesconvComponent implements OnInit {
   // }
 
   ngAfterViewInit() {
-   
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
     this.dataSource.data = (this.tableData).sort();
   }
-  
 
   convertToDate(timestamp: any): Date | null {
     if (timestamp instanceof firebase.firestore.Timestamp) {
@@ -596,3 +738,4 @@ export class SalesconvComponent implements OnInit {
     this.outputTableStructure = sortedOutputTableStructure;
   }
 }
+ 

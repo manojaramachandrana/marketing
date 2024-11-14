@@ -7,7 +7,7 @@
     background-color: #f0f0f0;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 80%; /* Adjust the width as needed */
+    width: 80%; 
   }
   
   .data-item {
@@ -17,15 +17,15 @@
     margin: 10px;
     padding: 20px;
     display: flex;
-    flex-wrap: wrap; /* Allows rows to wrap to the next line if they exceed the container width */
-    gap: 10px; /* Adds space between the rows */
+    flex-wrap: wrap; 
+    gap: 10px; 
   }
   
   .data-row {
     display: flex;
     align-items: center;
     margin: 5px 0;
-    flex-basis: 100%; /* Allows rows to take full width */
+    flex-basis: 100%; 
   }
   
   .label {
@@ -36,4 +36,61 @@
   .value {
     color: black;
   }
+
+  /* .date-range-filter-container {
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+    margin-bottom: 20px; 
+  }
+  
+  .mat-form-field {
+    min-width: 250px; 
+  }
+  
+  .filter-btn,
+  .export-excel-btn {
+    background-color: g; 
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+  
+  .filter-btn:hover,
+  .export-excel-btn:hover {
+    background-color: #303f9f;
+  } */
+
+  .filter-container {
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for 3D effect */
+    margin-bottom: 20px;
+  }
+  
+  .form-field {
+    width: 100%; /* Full width for the form field */
+    margin-bottom: 15px; /* Space between fields */
+  }
+  
+  .search-button {
+    background-color: #a193b5; /* Primary color */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    transition: background-color 0.3s, transform 0.2s; /* Smooth transitions */
+  }
+  
+  .search-button:hover {
+    background-color: #3700b3; /* Darker shade on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+  }
+  
   

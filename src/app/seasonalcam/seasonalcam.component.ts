@@ -25,8 +25,6 @@ interface TableData {
   homepage: number;
   lylregister?: number;
 }
-// febyjohnson@gmail.com
-// leena7384@gmal.com
 
 @Component({
   selector: 'app-seasonalcam',
@@ -101,73 +99,72 @@ export class SeasonalcamComponent implements OnInit {
     });
 
     // sales count
-    this.firestore.collection('seasonalcampaign').get().toPromise().then(async (snap) => {
-      const campaignPromises = snap.docs.map(async (doc) => {
-        const seasonCampaignElement = doc.data();
-    
-        if (seasonCampaignElement['campaign'] !== undefined) {
-          let datestring = seasonCampaignElement['campaign'];
-    
-          this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || {
-            campaign: datestring,
-            count: 0,
-            sales: 0,
-            salevalue: 0,
-            liquidity: 0,
-            leads: []
-          };
-    
-          let leadsSnap = await this.firestore
-            .collection('leads', (ref) => ref.where('email', '==', seasonCampaignElement['email']))
-            .get()
-            .toPromise();
-    
-          leadsSnap.docs.forEach((leadDoc) => {
-            const leadElement = leadDoc.data();
-    
-            let purchaseDate = new firebase.firestore.Timestamp(leadElement['purchasedate']['_seconds'], leadElement['purchasedate']['_nanoseconds']).toDate();
-            let campaignCreatedDate = seasonCampaignElement['createddate'].toDate();
-    
-            if (purchaseDate > campaignCreatedDate) {
-              this.outputTableStructure[datestring]['sales'] += 1;
-              this.outputTableStructure[datestring]['salevalue'] += leadElement['totalpurchasevalue'] || 0;
-              this.outputTableStructure[datestring]['liquidity'] += leadElement['initialpayment'] || 0;
+this.firestore.collection('seasonalcampaign').get().toPromise().then(async (snap) => {
+  const campaignPromises = snap.docs.map(async (doc) => {
+    const seasonCampaignElement = doc.data();
 
-              if (Array.isArray(this.outputTableStructure[datestring]['leads'])) {
-                this.outputTableStructure[datestring]['leads'].push({
-                  name: leadElement['name'],
-                  email: leadElement['email'],
-                  mobile: leadElement['mobile'],
-                  product: leadElement['journeyname'],
-                  purchaseDate: purchaseDate,
-                  totalPurchaseValue: leadElement['totalpurchasevalue'],
-                  initialPayment: leadElement['initialpayment']
-                });
-              } else {
-                console.error(`Leads is not an array or undefined for datestring: ${datestring}`);
-                // console.log(this.outputTableStructure[datestring]['leads'] = [{
-                //   name: leadElement['name'],
-                //   email: leadElement['email'],
-                //   mobile: leadElement['mobile']
-                // }])
-              }
+    if (seasonCampaignElement['campaign'] !== undefined) {
+      let datestring = seasonCampaignElement['campaign'];
 
-              // this.outputTableStructure[datestring]['lead'].push({
-              //   name: leadElement['name'],
-              //   email: leadElement['email'],
-              //   mobile: leadElement['mobile'],
-              //   purchaseDate: purchaseDate,
-              //   totalPurchaseValue: leadElement['totalpurchasevalue'],
-              //   initialPayment: leadElement['initialpayment']
-              // });
-    
-              if (!this.tableData.includes(datestring)) {
-                this.tableData.push(datestring);
-              }
+      // Check if the campaign entry exists, if not, initialize it including uniqueEmails as a Set
+      if (!this.outputTableStructure[datestring]) {
+        this.outputTableStructure[datestring] = {
+          campaign: datestring,
+          count: 0,
+          sales: 0,
+          salevalue: 0,
+          liquidity: 0,
+          leads: [],
+          uniqueEmails: new Set<string>() // Ensure uniqueEmails is always initialized here
+        };
+      }
+
+      // Ensure uniqueEmails exists in case it wasn’t initialized correctly
+      if (!this.outputTableStructure[datestring].uniqueEmails) {
+        this.outputTableStructure[datestring].uniqueEmails = new Set<string>();
+      }
+
+      let leadsSnap = await this.firestore
+        .collection('leads', (ref) => ref.where('email', '==', seasonCampaignElement['email']))
+        .get()
+        .toPromise();
+
+      leadsSnap.docs.forEach((leadDoc) => {
+        const leadElement = leadDoc.data();
+
+        let purchaseDate = new firebase.firestore.Timestamp(leadElement['purchasedate']['_seconds'], leadElement['purchasedate']['_nanoseconds']).toDate();
+        let campaignCreatedDate = seasonCampaignElement['createddate'].toDate();
+
+        if (purchaseDate > campaignCreatedDate) {
+          const email = leadElement['email'];
+
+          // Now safely check for and add the email to uniqueEmails
+          if (!this.outputTableStructure[datestring].uniqueEmails.has(email)) {
+            this.outputTableStructure[datestring].uniqueEmails.add(email); // Add email to set
+            this.outputTableStructure[datestring]['sales'] += 1;
+            this.outputTableStructure[datestring]['salevalue'] += leadElement['totalpurchasevalue'] || 0;
+            this.outputTableStructure[datestring]['liquidity'] += leadElement['initialpayment'] || 0;
+
+            if (Array.isArray(this.outputTableStructure[datestring]['leads'])) {
+              this.outputTableStructure[datestring]['leads'].push({
+                name: leadElement['name'],
+                email: leadElement['email'],
+                mobile: leadElement['mobile'],
+                product: leadElement['journeyname'],
+                purchaseDate: purchaseDate,
+                totalPurchaseValue: leadElement['totalpurchasevalue'],
+                initialPayment: leadElement['initialpayment']
+              });
             }
-          });
+          }
+
+          if (!this.tableData.includes(datestring)) {
+            this.tableData.push(datestring);
+          }
         }
       });
+    }
+  });
 
       this.firestore.collection('adsinsight').get().toPromise().then(adsSnap => {
         adsSnap.docs.forEach((adDoc: any) => {

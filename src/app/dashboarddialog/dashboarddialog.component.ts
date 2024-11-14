@@ -722,7 +722,8 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
-import { Observable, Subject } from 'rxjs';
+import { FormGroup, FormControl } from '@angular/forms';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
@@ -732,8 +733,8 @@ export interface DialogData {
   name: string;
   mobile: string;
   email: string;
-  totalpurchasevalue: string;
-  converteddate: firebase.firestore.Timestamp; // Firebase Timestamp type
+  totalpurchasevalue: number;
+  converteddate: firebase.firestore.Timestamp; 
   journeyname: string;
 }
 
@@ -746,7 +747,17 @@ export class DashboarddialogComponent implements OnInit, OnDestroy {
   fileName = 'ExportExcel.xlsx';
   private unsubscribe$ = new Subject<void>();
   dataSourceopportunities = new MatTableDataSource<DialogData>();
-  displayedColumns: string[] = ['name', 'email', 'mobile','journeyname', 'totalpurchasevalue', 'converteddate'];
+  displayedColumns: string[] = ['name', 'email', 'mobile', 'journeyname', 'totalpurchasevalue', 'converteddate'];
+  dataforfilter = [];
+  totalPurchaseValue: number = 0;
+  
+  startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+  endOfMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
+ 
+  dateRangeForm = new FormGroup({
+    start: new FormControl(),
+    end: new FormControl()
+  });
 
   @ViewChild(MatSort) sort: MatSort;
 
@@ -754,27 +765,80 @@ export class DashboarddialogComponent implements OnInit, OnDestroy {
     this.firestore.collection<DialogData>('leads').valueChanges().pipe(
       takeUntil(this.unsubscribe$)
     ).subscribe(data => {
-      // Sorting by converteddate in descending order before assigning to data source
       data.sort((a, b) => {
         const dateA = a.converteddate.toDate().getTime();
         const dateB = b.converteddate.toDate().getTime();
-        return dateB - dateA;
+        return dateA - dateB;
       });
-
       this.dataSourceopportunities.data = data;
+      this.dataforfilter = this.dataSourceopportunities.data
+      this.applyCurrentMonthFilter()
+     // console.log(this.dataforfilter,this.dataSourceopportunities.data)
     });
   }
 
   ngOnInit(): void {
-    this.dataSourceopportunities.sort = this.sort;  // Set sorting for the data source
+    this.dataSourceopportunities.sort = this.sort; 
   }
-  //   exportexcel(): void {
-//     TableUtil.exportToExcel("exampleTable");
-//   }
 
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
+  }
+
+  onDateRangeChange(): void {
+    const { start, end } = this.dateRangeForm.value;
+    if (start && end) {
+      const fromDateTime = start.getTime();
+      const toDateTime = end.getTime();
+
+      this.dataSourceopportunities.data = this.dataforfilter
+     
+       this.dataSourceopportunities.data = this.dataSourceopportunities.data.filter(item => {
+        const itemDateTime = item.converteddate.toDate().getTime();
+        return itemDateTime >= fromDateTime && itemDateTime <= toDateTime;
+      });
+      this.calculateTotalPurchaseValue();
+    }
+  }
+//       if ( !this.dataSourceopportunities.data.length) {
+//   return 0;
+// } 
+// this.data = this.dataSourceopportunities.data;
+// return (this.data).map(this.dataSourceopportunities.data.totalpurchasevalue || 0).reduce((acc, value) => acc + value, 0);
+
+// calculateTotalPurchaseValue(): void {
+//   this.totalPurchaseValue = this.dataSourceopportunities.data
+//     .map(item => Number(item.totalpurchasevalue) || 0)
+//     .reduce((acc, value) => acc + value, 0);
+// }
+
+calculateTotalPurchaseValue(): number {
+  if (!this.dataSourceopportunities || !this.dataSourceopportunities.data || !this.dataSourceopportunities.data.length) {
+    return 0;
+  }
+  return this.dataSourceopportunities.data
+    .map(item => item.totalpurchasevalue || 0)
+    .reduce((acc, value) => acc + value, 0);
+}
+
+
+// getamountSpend(): number {
+//   if ( !this.tableData.length) {
+//     return 0;
+//   } 
+//   this.data = this.dataSource.data;
+//   return (this.data).map(date => this.outputTableStructure[date]?.amountSpend || 0).reduce((acc, value) => acc + value, 0);
+// }
+
+
+  applyCurrentMonthFilter(): void {
+    this.dataSourceopportunities.data = this.dataforfilter
+    this.dataSourceopportunities.data = this.dataSourceopportunities.data.filter(item => {
+      const itemDate = item.converteddate.toDate();
+      return itemDate >= this.startOfMonth && itemDate <= this.endOfMonth;
+    });
+    this.calculateTotalPurchaseValue();
   }
 
   exportexcel(): void {
@@ -784,5 +848,3 @@ export class DashboarddialogComponent implements OnInit, OnDestroy {
     XLSX.writeFile(wb, this.fileName);
   }
 }
-
-
