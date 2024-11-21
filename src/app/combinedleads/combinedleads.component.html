@@ -27,12 +27,12 @@
         matSortDirection="desc">
 
         <ng-container matColumnDef="date">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Webinar</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Webinars</th>
             <td mat-cell *matCellDef><strong>LYL</strong></td>
         </ng-container>
 
         <ng-container matColumnDef="lylreg">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>LYL <br> Registration</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Registration</th>
             <td mat-cell *matCellDef (click)="onRowClick(outputTableStructure,'lylregistered',form.get('daterange').value.start, form.get('daterange').value.end)"><strong>{{ getlylregister() }}</strong></td>
         </ng-container>
 

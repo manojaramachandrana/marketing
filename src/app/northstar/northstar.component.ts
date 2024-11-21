@@ -28,7 +28,7 @@
 //     const last30daysDate = this.getLast30DaysDate();
 
 //     const spendQuery = this.firestore.collection('adsinsight', ref =>
-//       ref.where('docdate', '>=', firebase.firestore.Timestamp.fromDate(last30daysDate))
+//       ref.where('docdate', '>=', firebase.firesstore.Timestamp.fromDate(last30daysDate))
 //     ).valueChanges().pipe(
 //       map((ads: any[]) => ads.reduce((sum, ad) => sum + ad.amountSpend, 0))
 //     );
@@ -87,7 +87,6 @@
 //   }
 // }
 
-
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { combineLatest } from 'rxjs';
@@ -100,6 +99,7 @@ import 'firebase/firestore';
   templateUrl: './northstar.component.html',
   styleUrls: ['./northstar.component.css']
 })
+
 export class NorthstarComponent implements OnInit {
   totalAmountSpent: number = 0;
   totalReturn: number = 0;
@@ -118,23 +118,65 @@ export class NorthstarComponent implements OnInit {
 
   fetchDataInRange(): void {
     const start = firebase.firestore.Timestamp.fromDate(this.startDate);
+    const startad = new Date(this.startDate)
+    startad.setDate(startad.getDate() + 1)
+    const started = firebase.firestore.Timestamp.fromDate(startad);
 
     const endDateWithOneDayAdded = new Date(this.endDate);
+    const endDateWithOneDayAddedone = new Date(this.endDate);
     endDateWithOneDayAdded.setDate(endDateWithOneDayAdded.getDate() + 1);
     const end = firebase.firestore.Timestamp.fromDate(endDateWithOneDayAdded);
+    endDateWithOneDayAddedone.setDate(endDateWithOneDayAddedone.getDate() + 2);
+    const enddat = firebase.firestore.Timestamp.fromDate(endDateWithOneDayAddedone);
     
-
     const spendQuery = this.firestore.collection('adsinsight', ref =>
-      ref.where('docdate', '>=', start).where('docdate', '<=', end)
+      ref.where('docdate', '>=', started).where('docdate', '<=', enddat)
     ).valueChanges().pipe(
       map((ads: any[]) => ads.reduce((sum, ad) => sum + ad.amountSpend, 0))
     );
 
+    // const returnQuery = this.firestore.collection('leads', ref =>
+    //   ref.where('converteddate', '>=', start).where('converteddate', '<=', end)
+    // ).valueChanges().pipe(
+    //   map((leads: any[]) => leads.reduce((sum, lead) => sum + lead.totalpurchasevalue, 0))
+    // );
+
     const returnQuery = this.firestore.collection('leads', ref =>
-      ref.where('converteddate', '>=', start).where('converteddate', '<=', end)
+      ref.where('purchasedate._seconds', '>=', start.seconds)
+         .where('purchasedate._seconds', '<=', end.seconds)
     ).valueChanges().pipe(
-      map((leads: any[]) => leads.reduce((sum, lead) => sum + lead.totalpurchasevalue, 0))
+      map((leads: any[]) => leads.reduce((sum, lead) => {
+        const purchaseDateTimestamp = new firebase.firestore.Timestamp(
+          lead['purchasedate']._seconds,
+          lead['purchasedate']._nanoseconds
+        );
+    
+        return purchaseDateTimestamp >= start && purchaseDateTimestamp <= end 
+          ? sum + lead.totalpurchasevalue 
+          : sum;
+      }, 0))
     );
+
+    // new firebase.firestore.Timestamp(
+    //   element['purchasedate']['_seconds'], 
+    //   element['purchasedate']['_nanoseconds']
+    // )
+    // const returnQuery = this.firestore.collection('leads', ref =>
+    //   ref.where('purchasedate', '>=', start).where('purchasedate', '<=', end)
+    // ).valueChanges().pipe(
+    //   map((leads: any[]) => 
+    //     leads.reduce((sum, lead) => {
+    //       const purchaseDateTimestamp = new firebase.firestore.Timestamp(
+    //         lead['purchasedate']['_seconds'], 
+    //         lead['purchasedate']['_nanoseconds']
+    //       );
+    
+    //       return purchaseDateTimestamp >= start && purchaseDateTimestamp <= end 
+    //         ? sum + lead.totalpurchasevalue 
+    //         : sum;
+    //     }, 0)
+    //   )
+    // );
 
     combineLatest([spendQuery, returnQuery]).subscribe(([totalSpent, totalReturn]) => {
       this.totalAmountSpent = totalSpent;
@@ -179,3 +221,4 @@ export class NorthstarComponent implements OnInit {
     this.fetchDataInRange();
   }
 }
+ 

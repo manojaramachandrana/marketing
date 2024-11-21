@@ -106,7 +106,6 @@ this.firestore.collection('seasonalcampaign').get().toPromise().then(async (snap
     if (seasonCampaignElement['campaign'] !== undefined) {
       let datestring = seasonCampaignElement['campaign'];
 
-      // Check if the campaign entry exists, if not, initialize it including uniqueEmails as a Set
       if (!this.outputTableStructure[datestring]) {
         this.outputTableStructure[datestring] = {
           campaign: datestring,
@@ -115,11 +114,10 @@ this.firestore.collection('seasonalcampaign').get().toPromise().then(async (snap
           salevalue: 0,
           liquidity: 0,
           leads: [],
-          uniqueEmails: new Set<string>() // Ensure uniqueEmails is always initialized here
+          uniqueEmails: new Set<string>()
         };
       }
 
-      // Ensure uniqueEmails exists in case it wasn’t initialized correctly
       if (!this.outputTableStructure[datestring].uniqueEmails) {
         this.outputTableStructure[datestring].uniqueEmails = new Set<string>();
       }
@@ -138,9 +136,8 @@ this.firestore.collection('seasonalcampaign').get().toPromise().then(async (snap
         if (purchaseDate > campaignCreatedDate) {
           const email = leadElement['email'];
 
-          // Now safely check for and add the email to uniqueEmails
           if (!this.outputTableStructure[datestring].uniqueEmails.has(email)) {
-            this.outputTableStructure[datestring].uniqueEmails.add(email); // Add email to set
+            this.outputTableStructure[datestring].uniqueEmails.add(email); 
             this.outputTableStructure[datestring]['sales'] += 1;
             this.outputTableStructure[datestring]['salevalue'] += leadElement['totalpurchasevalue'] || 0;
             this.outputTableStructure[datestring]['liquidity'] += leadElement['initialpayment'] || 0;

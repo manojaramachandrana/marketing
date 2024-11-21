@@ -151,7 +151,7 @@ export class CombinedleadsComponent implements OnInit {
     
         if (element['entrydata'] != undefined && element['event'] == 'lylregistration') {
     
-          let email = element['email'];
+          let email = element['email'].trim();
           let date = element['entrydata'];
           let datestring = new Date(new Date(element['entrydata'].toDate()).getTime() + 330 * 60000).toISOString().substring(0, 10);
           this.outputTableStructure[datestring] = this.outputTableStructure[datestring] || { date: "", lylcomwat: 0, lylcomwatleads: [] };
