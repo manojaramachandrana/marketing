@@ -1,0 +1,36 @@
+<h1 mat-dialog-title>{{ duration }} Leads</h1>
+<div mat-dialog-content>
+  <table mat-table [dataSource]="leads">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> Name </th>
+      <td mat-cell *matCellDef="let lead"> {{ lead.name }} </td>
+    </ng-container>
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef> Email </th>
+      <td mat-cell *matCellDef="let lead"> {{ lead.email }} </td>
+    </ng-container>
+    <ng-container matColumnDef="phone">
+      <th mat-header-cell *matHeaderCellDef> Phone </th>
+      <td mat-cell *matCellDef="let lead"> {{ lead.phone }} </td>
+    </ng-container>
+    <ng-container matColumnDef="entrydata">
+      <th mat-header-cell *matHeaderCellDef> Entry Date </th>
+      <td mat-cell *matCellDef="let lead"> {{ lead.entrydata | date: 'dd-MM-yyyy' }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="url">
+        <th mat-header-cell *matHeaderCellDef> Campaign </th>
+        <td mat-cell *matCellDef="let row">
+          <ng-container *ngIf="row.url; else noUrl">
+            {{ extractUTMParam(row.url, 'utm_campaign') }}
+          </ng-container>
+          <ng-template #noUrl>
+            <span>No URL available</span>
+          </ng-template>
+        </td>
+      </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="['name', 'email', 'phone', 'entrydata','url']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['name', 'email', 'phone', 'entrydata','url']"></tr>
+  </table>
+</div>

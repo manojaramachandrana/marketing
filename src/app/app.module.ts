@@ -59,6 +59,8 @@ import { CombinedleadsComponent } from './combinedleads/combinedleads.component'
 import { CombinedDialogComponent } from './combined-dialog/combined-dialog.component';
 import { AdcampaignComponent } from './adcampaign/adcampaign.component';
 import { AdcampaigndialogComponent } from './adcampaigndialog/adcampaigndialog.component';
+import { WebinaranalyticsComponent } from './webinaranalytics/webinaranalytics.component';
+import { WebinaranalyticsDialogComponent } from './webinaranalytics-dialog/webinaranalytics-dialog.component';
 
 @NgModule({
   declarations: [
@@ -90,6 +92,8 @@ import { AdcampaigndialogComponent } from './adcampaigndialog/adcampaigndialog.c
     CombinedDialogComponent,
     AdcampaignComponent,
     AdcampaigndialogComponent,
+    WebinaranalyticsComponent,
+    WebinaranalyticsDialogComponent,
   ],
   imports: [
     BrowserModule,
