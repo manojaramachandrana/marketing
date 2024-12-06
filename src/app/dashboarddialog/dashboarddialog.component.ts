@@ -747,16 +747,18 @@ export class DashboarddialogComponent implements OnInit, OnDestroy {
   fileName = 'ExportExcel.xlsx';
   private unsubscribe$ = new Subject<void>();
   dataSourceopportunities = new MatTableDataSource<DialogData>();
-  displayedColumns: string[] = ['name', 'email', 'mobile', 'journeyname', 'totalpurchasevalue', 'converteddate'];
+  displayedColumns: string[] = ['no','name', 'email', 'mobile', 'journeyname', 'totalpurchasevalue', 'converteddate'];
   dataforfilter = [];
   totalPurchaseValue: number = 0;
+  journeyNames: string[] = [];
   
   startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
   endOfMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
  
   dateRangeForm = new FormGroup({
     start: new FormControl(),
-    end: new FormControl()
+    end: new FormControl(),
+    journeyName: new FormControl([]) 
   });
 
   @ViewChild(MatSort) sort: MatSort;
@@ -765,20 +767,30 @@ export class DashboarddialogComponent implements OnInit, OnDestroy {
     this.firestore.collection<DialogData>('leads').valueChanges().pipe(
       takeUntil(this.unsubscribe$)
     ).subscribe(data => {
-      data.sort((a, b) => {
+      const filteredData = data.filter(item => item.journeyname !== 'FTO' && item.totalpurchasevalue !== 0);
+
+      filteredData.sort((a, b) => {
         const dateA = a.converteddate.toDate().getTime();
         const dateB = b.converteddate.toDate().getTime();
-        return dateA - dateB;
+        return dateB - dateA;
       });
-      this.dataSourceopportunities.data = data;
+      this.dataSourceopportunities.data = filteredData;
       this.dataforfilter = this.dataSourceopportunities.data
       this.applyCurrentMonthFilter()
+      this.extractJourneyNames();
      // console.log(this.dataforfilter,this.dataSourceopportunities.data)
     });
   }
 
   ngOnInit(): void {
     this.dataSourceopportunities.sort = this.sort; 
+  }
+  extractJourneyNames(): void {
+    const journeyNames = this.dataSourceopportunities.data
+      .map(item => item.journeyname)
+      .filter((value, index, self) => self.indexOf(value) === index); 
+
+    this.journeyNames = journeyNames;
   }
 
   ngOnDestroy(): void {
@@ -787,20 +799,75 @@ export class DashboarddialogComponent implements OnInit, OnDestroy {
   }
 
   onDateRangeChange(): void {
-    const { start, end } = this.dateRangeForm.value;
+    const { start, end, journeyName } = this.dateRangeForm.value;
+  
     if (start && end) {
       const fromDateTime = start.getTime();
       const toDateTime = end.getTime();
-
-      this.dataSourceopportunities.data = this.dataforfilter
-     
-       this.dataSourceopportunities.data = this.dataSourceopportunities.data.filter(item => {
+  
+      this.dataSourceopportunities.data = this.dataforfilter;
+  
+      this.dataSourceopportunities.data = this.dataSourceopportunities.data.filter(item => {
         const itemDateTime = item.converteddate.toDate().getTime();
-        return itemDateTime >= fromDateTime && itemDateTime <= toDateTime;
+        
+        const journeyMatches = !journeyName.length || journeyName.includes(item.journeyname) || journeyName.includes(''); 
+  
+        return itemDateTime >= fromDateTime && itemDateTime <= toDateTime && journeyMatches;
       });
+  
       this.calculateTotalPurchaseValue();
+      this.extractJourneyNames();
+    } else {
+      this.dataSourceopportunities.data = this.dataforfilter;
+  
+      this.dataSourceopportunities.data = this.dataSourceopportunities.data.filter(item => {
+        const itemDateTime = item.converteddate.toDate();
+
+        
+        const journeyMatches = !journeyName.length || journeyName.includes(item.journeyname) || journeyName.includes(''); 
+  
+       return itemDateTime >= this.startOfMonth && itemDateTime <= this.endOfMonth && journeyMatches;
+      });
+      this.extractJourneyNames();
     }
   }
+  
+
+  // onDateRangeChange(): void {
+  //   const { start, end, journeyName } = this.dateRangeForm.value;
+  
+  //   if (start && end) {
+  //     const fromDateTime = start.getTime();
+  //     const toDateTime = end.getTime();
+  
+  //     this.dataSourceopportunities.data = this.dataforfilter;
+  
+  //     this.dataSourceopportunities.data = this.dataSourceopportunities.data.filter(item => {
+  //       const itemDateTime = item.converteddate.toDate().getTime();
+  //       const journeyMatches = !journeyName.length || journeyName.includes(item.journeyname) || journeyName.includes(''); 
+  //       return itemDateTime >= fromDateTime && itemDateTime <= toDateTime && journeyMatches;
+  //     });
+  
+  //     this.calculateTotalPurchaseValue();
+  //   }
+  // }
+  
+
+  // onDateRangeChange(): void {
+  //   const { start, end } = this.dateRangeForm.value;
+  //   if (start && end) {
+  //     const fromDateTime = start.getTime();
+  //     const toDateTime = end.getTime();
+
+  //     this.dataSourceopportunities.data = this.dataforfilter
+     
+  //      this.dataSourceopportunities.data = this.dataSourceopportunities.data.filter(item => {
+  //       const itemDateTime = item.converteddate.toDate().getTime();
+  //       return itemDateTime >= fromDateTime && itemDateTime <= toDateTime;
+  //     });
+  //     this.calculateTotalPurchaseValue();
+  //   }
+  // }
 //       if ( !this.dataSourceopportunities.data.length) {
 //   return 0;
 // } 
@@ -833,6 +900,11 @@ calculateTotalPurchaseValue(): number {
 
 
   applyCurrentMonthFilter(): void {
+    this.dateRangeForm.reset({
+      start: null,
+      end: null,
+      journeyName: [] 
+    });
     this.dataSourceopportunities.data = this.dataforfilter
     this.dataSourceopportunities.data = this.dataSourceopportunities.data.filter(item => {
       const itemDate = item.converteddate.toDate();
@@ -848,3 +920,6 @@ calculateTotalPurchaseValue(): number {
     XLSX.writeFile(wb, this.fileName);
   }
 }
+
+
+ 

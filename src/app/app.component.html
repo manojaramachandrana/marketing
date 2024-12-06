@@ -38,12 +38,15 @@
         <a mat-list-item routerLink="/dashboarddialog" >
           <span> Sales Captured </span>
         </a>
+        <a mat-list-item routerLink="/adsreport" >
+          <span> Ads Report </span>
+        </a>
         <a mat-list-item  (click)="toggleLinks()">
           <span>WEBINAR</span>
         </a>
-        <a mat-list-item *ngIf="showLinks" routerLink="/lylregistration" >
+        <!-- <a mat-list-item *ngIf="showLinks" routerLink="/lylregistration" >
           <span><li> LYL Registration</li> </span>
-        </a>
+        </a> -->
         <a mat-list-item *ngIf="showLinks" routerLink="/webanalytics" >
           <span> <li> Webinar Dashboard </li></span>
         </a>

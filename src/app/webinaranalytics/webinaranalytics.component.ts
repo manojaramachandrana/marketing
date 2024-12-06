@@ -59,9 +59,8 @@ export class WebinaranalyticsComponent implements OnInit {
     }
   };
   
-
-  displayedColumns: string[] = ['event', 'count', '30mins','40mins','60mins', 'applied'];
-  dataSource: Array<{ event: string; count: number, duration30:number, duration40:number, duration60:number, applied:number,duration30lead,duration40lead, duration60lead, appliedlead, countlead }> = [];
+  displayedColumns: string[] = ['event', 'count', '30mins','40mins','60mins', 'applied','sale'];
+  dataSource: Array<{ event: string; count: number, duration30:number, duration40:number, duration60:number, applied:number,sale:number,salelead,duration30lead,duration40lead, duration60lead, appliedlead, countlead }> = [];
 
   constructor(private fb: FormBuilder, private firestore: AngularFirestore, public dialog: MatDialog) {
     this.dateRangeForm = this.fb.group({
@@ -76,10 +75,12 @@ export class WebinaranalyticsComponent implements OnInit {
     const { start, end } = this.dateRangeForm.value;
 
     if (start && end) {
+      console.log('start',start,'end',end)
       console.log(`Selected Date Range: ${start.toLocaleDateString()} to ${end.toLocaleDateString()}`);
 
       const startTimestamp = firebase.firestore.Timestamp.fromDate(start);
       const endTimestamp = firebase.firestore.Timestamp.fromDate(end);
+      console.log('timestamp', startTimestamp,endTimestamp)
 
       this.fetchEventData('lylregistration', startTimestamp, endTimestamp);
       this.fetchEventData('upregistration', startTimestamp, endTimestamp);
@@ -115,6 +116,7 @@ export class WebinaranalyticsComponent implements OnInit {
         this.checkhpLyl40minWatch(uniqueData, start, end);
         this.checkhpLyl60minWatch(uniqueData, start, end);
         this.checkhpLylapplied(uniqueData, start, end);
+        this.checkhpLylsale(uniqueData, start, end);
   
         this.updateDataSource();
       });
@@ -147,6 +149,7 @@ export class WebinaranalyticsComponent implements OnInit {
           this.checkLyl40minWatch(uniqueData, start, end);
           this.checkLyl60minWatch(uniqueData, start, end);
           this.checkLylapplied(uniqueData, start, end);
+          this.checkLylsale(uniqueData, start, end);
         }
   
         if (eventName === 'upregistration') {
@@ -154,6 +157,7 @@ export class WebinaranalyticsComponent implements OnInit {
           this.checkUp40minsAttended(uniqueData, start, end);
           this.checkUp60minsAttended(uniqueData, start, end);
           this.checkUpapplied(uniqueData, start, end);
+          this.checkUpsale(uniqueData, start, end);
         }
   
         this.updateDataSource();
@@ -172,10 +176,10 @@ export class WebinaranalyticsComponent implements OnInit {
       )
       .valueChanges()
       .subscribe((watchData: any[]) => {
-        console.log('LYL 30 Mins Watch Data:', watchData);
+        // console.log('LYL 30 Mins Watch Data:', watchData);
 
         let matchedLeads = watchData.filter(watchItem => emailList.includes(watchItem.email.trim()));
-        console.log('Matched Leads for LYL 30 mins:', matchedLeads);
+        // console.log('Matched Leads for LYL 30 mins:', matchedLeads);
 
         // console.log(matchedLeads.length)
 
@@ -206,10 +210,10 @@ export class WebinaranalyticsComponent implements OnInit {
       )
       .valueChanges()
       .subscribe((attendedData: any[]) => {
-        console.log('LYL 40 Mins Attended Data:', attendedData);
+        // console.log('LYL 40 Mins Attended Data:', attendedData);
   
         let matchedLeads = attendedData.filter(attendedItem => emailList.includes(attendedItem.email.trim()));
-        console.log('Matched Leads for LYL 40 mins:', matchedLeads);
+        // console.log('Matched Leads for LYL 40 mins:', matchedLeads);
 
         matchedLeads = this.removeDuplicates(matchedLeads, 'email');
 
@@ -237,10 +241,10 @@ export class WebinaranalyticsComponent implements OnInit {
       )
       .valueChanges()
       .subscribe((watchData: any[]) => {
-        console.log('LYL 60 Mins Watch Data:', watchData);
+        // console.log('LYL 60 Mins Watch Data:', watchData);
   
         let matchedLeads = watchData.filter(watchItem => emailList.includes(watchItem.email.trim()));
-        console.log('Matched Leads for LYL 60 mins:', matchedLeads);
+        // console.log('Matched Leads for LYL 60 mins:', matchedLeads);
 
         matchedLeads = this.removeDuplicates(matchedLeads, 'email');
 
@@ -263,21 +267,26 @@ export class WebinaranalyticsComponent implements OnInit {
   
     this.firestore
       .collection('lylapplied', ref =>
-        ref
-          .where('entrydate', '>=', start)
-          // .where('entrydate', '<=', end)
+        ref.where('entrydate', '>=', start)
       )
       .valueChanges()
       .subscribe((watchData: any[]) => {
-        console.log('LYL applied:', watchData);
+        let matchedLeads = watchData.filter(watchItem =>
+          emailList.includes(watchItem.email.trim())
+        );
   
-        let matchedLeads = watchData.filter(watchItem => emailList.includes(watchItem.email.trim()));
-        console.log('Matched Leads for LYL applied:', matchedLeads);
-
         matchedLeads = this.removeDuplicates(matchedLeads, 'email');
-
+  
+        matchedLeads = matchedLeads.map(lead => {
+          const matchedData = data.find(dataItem => dataItem.email.trim() === lead.email.trim());
+          return {
+            ...lead, 
+            url: matchedData ? matchedData.url : lead.url 
+          };
+        });
   
         this.eventData.hplylregistration.hplylappliedcount = matchedLeads.length;
+  
         this.eventData.hplylregistration.hplylappliedlead = matchedLeads.map(item => ({
           name: item.name,
           email: item.email,
@@ -289,7 +298,45 @@ export class WebinaranalyticsComponent implements OnInit {
         this.updateDataSource();
       });
   }
-
+  
+  checkhpLylsale(data: any[], start: firebase.firestore.Timestamp, end: firebase.firestore.Timestamp): void {
+    const emailList = data.map(item => item.email.trim());
+  
+    this.firestore
+      .collection('leads', ref =>
+        ref.where('converteddate', '>=', start)
+      )
+      .valueChanges()
+      .subscribe((watchData: any[]) => {
+        let matchedLeads = watchData.filter(watchItem =>
+          emailList.includes(watchItem.email.trim())
+        );
+  
+        matchedLeads = this.removeDuplicates(matchedLeads, 'email');
+  
+        matchedLeads = matchedLeads.map(lead => {
+          const matchedData = data.find(dataItem => dataItem.email.trim() === lead.email.trim());
+          return {
+            ...lead, 
+            url: matchedData ? matchedData.url : lead.url 
+          };
+        });
+  
+        this.eventData.hplylregistration.hplylsalecount = matchedLeads.length;
+  
+        this.eventData.hplylregistration.hplylsalelead = matchedLeads.map(item => ({
+          name: item.name,
+          email: item.email,
+          phone: item.mobile,
+          entrydata: item.converteddate.toDate(),
+          url: item.url,
+          product: item.journeyname
+        }));
+  
+        this.updateDataSource();
+      });
+  }
+  
   checkLyl30minWatch(data: any[], start: firebase.firestore.Timestamp, end: firebase.firestore.Timestamp): void {
     const emailList = data.map(item => item.email.trim());
 
@@ -301,10 +348,10 @@ export class WebinaranalyticsComponent implements OnInit {
       )
       .valueChanges()
       .subscribe((watchData: any[]) => {
-        console.log('LYL 30 Mins Watch Data:', watchData);
+        // console.log('LYL 30 Mins Watch Data:', watchData);
 
         let matchedLeads = watchData.filter(watchItem => emailList.includes(watchItem.email.trim()));
-        console.log('Matched Leads for LYL 30 mins:', matchedLeads);
+        // console.log('Matched Leads for LYL 30 mins:', matchedLeads);
 
         // console.log(matchedLeads.length)
         matchedLeads = this.removeDuplicates(matchedLeads, 'email');
@@ -335,10 +382,10 @@ export class WebinaranalyticsComponent implements OnInit {
       )
       .valueChanges()
       .subscribe((attendedData: any[]) => {
-        console.log('Up! 30 Mins Attended Data:', attendedData);
+        // console.log('Up! 30 Mins Attended Data:', attendedData);
 
         let matchedLeads = attendedData.filter(attendedItem => emailList.includes(attendedItem.email.trim()));
-        console.log('Matched Leads for Up! 30 mins:', matchedLeads);
+        // console.log('Matched Leads for Up! 30 mins:', matchedLeads);
 
         matchedLeads = this.removeDuplicates(matchedLeads, 'email');
 
@@ -365,10 +412,10 @@ export class WebinaranalyticsComponent implements OnInit {
       )
       .valueChanges()
       .subscribe((attendedData: any[]) => {
-        console.log('LYL 40 Mins Attended Data:', attendedData);
+        // console.log('LYL 40 Mins Attended Data:', attendedData);
   
         let matchedLeads = attendedData.filter(attendedItem => emailList.includes(attendedItem.email.trim()));
-        console.log('Matched Leads for LYL 40 mins:', matchedLeads);
+        // console.log('Matched Leads for LYL 40 mins:', matchedLeads);
 
         matchedLeads = this.removeDuplicates(matchedLeads, 'email');
 
@@ -397,10 +444,10 @@ export class WebinaranalyticsComponent implements OnInit {
       )
       .valueChanges()
       .subscribe((attendedData: any[]) => {
-        console.log('Up! 40 Mins Attended Data:', attendedData);
+        // console.log('Up! 40 Mins Attended Data:', attendedData);
   
         let matchedLeads = attendedData.filter(attendedItem => emailList.includes(attendedItem.email.trim()));
-        console.log('Matched Leads for Up! 40 mins:', matchedLeads);
+        // console.log('Matched Leads for Up! 40 mins:', matchedLeads);
 
         matchedLeads = this.removeDuplicates(matchedLeads, 'email');
 
@@ -428,10 +475,10 @@ export class WebinaranalyticsComponent implements OnInit {
       )
       .valueChanges()
       .subscribe((watchData: any[]) => {
-        console.log('LYL 60 Mins Watch Data:', watchData);
+        // console.log('LYL 60 Mins Watch Data:', watchData);
   
         let matchedLeads = watchData.filter(watchItem => emailList.includes(watchItem.email.trim()));
-        console.log('Matched Leads for LYL 60 mins:', matchedLeads);
+        // console.log('Matched Leads for LYL 60 mins:', matchedLeads);
 
         matchedLeads = this.removeDuplicates(matchedLeads, 'email');
 
@@ -461,10 +508,10 @@ export class WebinaranalyticsComponent implements OnInit {
       )
       .valueChanges()
       .subscribe((attendedData: any[]) => {
-        console.log('Up! 60 Mins Attended Data:', attendedData);
+        // console.log('Up! 60 Mins Attended Data:', attendedData);
   
         let matchedLeads = attendedData.filter(attendedItem => emailList.includes(attendedItem.email.trim()));
-        console.log('Matched Leads for Up! 60 mins:', matchedLeads);
+        // console.log('Matched Leads for Up! 60 mins:', matchedLeads);
 
         matchedLeads = this.removeDuplicates(matchedLeads, 'email');
 
@@ -497,21 +544,26 @@ export class WebinaranalyticsComponent implements OnInit {
   
     this.firestore
       .collection('lylapplied', ref =>
-        ref
-          .where('entrydate', '>=', start)
-          // .where('entrydate', '<=', end)
+        ref.where('entrydate', '>=', start)
       )
       .valueChanges()
       .subscribe((watchData: any[]) => {
-        console.log('LYL applied:', watchData);
+        let matchedLeads = watchData.filter(watchItem =>
+          emailList.includes(watchItem.email.trim())
+        );
   
-        let matchedLeads = watchData.filter(watchItem => emailList.includes(watchItem.email.trim()));
-        console.log('Matched Leads for LYL applied:', matchedLeads);
-
         matchedLeads = this.removeDuplicates(matchedLeads, 'email');
-
+  
+        matchedLeads = matchedLeads.map(lead => {
+          const matchedData = data.find(dataItem => dataItem.email.trim() === lead.email.trim());
+          return {
+            ...lead, 
+            url: matchedData ? matchedData.url : lead.url
+          };
+        });
   
         this.eventData.lylregistration.lylappliedcount = matchedLeads.length;
+  
         this.eventData.lylregistration.lylappliedlead = matchedLeads.map(item => ({
           name: item.name,
           email: item.email,
@@ -529,22 +581,26 @@ export class WebinaranalyticsComponent implements OnInit {
   
     this.firestore
       .collection('upapplied', ref =>
-        ref
-          .where('entrydate', '>=', start)
-          // .where('entrydate', '<=', end) 
-          // .where('event', '==', 'upattended60mins') 
+        ref.where('entrydate', '>=', start)
       )
       .valueChanges()
       .subscribe((attendedData: any[]) => {
-        console.log('Up! applied:', attendedData);
+        let matchedLeads = attendedData.filter(attendedItem =>
+          emailList.includes(attendedItem.email.trim())
+        );
   
-        let matchedLeads = attendedData.filter(attendedItem => emailList.includes(attendedItem.email.trim()));
-        console.log('Matched Leads for Up! applied:', matchedLeads);
-
         matchedLeads = this.removeDuplicates(matchedLeads, 'email');
-
+  
+        matchedLeads = matchedLeads.map(lead => {
+          const matchedData = data.find(dataItem => dataItem.email.trim() === lead.email.trim());
+          return {
+            ...lead, 
+            url: matchedData ? matchedData.url : lead.url 
+          };
+        });
   
         this.eventData.upregistration.upappliedcount = matchedLeads.length;
+  
         this.eventData.upregistration.upappliedlead = matchedLeads.map(item => ({
           name: item.name,
           email: item.email,
@@ -552,9 +608,93 @@ export class WebinaranalyticsComponent implements OnInit {
           entrydata: item.entrydate.toDate(),
           url: item.url
         }));
-        this.updateDataSource(); 
+  
+        this.updateDataSource();
       });
   }
+  
+
+  checkLylsale(data: any[], start: firebase.firestore.Timestamp, end: firebase.firestore.Timestamp): void {
+    const emailList = data.map(item => item.email.trim());
+  
+    this.firestore
+      .collection('leads', ref =>
+        ref.where('converteddate', '>=', start)
+      )
+      .valueChanges()
+      .subscribe((watchData: any[]) => {
+        let matchedLeads = watchData.filter(watchItem =>
+          emailList.includes(watchItem.email.trim())
+        );
+  
+        matchedLeads = this.removeDuplicates(matchedLeads, 'email');
+  
+        matchedLeads = matchedLeads.map(lead => {
+          const matchedData = data.find(dataItem => dataItem.email.trim() === lead.email.trim());
+          return {
+            ...lead,
+            url: matchedData ? matchedData.url : lead.url 
+          };
+        });
+  
+        this.eventData.lylregistration.lylsalecount = matchedLeads.length;
+  
+        this.eventData.lylregistration.lylsalelead = matchedLeads.map(item => ({
+          name: item.name,
+          email: item.email,
+          phone: item.mobile,
+          entrydata: item.converteddate.toDate(),
+          url: item.url,
+          product: item.journeyname
+        }));
+  
+        this.updateDataSource();
+      });
+  }
+  
+  
+  checkUpsale(data: any[], start: firebase.firestore.Timestamp, end: firebase.firestore.Timestamp): void {
+    const emailList = data.map(item => item.email.trim());
+  
+    data.forEach(item => {
+      console.log('Email:', item.email.trim(), 'URL:', item.url);
+    });
+  
+    this.firestore
+      .collection('leads', ref =>
+        ref.where('converteddate', '>=', start)
+      )
+      .valueChanges()
+      .subscribe((attendedData: any[]) => {
+        let matchedLeads = attendedData.filter(attendedItem =>
+          emailList.includes(attendedItem.email.trim())
+        );
+  
+        matchedLeads = this.removeDuplicates(matchedLeads, 'email');
+  
+        matchedLeads = matchedLeads.map(lead => {
+          const matchedData = data.find(dataItem => dataItem.email.trim() === lead.email.trim());
+          return {
+            ...lead, 
+            url: matchedData ? matchedData.url : lead.url
+          };
+        });
+  
+        this.eventData.upregistration.upsalecount = matchedLeads.length;
+  
+        this.eventData.upregistration.upsalelead = matchedLeads.map(item => ({
+          name: item.name,
+          email: item.email,
+          phone: item.mobile,
+          entrydata: item.converteddate.toDate(),
+          url: item.url,
+          product: item.journeyname
+        }));
+  
+        this.updateDataSource();
+      });
+  }
+  
 
   openLeadDialog(duration: string, row: any): void {
     let leads: Array<{ name: string; email: string; phone: string; entrydata: Date; url: string }>;
@@ -575,6 +715,9 @@ export class WebinaranalyticsComponent implements OnInit {
       case 'applied':
         leads = row.appliedlead;
         break;
+      case 'sale':
+        leads = row.salelead;
+        break;
       default:
         leads = [];
     }
@@ -593,11 +736,13 @@ export class WebinaranalyticsComponent implements OnInit {
         duration40: this.eventData.lylregistration.lyl40minscount,
         duration60: this.eventData.lylregistration.lyl60minscount, 
         applied: this.eventData.lylregistration.lylappliedcount, 
+        sale: this.eventData.lylregistration.lylsalecount,
         countlead: this.eventData.lylregistration.leads,
         duration30lead: this.eventData.lylregistration.lyl30minslead,
         duration40lead: this.eventData.lylregistration.lyl40minslead,
         duration60lead: this.eventData.lylregistration.lyl60minslead, 
-        appliedlead: this.eventData.lylregistration.lylappliedlead, 
+        appliedlead: this.eventData.lylregistration.lylappliedlead,
+        salelead: this.eventData.lylregistration.lylsalelead, 
       },
       {
         event: 'HomePage - LYL EWebinar',
@@ -606,11 +751,13 @@ export class WebinaranalyticsComponent implements OnInit {
         duration40: this.eventData.hplylregistration.hplyl40minscount,
         duration60: this.eventData.hplylregistration.hplyl60minscount, 
         applied: this.eventData.hplylregistration.hplylappliedcount, 
+        sale: this.eventData.hplylregistration.hplylsalecount, 
         countlead: this.eventData.hplylregistration.leads,
         duration30lead: this.eventData.hplylregistration.hplyl30minslead,
         duration40lead: this.eventData.hplylregistration.hplyl40minslead,
         duration60lead: this.eventData.hplylregistration.hplyl60minslead, 
-        appliedlead: this.eventData.hplylregistration.hplylappliedlead, 
+        appliedlead: this.eventData.hplylregistration.hplylappliedlead,
+        salelead: this.eventData.hplylregistration.hplylsalelead, 
       },
       {
         event: 'uP! Webinar Engine',
@@ -619,11 +766,13 @@ export class WebinaranalyticsComponent implements OnInit {
         duration40: this.eventData.upregistration.up40minscount, 
         duration60: this.eventData.upregistration.up60minscount,
         applied: this.eventData.upregistration.upappliedcount,
+        sale: this.eventData.upregistration.upsalecount,
         countlead: this.eventData.upregistration.leads,
         duration30lead: this.eventData.upregistration.up30minslead,
         duration40lead: this.eventData.upregistration.up40minslead, 
         duration60lead: this.eventData.upregistration.up60minslead,
         appliedlead: this.eventData.upregistration.upappliedlead,
+        salelead: this.eventData.upregistration.upsalelead,
       }
     ];
   

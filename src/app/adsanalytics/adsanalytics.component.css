@@ -1,0 +1,88 @@
+.mat-elevation-z8 {
+    margin: 20px;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #fff;
+  }
+  
+  .mat-header-cell {
+    background-color: #f5f5f5;
+    font-weight: bold;
+    color: #3e3e3e;
+    text-align: left;
+    padding: 16px;
+  }
+
+  .h2{
+    text-align: center;
+  }
+  
+  .mat-cell {
+    padding: 12px 16px;
+    font-size: 14px;
+    color: #555;
+    text-align: left;
+  }
+  
+  .mat-row {
+    background-color: #fafafa;
+  }
+  
+  .mat-row:nth-child(even) {
+    background-color: #f1f1f1;
+  }
+  
+  .mat-row:hover {
+    background-color: #e3e3e3;
+  }
+  
+  .mat-column-parameter,
+  .mat-column-value {
+    padding-left: 16px;
+  }
+  
+  .mat-header-row, .mat-row {
+    border-bottom: 1px solid #ddd;
+  }
+  
+  @media screen and (max-width: 600px) {
+    .mat-header-cell, .mat-cell {
+      padding: 8px;
+    }
+  
+    .mat-header-row, .mat-row {
+      display: block;
+      width: 100%;
+    }
+  }
+
+  #chartContainer {
+    height: 400px;
+    width: 100%;
+  }
+  
+  .container {
+    padding: 20px;
+  }
+  
+  .tables-container {
+    display: flex;
+    gap: 20px; 
+    flex-wrap: wrap; 
+  }
+  
+  .table-wrapper {
+    flex: 1; 
+    min-width: 300px;
+  }
+  
+  .mat-elevation-z8 {
+    margin-top: 10px;
+    width: 100%;
+  }
+  
+  /* mat-form-field {
+    margin-bottom: 20px;
+    display: block;
+  } */
+  

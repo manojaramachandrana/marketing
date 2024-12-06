@@ -27,6 +27,10 @@
     margin: 5px 0;
     flex-basis: 100%; 
   }
+
+  .mat-table {
+    width: 100%;
+  }
   
   .label {
     font-weight: bold;
@@ -70,27 +74,101 @@
     padding: 20px;
     background: white;
     border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for 3D effect */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
     margin-bottom: 20px;
   }
   
   .form-field {
-    width: 100%; /* Full width for the form field */
-    margin-bottom: 15px; /* Space between fields */
+    width: 100%; 
+    margin-bottom: 15px; 
   }
   
   .search-button {
-    background-color: #a193b5; /* Primary color */
+    background-color: #a193b5;
     color: white;
     padding: 10px 20px;
     border: none;
     border-radius: 4px;
-    transition: background-color 0.3s, transform 0.2s; /* Smooth transitions */
+    transition: background-color 0.3s, transform 0.2s; 
   }
   
   .search-button:hover {
-    background-color: #3700b3; /* Darker shade on hover */
-    transform: translateY(-2px); /* Slight lift effect */
+    background-color: #3700b3;
+    transform: translateY(-2px); 
+  }
+  .exporticon{
+    color: green;
+}
+
+.button{
+  border-radius:0px ;
+  color: #3D497B;
+  font-size: 13px;
+  margin-top: 10px;
+  gap:16px;
+  margin-left: 4px;
+}
+
+.cancelicon{
+    color: red;
+}
+
+  /* .mat-form-field {
+    margin-bottom: 16px;
+  } */
+
+  .filter-container form {
+    display: flex;
+    /* flex-direction: column; */
+    gap: 16px;
+  }
+
+  .date-range-filter {
+    margin-bottom: 16px;
   }
   
+  .journey-name-filter {
+    margin-top: 0px;
+  }
+  
+  
+  
+  header {
+    margin-bottom: 30px; 
+  }
+  
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 50px auto;
+    padding: 40px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    margin-top: 50px;
+  }
+  
+  .filter-container {
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+
+  th.mat-header-cell {
+    background-color: #f1f1f1;
+    color: #333;
+    text-align: left;
+    padding: 10px;
+    font-weight: bold;
+  }  
+
+  td.mat-cell {
+    color: #333;
+    text-align: left;
+    padding: 10px;
+  }
   

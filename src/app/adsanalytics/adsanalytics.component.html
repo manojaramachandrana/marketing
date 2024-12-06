@@ -1,0 +1,63 @@
+<div class="container">
+    <mat-form-field appearance="outline">
+      <mat-label>Select Date</mat-label>
+      <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate" (dateChange)="onDateChange($event)" />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  
+    <div class="tables-container">
+      <div class="table-wrapper">
+        <h2>Ads Report</h2>
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+          <ng-container matColumnDef="parameter">
+            <th mat-header-cell *matHeaderCellDef>Parameter</th>
+            <td mat-cell *matCellDef="let element">{{ element.parameter }}</td>
+          </ng-container>
+  
+          <ng-container matColumnDef="value">
+            <th mat-header-cell *matHeaderCellDef>Value</th>
+            <td mat-cell *matCellDef="let element">
+              <ng-container *ngIf="isNumber(element.value)">
+                {{ element.value | currency: 'INR':'symbol':'1.0-0' }}
+              </ng-container>
+              <ng-container *ngIf="!isNumber(element.value)">
+                {{ element.value }}
+              </ng-container>
+            </td>
+          </ng-container>
+  
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+  
+      <!-- <div class="table-wrapper" *ngIf="selectedDate">
+        <h2>Selected Date Ads Report</h2>
+        <table mat-table [dataSource]="dataSourceForSelectedDate" class="mat-elevation-z8">
+          <ng-container matColumnDef="parameter">
+            <th mat-header-cell *matHeaderCellDef>Parameter</th>
+            <td mat-cell *matCellDef="let element">{{ element.parameter }}</td>
+          </ng-container>
+  
+          <ng-container matColumnDef="value">
+            <th mat-header-cell *matHeaderCellDef>Value</th>
+            <td mat-cell *matCellDef="let element">
+              <ng-container *ngIf="isNumber(element.value)">
+                {{ element.value | currency: 'INR':'symbol':'1.0-0' }}
+              </ng-container>
+              <ng-container *ngIf="!isNumber(element.value)">
+                {{ element.value }}
+              </ng-container>
+            </td>
+          </ng-container>
+  
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+    </div>
+  
+    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+  </div> -->
+  

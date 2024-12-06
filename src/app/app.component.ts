@@ -40,13 +40,17 @@ export class AppComponent implements OnInit{
         this.pageTitle = ' Sales Conversion Cycle'
       } else if ( this.pageTitle === 'dashboarddialog'){
         this.pageTitle = ' Sales Captured'
+      } else if ( this.pageTitle === 'adsreport'){
+        this.pageTitle = ' Ads Report '
       } else if ( this.pageTitle === 'northstar'){
         this.pageTitle = ' MarkTech North Star'
       } else if ( this.pageTitle === 'seasonalcampaign'){
         this.pageTitle = ' Seasonal Campaign'
-      } else if ( this.pageTitle === 'lylregistration'){
-        this.pageTitle = ' LYL Registration'
-      }  else if ( this.pageTitle === 'webanalytics'){
+      } 
+      // else if ( this.pageTitle === 'lylregistration'){
+      //   this.pageTitle = ' LYL Registration'
+      // } 
+       else if ( this.pageTitle === 'webanalytics'){
         this.pageTitle = ' Webinar Dashboard'
       } else if ( this.pageTitle === 'campaignanalytics'){
         this.pageTitle = ' Campaign Metric'
