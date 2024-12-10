@@ -1,8 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
-import * as CanvasJS from 'canvasjs';
+import { ChangeDetectorRef } from '@angular/core';
+import {
+  ApexAxisChartSeries,
+  ApexChart,
+  ChartComponent,
+  ApexDataLabels,
+  ApexPlotOptions,
+  ApexYAxis,
+  ApexLegend,
+  ApexStroke,
+  ApexXAxis,
+  ApexFill,
+  ApexTooltip
+} from "ng-apexcharts";
 
 interface Lead {
   totalpurchasevalue?: number;
@@ -14,71 +27,72 @@ interface Spend {
   docdate
 }
 
+export type ChartOptions = {
+  series: ApexAxisChartSeries;
+  chart: ApexChart;
+  dataLabels: ApexDataLabels;
+  plotOptions: ApexPlotOptions;
+  yaxis: ApexYAxis;
+  xaxis: ApexXAxis;
+  fill: ApexFill;
+  tooltip: ApexTooltip;
+  stroke: ApexStroke;
+  legend: ApexLegend;
+  colors?: string[];
+};
+
 @Component({
   selector: 'app-adsanalytics',
   templateUrl: './adsanalytics.component.html',
   styleUrls: ['./adsanalytics.component.css']
 })
+
 export class AdsanalyticsComponent implements OnInit {
 
-  
-  // data = {
-  //   'Pipeline Strength (last 7 days)': '',
-  //   'Ad Spend (last 20 days)': 0,
-  //   'Sale Value (last 20 days)': 0,
-  //   'Return on Adspend (last 20 days)': '',
-  //   'Ad Spend (last 30 days)': 0,
-  //   'Sale Value (last 30 days)': 0,
-  //   'Return on Adspend (last 30 days)': '',
-  //   'Current Month Sale Value': 0,
-  //   'Last 7 Days Sale Value': 0,
-  //   'Yesterday Adspend': 0,
-  //   'Sale Value From Nov 10': 0
-  // };
+  showChart = false; 
+
+  @ViewChild("chart") chart: ChartComponent;
+  public chartOptions: Partial<ChartOptions>;
+  public linechart: Partial<ChartOptions>;
+  public isChartReady: boolean = false; 
 
   data = {
-    'Pipeline Strength (last 7 days)': [],
+    'Pipeline Strength (last 7 days)':[],
     'Ad Spend (last 20 days)': [],
-    'Sale Value (last 20 days)': [],
+    'Sale Value (last 20 days)':[],
     'Return on Adspend (last 20 days)': [],
     'Ad Spend (last 30 days)': [],
     'Sale Value (last 30 days)': [],
     'Return on Adspend (last 30 days)': [],
-    'Current Month Sale Value': [],
+    'Current Month Sale Value':[],
     'Last 7 Days Sale Value': [],
     'Yesterday Adspend': [],
     'Sale Value From Nov 10': []
   };
 
-  // dataforselecteddate = {
-  //   'Pipeline Strength (last 7 days)': '',
-  //   'Ad Spend (last 20 days)': 0,
-  //   'Sale Value (last 20 days)': 0,
-  //   'Return on Adspend (last 20 days)': '',
-  //   'Ad Spend (last 30 days)': 0,
-  //   'Sale Value (last 30 days)': 0,
-  //   'Return on Adspend (last 30 days)': '',
-  //   'Current Month Sale Value': 0,
-  //   'Last 7 Days Sale Value': 0,
-  //   'Yesterday Adspend': 0,
-  //   'Sale Value From Nov 10': 0
-  // };
-
   public isNumber(value: any): boolean {
     return !isNaN(value) && typeof value === 'number';
   }
 
-  selectedDate: Date  
+  onShowChartChange(event: any): void {
+    if (this.showChart) {
+      this.initializeChart(); 
+    }
+  }
 
-  displayedColumns: string[] = ['parameter', 'value'];
+  selectedDate: Date  ;
+  headerDates: string[] = [];
+
+  displayedColumns: string[] = ['parameter', 'day1','day2','day3','day4','day5','day6','day7'];
   dataSource = [];
   dateRange: string[] = [];
-  // dataSourceForSelectedDate = []; 
   
-  constructor(private firestore: AngularFirestore) { }
+  constructor(private firestore: AngularFirestore, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
+    this.generateHeaderDates();
     this.countLeadsLast7Days();
+    
   }
 
   onDateChange(event: any): void {
@@ -86,14 +100,95 @@ export class AdsanalyticsComponent implements OnInit {
     this.countLeadsLast7Days();
   }
 
+  initializeChart() {
+    const SaleValue20 = this.data['Sale Value (last 20 days)']?.slice().reverse() || [];
+    const SaleValue30 = this.data['Sale Value (last 30 days)']?.slice().reverse() || [];
+    const days = this.headerDates?.slice().reverse() || [];
+  
+    if (!SaleValue20.length || !SaleValue30.length || !days.length || SaleValue20.length <= 5) {
+      console.error("Data for the chart is not available or incomplete.");
+      return;
+    }
+  
+    this.chartOptions = {
+      series: [
+        {
+          name: "Sale Value (last 20 days)",
+          data: SaleValue20,
+        },
+        {
+          name: "Sale Value (last 30 days)",
+          data: SaleValue30,
+        }
+      ],
+      chart: {
+        type: "line",
+        height: 350,
+        zoom: {
+          enabled: false,
+        },
+      },
+      colors: ["#007bff", "#ffa500"], 
+      xaxis: {
+        categories: days,
+        title: {
+          text: "Days",
+        },
+        labels: {
+          rotate: -45,
+        },
+      },
+      yaxis: {
+        title: {
+          text: "Sale Value",
+        },
+        labels: {
+          formatter: (value: number) => this.formatCurrency(value), 
+        },
+      },
+      dataLabels: {
+        enabled: false, 
+      },
+      stroke: {
+        curve: "smooth", 
+      },
+      tooltip: {
+        enabled: true,
+        y: {
+          formatter: (value: number) => this.formatCurrency(value),
+        },
+      },
+      legend: {
+        position: "top",
+        horizontalAlign: "right", 
+      },
+    };
+  
+    this.isChartReady = true;
+    this.cdr.detectChanges();
+  }
+  
+  
+  
+  formatCurrency(value: number): string {
+    if (value >= 10000000) {
+      return (value / 10000000).toFixed(2) + " Cr"; 
+    } else if (value >= 100000) {
+      return (value / 100000).toFixed(2) + " Lakh";
+    }
+    return value.toLocaleString(); 
+  }
+  
+  generateHeaderDates() {
+    const today = new Date();
+    this.headerDates = Array.from({ length: 7 }, (_, index) => {
+      const date = new Date(today);
+      date.setDate(today.getDate() - index); 
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); 
+    });
+  }
+
   async countLeadsLast7Days() {   
-//     const currentDate = new Date(2024,10,30);
-//     currentDate.setHours(23, 59, 59, 999);
-// currentDate.setDate(currentDate.getDate() - 40);
-// console.log(currentDate); 
-// const twentyDaysAgo = new Date();
-// twentyDaysAgo.setDate(currentDate.getDate() - 21);
-//     console.log('twenty',twentyDaysAgo)
 
     for (let i = 1; i < 8; i++) {
     const currentDate =  new Date();
@@ -123,8 +218,6 @@ export class AdsanalyticsComponent implements OnInit {
     const subcurrentdate = new Date(currentDate);
     subcurrentdate.setDate(subcurrentdate.getDate() + 1);
     console.log(subcurrentdate,startOfDate,currentDate)
-    // console.log(subtwentyDaysAgo,twentyDaysAgo,'twenty')
-    // console.log(subthirtyDaysAgo,thirtyDaysAgo,'thirty')
 
     try {
       const entriesSnapshot = await this.firestore.collection('entries', ref => 
@@ -138,9 +231,6 @@ export class AdsanalyticsComponent implements OnInit {
            .where('entrydata', '<=', firebase.firestore.Timestamp.fromDate(currentDate))
       ).get().toPromise();
       const lylregistrationCount = lylRegistrationSnapshot?.size || 0;
-
-      // this.leads = entriesCount + lylregistrationCount;
-      // console.log('Total Leads:', this.leads);
 
       const leadsSnapshot = await this.firestore.collection('leads').get().toPromise();
 
@@ -180,14 +270,6 @@ export class AdsanalyticsComponent implements OnInit {
         }
       });
 
-      // this.sale7 = totalPurchaseValue;
-      // this.sale20 = totalPurchaseValue20;
-      // this.sale30 = totalPurchaseValue30;
-      // this.salenov10 = totalPurchaseValueNov10;
-      // this.salecurrentmonth = totalPurchaseValueCurrentMonth;
-
-      // console.log('Total Purchase Value (Last 7 Days):', this.sale7, this.sale20, this.sale30, this.salenov10, this.salecurrentmonth)
-
             //spendvalue   
             const adsinsightsSnapshot = await this.firestore.collection('adsinsight', ref => 
               ref.where('docdate', '>=', firebase.firestore.Timestamp.fromDate(thirtyDaysAgo))
@@ -216,12 +298,6 @@ export class AdsanalyticsComponent implements OnInit {
               }
             });
 
-            // this.spend20 = Math.round(totalspend20);
-            // this.spend30 = Math.round(totalspend30);
-            // this.spendyes = Math.round(totalspendyes);
-
-            // console.log(this.spend20, this.spend30, this.spendyes);
-
             this.data['Pipeline Strength (last 7 days)'].push(entriesCount + lylregistrationCount + '/144');
             this.data['Ad Spend (last 20 days)'].push(Math.round(totalspend20));
             this.data['Sale Value (last 20 days)'].push(totalPurchaseValue20);
@@ -234,174 +310,18 @@ export class AdsanalyticsComponent implements OnInit {
             this.data['Yesterday Adspend'].push(Math.round(totalspendyes));
             this.data['Sale Value From Nov 10'].push(totalPurchaseValueNov10);
 
-            // this.data = {
-            //   'Pipeline Strength (last 7 days)': entriesCount + lylregistrationCount + '/144',
-            //   'Ad Spend (last 20 days)': Math.round(totalspend20),
-            //   'Sale Value (last 20 days)': totalPurchaseValue20,
-            // 'Return on Adspend (last 20 days)': Math.round(totalPurchaseValue20 / Math.round(totalspend20)) + 'X',
-            //   'Ad Spend (last 30 days)': Math.round(totalspend30),
-            //   'Sale Value (last 30 days)': totalPurchaseValue30,
-            //   'Return on Adspend (last 30 days)': Math.round(totalPurchaseValue30/Math.round(totalspend30)) + 'X',
-            //   'Current Month Sale Value': totalPurchaseValueCurrentMonth,
-            //   'Last 7 Days Sale Value': totalPurchaseValue,
-            //   'Yesterday Adspend': Math.round(totalspendyes),
-            //   'Sale Value From Nov 10': totalPurchaseValueNov10
-            // };
-
             this.dataSource = Object.keys(this.data).map(key => {
               return { parameter: key, value: this.data[key] };
             });
 
     console.log(this.data)
-
+    
+    // this.initializeChart()
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   }
+ 
 }
-
-  // async updateSelectedDateTable() {
-  //   const currentDate = this.selectedDate;
-  //   const sevenDaysAgo = new Date();
-  //   const twentyDaysAgo = new Date();
-  //   const thirtyDaysAgo = new Date();
-  //   const subtwentyDaysAgo = new Date();
-  //   const subthirtyDaysAgo = new Date();
-  //   currentDate.setDate(currentDate.getDate() - 1);
-  //   currentDate.setHours(23, 59, 59, 999);
-  //   const nov10Date = new Date(2024, 10, 10); 
-  //   const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-  //   sevenDaysAgo.setDate(currentDate.getDate() - 8);
-  //   twentyDaysAgo.setDate(currentDate.getDate() - 21);
-  //   thirtyDaysAgo.setDate(currentDate.getDate() - 31);
-  //   subtwentyDaysAgo.setDate(currentDate.getDate() - 20);
-  //   subthirtyDaysAgo.setDate(currentDate.getDate() - 30);
-  //   const startOfDate = new Date(currentDate);
-  //   startOfDate.setHours(0, 0, 0, 0); 
-  //   startOfDate.setDate(startOfDate.getDate() + 1);
-  //   const subcurrentdate = new Date();
-  //   subcurrentdate.setDate(currentDate.getDate() + 1);
-  //   console.log(subcurrentdate,startOfDate,currentDate)
-
-  //   try {
-  //     const entriesSnapshot = await this.firestore.collection('entries', ref => 
-  //       ref.where('createddate', '>=', firebase.firestore.Timestamp.fromDate(sevenDaysAgo))
-  //          .where('createddate', '<=', firebase.firestore.Timestamp.fromDate(currentDate))
-  //     ).get().toPromise();
-  //     const entriesCount = entriesSnapshot?.size || 0;
-
-  //     const lylRegistrationSnapshot = await this.firestore.collection('lylregistration', ref => 
-  //       ref.where('entrydata', '>=', firebase.firestore.Timestamp.fromDate(sevenDaysAgo))
-  //          .where('entrydata', '<=', firebase.firestore.Timestamp.fromDate(currentDate))
-  //     ).get().toPromise();
-  //     const lylregistrationCount = lylRegistrationSnapshot?.size || 0;
-
-  //     // this.leads = entriesCount + lylregistrationCount;
-  //     // console.log('Total Leads:', this.leads);
-
-  //     const leadsSnapshot = await this.firestore.collection('leads').get().toPromise();
-
-  //     let totalPurchaseValue = 0;
-  //     let totalPurchaseValue20 = 0;
-  //     let totalPurchaseValue30 = 0;
-  //     let totalPurchaseValueNov10 = 0;
-  //     let totalPurchaseValueCurrentMonth = 0;
-
-  //     //purchasevalue   
-  //     leadsSnapshot?.forEach(doc => {
-  //       const data = doc.data() as Lead;
-
-  //       if (data.purchasedate && data.purchasedate._seconds !== undefined) {
-  //         const purchasedate = new firebase.firestore.Timestamp(
-  //           data.purchasedate._seconds,
-  //           data.purchasedate._nanoseconds
-  //         );
-
-  //         const purchaseDate = purchasedate.toDate();
-
-  //         if (purchaseDate >= sevenDaysAgo && purchaseDate <= currentDate) {
-  //           totalPurchaseValue += data.totalpurchasevalue || 0; 
-  //         }
-  //         if (purchaseDate >= twentyDaysAgo && purchaseDate <= currentDate) {
-  //           totalPurchaseValue20 += data.totalpurchasevalue || 0;
-  //         }
-  //         if (purchaseDate >= thirtyDaysAgo && purchaseDate <= currentDate) {
-  //           totalPurchaseValue30 += data.totalpurchasevalue || 0;
-  //         }
-  //         if (purchaseDate >= nov10Date && purchaseDate <= currentDate) {
-  //           totalPurchaseValueNov10 += data.totalpurchasevalue || 0;
-  //         }
-  //         if (purchaseDate >= startOfMonth && purchaseDate <= currentDate) {
-  //           totalPurchaseValueCurrentMonth += data.totalpurchasevalue || 0;
-  //         }
-  //       }
-  //     });
-
-  //     // this.sale7 = totalPurchaseValue;
-  //     // this.sale20 = totalPurchaseValue20;
-  //     // this.sale30 = totalPurchaseValue30;
-  //     // this.salenov10 = totalPurchaseValueNov10;
-  //     // this.salecurrentmonth = totalPurchaseValueCurrentMonth;
-
-  //     // console.log('Total Purchase Value (Last 7 Days):', this.sale7, this.sale20, this.sale30, this.salenov10, this.salecurrentmonth)
-
-  //           //spendvalue   
-  //           const adsinsightsSnapshot = await this.firestore.collection('adsinsight', ref => 
-  //             ref.where('docdate', '>=', firebase.firestore.Timestamp.fromDate(thirtyDaysAgo))
-  //               .where('docdate', '<=', firebase.firestore.Timestamp.fromDate(subcurrentdate))
-  //           ).get().toPromise();
-
-  //           let totalspend20 = 0;
-  //           let totalspend30 = 0;
-  //           let totalspendyes =0;
-
-  //           adsinsightsSnapshot?.forEach(doc => {
-  //             const data = doc.data() as Spend;
-
-  //             if (data.docdate) {
-  //               const purchaseDate = data.docdate.toDate();
-
-  //               if (purchaseDate >= subtwentyDaysAgo && purchaseDate <= subcurrentdate) {
-  //                 totalspend20 += data.amountSpend || 0;
-  //               }
-  //               if (purchaseDate >= subthirtyDaysAgo && purchaseDate <= subcurrentdate) {
-  //                 totalspend30 += data.amountSpend || 0;
-  //               }
-  //               if (purchaseDate >= currentDate && purchaseDate <= subcurrentdate) {
-  //                 totalspendyes += data.amountSpend || 0;
-  //               }
-  //             }
-  //           });
-
-  //           // this.spend20 = Math.round(totalspend20);
-  //           // this.spend30 = Math.round(totalspend30);
-  //           // this.spendyes = Math.round(totalspendyes);
-
-  //           // console.log(this.spend20, this.spend30, this.spendyes);
-
-  //           this.dataforselecteddate = {
-  //             'Pipeline Strength (last 7 days)': entriesCount + lylregistrationCount + '/144',
-  //             'Ad Spend (last 20 days)': Math.round(totalspend20),
-  //             'Sale Value (last 20 days)': totalPurchaseValue20,
-  //           'Return on Adspend (last 20 days)': Math.round(totalPurchaseValue20 / Math.round(totalspend20)) + 'X',
-  //             'Ad Spend (last 30 days)': Math.round(totalspend30),
-  //             'Sale Value (last 30 days)': totalPurchaseValue30,
-  //             'Return on Adspend (last 30 days)': Math.round(totalPurchaseValue30/Math.round(totalspend30)) + 'X',
-  //             'Current Month Sale Value': totalPurchaseValueCurrentMonth,
-  //             'Last 7 Days Sale Value': totalPurchaseValue,
-  //             'Yesterday Adspend': Math.round(totalspendyes),
-  //             'Sale Value From Nov 10': totalPurchaseValueNov10
-  //           };
-
-  //           this.dataSourceForSelectedDate = Object.keys(this.dataforselecteddate).map(key => {
-  //             return { parameter: key, value: this.dataforselecteddate[key] };
-  //           });
-
-  //   console.log(this.dataforselecteddate)
-
-  //   } catch (error) {
-  //     console.error('Error fetching data:', error);
-  //   }
-  // }
 
 }

@@ -60,7 +60,6 @@ export class CampaignanalyticsComponent implements OnInit {
             .substring(0, 10);
 
           this.outputTableStructure[utmCampaign] = this.outputTableStructure[utmCampaign] || {
-            // campaign: utmCampaign,
             count: 0,
             dates: [],
             countattended: 0,
@@ -87,7 +86,6 @@ export class CampaignanalyticsComponent implements OnInit {
         }
       });
 
-      // Fetching from 'lylwebinarattended' collection
 this.firestore.collection('lylwebinarattended').get().toPromise().then(webinarSnap => {
   webinarSnap.docs.forEach((webinarDoc: any) => {
     const webinarElement = webinarDoc.data();
@@ -100,11 +98,9 @@ this.firestore.collection('lylwebinarattended').get().toPromise().then(webinarSn
         if (registration.email === webinaremail) {
           this.outputTableStructure[utmCampaign].countattended += 1;
           
-          // Initialize 'datesattended' if not already initialized
           this.outputTableStructure[utmCampaign]['datesattended'] =
             this.outputTableStructure[utmCampaign]['datesattended'] || [];
           
-          // Push the attended webinar details
           this.outputTableStructure[utmCampaign]['datesattended'].push({
             name: webinarElement.name,
             email: webinarElement.email,
@@ -116,7 +112,6 @@ this.firestore.collection('lylwebinarattended').get().toPromise().then(webinarSn
     });
   });
 
-  // Call ngAfterViewInit after processing 'lylwebinarattended' data
   this.ngAfterViewInit();
 });
 
@@ -125,10 +120,8 @@ this.firestore.collection('lylapplied').get().toPromise().then(webinarSnap => {
     const webinarElement1 = webinarDoc.data();
     
     Object.keys(this.outputTableStructure).forEach(utmCampaign => {
-      // Ensure that 'datesattended' exists and is an array
       const dateAttended = this.outputTableStructure[utmCampaign]['datesattended'] || [];
       
-      // Initialize 'countapplied' and 'dateapplied' if not already initialized
       this.outputTableStructure[utmCampaign].countapplied = 
         this.outputTableStructure[utmCampaign].countapplied || 0;
       
@@ -263,10 +256,9 @@ this.firestore.collection('lylapplied').get().toPromise().then(webinarSnap => {
       console.log(this.selectedStartDate, this.selectedEndDate);
       const startDate = new Date(this.selectedStartDate);
       const endDate = new Date(this.selectedEndDate);
-      endDate.setDate(endDate.getDate() + 1); // To include the end date
+      endDate.setDate(endDate.getDate() + 1);
       console.log(startDate, endDate);
   
-      // Filter the data based on the selected date range
       const filteredData = Object.keys(this.outputTableStructure)
         .map(utmCampaign => {
           const row = this.outputTableStructure[utmCampaign];
@@ -275,7 +267,6 @@ this.firestore.collection('lylapplied').get().toPromise().then(webinarSnap => {
             return date >= startDate && date < endDate;
           });
   
-          // Return the row if it has at least one date in the range
           return hasValidDate ? {
             campaign: utmCampaign,
             count: row.count,
@@ -286,9 +277,9 @@ this.firestore.collection('lylapplied').get().toPromise().then(webinarSnap => {
             dateapplied: row.dateapplied,
           } : null;
         })
-        .filter(row => row !== null); // Remove null rows
+        .filter(row => row !== null); 
   
-      this.dataSource.data = filteredData; // Update the data source
+      this.dataSource.data = filteredData; 
     }
   }
   

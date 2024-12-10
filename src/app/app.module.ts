@@ -25,6 +25,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import { NgApexchartsModule } from 'ng-apexcharts';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle'; 
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -125,9 +127,11 @@ import { AdsanalyticsComponent } from './adsanalytics/adsanalytics.component';
     MatExpansionModule,
     A11yModule,
     MatMenuModule,
+    NgApexchartsModule,
     MatProgressBarModule,
     MatProgressSpinnerModule,
     MatCheckboxModule,
+    MatSlideToggleModule,
   ],
   providers: [
     DataService,
