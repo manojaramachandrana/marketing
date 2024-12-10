@@ -74,12 +74,6 @@ export class AdsanalyticsComponent implements OnInit {
     return !isNaN(value) && typeof value === 'number';
   }
 
-  onShowChartChange(event: any): void {
-    if (this.showChart) {
-      this.initializeChart(); 
-    }
-  }
-
   selectedDate: Date  ;
   headerDates: string[] = [];
 
@@ -100,12 +94,61 @@ export class AdsanalyticsComponent implements OnInit {
     this.countLeadsLast7Days();
   }
 
-  initializeChart() {
-    const SaleValue20 = this.data['Sale Value (last 20 days)']?.slice().reverse() || [];
-    const SaleValue30 = this.data['Sale Value (last 30 days)']?.slice().reverse() || [];
+  onShowChartChange(event: any): void {
+    if (this.showChart) {
+      this.initializeChart(this.selectedspecification); 
+    }
+  }
+
+  selectedspecification: string = 'all'; 
+  allowedspecification = [
+    'Ads Spend',
+    'Return on AdsSpend',
+    'Sale Value'
+  ];
+
+
+  onspecificationChange(selectedspecification: string): void {
+    this.selectedspecification = selectedspecification || 'Sale Value'; 
+      this.initializeChart(selectedspecification); 
+    
+  }
+
+  initializeChart(selectedspecification) {
+
+    if (!selectedspecification) {
+      console.error("No specification selected for the chart.");
+      return;
+    }
+
+    console.log(selectedspecification, 'derfdsfmsdjvndscn')
+
+    let data20: number[] = [];
+    let data30: number[] = [];
+    let label: string = '';
+  
+    if (selectedspecification === 'Ads Spend') {
+      console.log('yes')
+      data20 = this.data['Ad Spend (last 20 days)']?.slice().reverse() || [];
+      data30 = this.data['Ad Spend (last 30 days)']?.slice().reverse() || [];
+      label = 'Ad Spend';
+    } else if (selectedspecification === 'Return on AdsSpend') {
+      console.log('yes12')
+
+      data20 = this.data['Return on Adspend (last 20 days)']?.slice().reverse() || [];
+      data30 = this.data['Return on Adspend (last 30 days)']?.slice().reverse() || [];
+      label = 'Return on Adspend';
+    } else {
+      console.log('yeswettg')
+
+      data20 = this.data['Sale Value (last 20 days)']?.slice().reverse() || [];
+      data30 = this.data['Sale Value (last 30 days)']?.slice().reverse() || [];
+      label = 'Sale Value';
+    }
+  
     const days = this.headerDates?.slice().reverse() || [];
   
-    if (!SaleValue20.length || !SaleValue30.length || !days.length || SaleValue20.length <= 5) {
+    if (!data20.length || !data30.length || !days.length || data20.length <=5) {
       console.error("Data for the chart is not available or incomplete.");
       return;
     }
@@ -113,12 +156,12 @@ export class AdsanalyticsComponent implements OnInit {
     this.chartOptions = {
       series: [
         {
-          name: "Sale Value (last 20 days)",
-          data: SaleValue20,
+          name: `${label} (last 20 days)`,
+          data: data20,
         },
         {
-          name: "Sale Value (last 30 days)",
-          data: SaleValue30,
+          name: `${label} (last 30 days)`,
+          data: data30,
         }
       ],
       chart: {
@@ -140,10 +183,10 @@ export class AdsanalyticsComponent implements OnInit {
       },
       yaxis: {
         title: {
-          text: "Sale Value",
+          text: label,
         },
         labels: {
-          formatter: (value: number) => this.formatCurrency(value), 
+          formatter: (value: number) => this.isNumber(value) ? this.formatCurrency(value) : value.toString(),
         },
       },
       dataLabels: {
@@ -155,7 +198,7 @@ export class AdsanalyticsComponent implements OnInit {
       tooltip: {
         enabled: true,
         y: {
-          formatter: (value: number) => this.formatCurrency(value),
+          formatter: (value: number) => this.isNumber(value) ? this.formatCurrency(value) : value.toString(),
         },
       },
       legend: {
@@ -167,9 +210,7 @@ export class AdsanalyticsComponent implements OnInit {
     this.isChartReady = true;
     this.cdr.detectChanges();
   }
-  
-  
-  
+
   formatCurrency(value: number): string {
     if (value >= 10000000) {
       return (value / 10000000).toFixed(2) + " Cr"; 
@@ -300,11 +341,11 @@ export class AdsanalyticsComponent implements OnInit {
 
             this.data['Pipeline Strength (last 7 days)'].push(entriesCount + lylregistrationCount + '/144');
             this.data['Ad Spend (last 20 days)'].push(Math.round(totalspend20));
-            this.data['Sale Value (last 20 days)'].push(totalPurchaseValue20);
-            this.data['Return on Adspend (last 20 days)'].push(Math.round(totalPurchaseValue20 / Math.round(totalspend20)) + 'X');
+            this.data['Sale Value (last 20 days)'].push((totalPurchaseValue20 ) / 1.18);
+            this.data['Return on Adspend (last 20 days)'].push((((totalPurchaseValue20 / 1.18) / totalspend20).toFixed(1)) + 'X');
             this.data['Ad Spend (last 30 days)'].push(Math.round(totalspend30));
-            this.data['Sale Value (last 30 days)'].push(totalPurchaseValue30);
-            this.data['Return on Adspend (last 30 days)'].push(Math.round(totalPurchaseValue30 / Math.round(totalspend30)) + 'X');
+            this.data['Sale Value (last 30 days)'].push((totalPurchaseValue30 ) / 1.18);
+            this.data['Return on Adspend (last 30 days)'].push((((totalPurchaseValue30 / 1.18) / totalspend30).toFixed(1)) + 'X');
             this.data['Current Month Sale Value'].push(totalPurchaseValueCurrentMonth);
             this.data['Last 7 Days Sale Value'].push(totalPurchaseValue);
             this.data['Yesterday Adspend'].push(Math.round(totalspendyes));

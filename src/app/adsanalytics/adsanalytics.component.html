@@ -7,7 +7,17 @@
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
 
-    <!-- Slide Toggle for Show Chart -->
+    <div>
+      <mat-form-field appearance="outline">
+        <mat-label>Select chart Specifications</mat-label>
+        <mat-select [(value)]="selectedspecification" (selectionChange)="onspecificationChange($event.value)">
+          <mat-option *ngFor="let specification of allowedspecification" [value]="specification">
+            {{ specification }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
     <div class="toggle-container" >
       <mat-slide-toggle [(ngModel)]="showChart" (change)="onShowChartChange($event)"></mat-slide-toggle>
       <p style="margin-left: 8px;">Show Chart</p>
