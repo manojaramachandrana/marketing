@@ -243,19 +243,21 @@ export class AdsanalyticsComponent implements OnInit {
     const subthirtyDaysAgo = new Date(currentDate);
     const nov10Date = new Date(2024, 10, 10); 
     const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 8);
+    console.log('startmonth',startOfMonth)
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     console.log('seven',sevenDaysAgo)
-    twentyDaysAgo.setDate(twentyDaysAgo.getDate() - 21);
+    twentyDaysAgo.setDate(twentyDaysAgo.getDate() - 20);
     console.log('twenty',twentyDaysAgo)
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 31);
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     console.log('thirty',thirtyDaysAgo)
-    subtwentyDaysAgo.setDate(subtwentyDaysAgo.getDate() - 20);
+    subtwentyDaysAgo.setDate(subtwentyDaysAgo.getDate() - 19);
     console.log('subtwenty',subtwentyDaysAgo)
-    subthirtyDaysAgo.setDate(subthirtyDaysAgo.getDate() - 30);
+    subthirtyDaysAgo.setDate(subthirtyDaysAgo.getDate() - 29);
     console.log('subthirty',subthirtyDaysAgo)
     const startOfDate = new Date(currentDate);
     startOfDate.setHours(0, 0, 0, 0); 
     startOfDate.setDate(startOfDate.getDate() + 1);
+    console.log('current',startOfDate)
     const subcurrentdate = new Date(currentDate);
     subcurrentdate.setDate(subcurrentdate.getDate() + 1);
     console.log(subcurrentdate,startOfDate,currentDate)
@@ -291,7 +293,8 @@ export class AdsanalyticsComponent implements OnInit {
             data.purchasedate._nanoseconds
           );
 
-          const purchaseDate = purchasedate.toDate();
+          let purchaseDate = purchasedate.toDate();
+          purchaseDate = new Date(purchaseDate.getTime() + (5 * 60 + 30) * 60 * 1000);
 
           if (purchaseDate >= sevenDaysAgo && purchaseDate <= currentDate) {
             totalPurchaseValue += data.totalpurchasevalue || 0; 
@@ -339,17 +342,17 @@ export class AdsanalyticsComponent implements OnInit {
               }
             });
 
-            this.data['Pipeline Strength (last 7 days)'].push(entriesCount + lylregistrationCount + '/144');
+            this.data['Pipeline Strength (last 7 days)'].push(entriesCount + '/144');
             this.data['Ad Spend (last 20 days)'].push(Math.round(totalspend20));
-            this.data['Sale Value (last 20 days)'].push((totalPurchaseValue20 ) / 1.18);
-            this.data['Return on Adspend (last 20 days)'].push((((totalPurchaseValue20 / 1.18) / totalspend20).toFixed(1)) + 'X');
+            this.data['Sale Value (last 20 days)'].push((totalPurchaseValue20 /1.18 ) );
+            this.data['Return on Adspend (last 20 days)'].push((((totalPurchaseValue20 /1.18) / totalspend20).toFixed(1)) + 'X');
             this.data['Ad Spend (last 30 days)'].push(Math.round(totalspend30));
-            this.data['Sale Value (last 30 days)'].push((totalPurchaseValue30 ) / 1.18);
-            this.data['Return on Adspend (last 30 days)'].push((((totalPurchaseValue30 / 1.18) / totalspend30).toFixed(1)) + 'X');
-            this.data['Current Month Sale Value'].push(totalPurchaseValueCurrentMonth);
-            this.data['Last 7 Days Sale Value'].push(totalPurchaseValue);
+            this.data['Sale Value (last 30 days)'].push((totalPurchaseValue30 / 1.18 ) );
+            this.data['Return on Adspend (last 30 days)'].push((((totalPurchaseValue30 /1.18) / totalspend30).toFixed(1)) + 'X');
+            this.data['Current Month Sale Value'].push(totalPurchaseValueCurrentMonth /1.18);
+            this.data['Last 7 Days Sale Value'].push(totalPurchaseValue /1.18);
             this.data['Yesterday Adspend'].push(Math.round(totalspendyes));
-            this.data['Sale Value From Nov 10'].push(totalPurchaseValueNov10);
+            this.data['Sale Value From Nov 10'].push(totalPurchaseValueNov10 /1.18);
 
             this.dataSource = Object.keys(this.data).map(key => {
               return { parameter: key, value: this.data[key] };
