@@ -116,6 +116,35 @@ export class NorthstarComponent implements OnInit {
     this.fetchDataInRange();
   }
 
+  // fetchDataInRange(): void {
+  //   const start = firebase.firestore.Timestamp.fromDate(this.startDate);
+  //   const end = firebase.firestore.Timestamp.fromDate(this.addDays(this.endDate, 1));
+
+  //   const spendQuery = this.firestore.collection('adsinsight', ref =>
+  //     ref.where('docdate', '>=', start).where('docdate', '<=', end)
+  //   ).valueChanges().pipe(
+  //     map((ads: any[]) => ads.reduce((sum, ad) => sum + ad.amountSpend, 0))
+  //   );
+
+  //   const returnQuery = this.firestore.collection('convertedleads', ref =>
+  //     ref.where('purchasedate', '>=', start).where('purchasedate', '<=', end)
+  //   ).valueChanges().pipe(
+  //     map((leads: any[]) => leads.reduce((sum, lead) => sum + lead.totalpurchasevalue, 0))
+  //   );
+
+  //   combineLatest([spendQuery, returnQuery]).subscribe(([totalSpent, totalReturn]) => {
+  //     this.totalAmountSpent = totalSpent;
+  //     this.totalReturn = this.calculateReturnWithoutGST(totalReturn);
+  //     this.calculateFinalResult();
+  //   });
+  // }
+
+  // addDays(date: Date, days: number): Date {
+  //   const result = new Date(date);
+  //   result.setDate(result.getDate() + days);
+  //   return result;
+  // }
+
   fetchDataInRange(): void {
     const start = firebase.firestore.Timestamp.fromDate(this.startDate);
     const startad = new Date(this.startDate)
@@ -141,21 +170,18 @@ export class NorthstarComponent implements OnInit {
     //   map((leads: any[]) => leads.reduce((sum, lead) => sum + lead.totalpurchasevalue, 0))
     // );
 
-    const returnQuery = this.firestore.collection('leads', ref =>
-      ref.where('purchasedate._seconds', '>=', start.seconds)
-         .where('purchasedate._seconds', '<=', end.seconds)
+    const returnQuery = this.firestore.collection('convertedleads', ref =>
+      ref.where('purchasedate', '>=', start)
+         .where('purchasedate', '<=', end)
     ).valueChanges().pipe(
-      map((leads: any[]) => leads.reduce((sum, lead) => {
-        const purchaseDateTimestamp = new firebase.firestore.Timestamp(
-          lead['purchasedate']._seconds,
-          lead['purchasedate']._nanoseconds
-        );
-    
-        return purchaseDateTimestamp >= start && purchaseDateTimestamp <= end 
-          ? sum + lead.totalpurchasevalue 
-          : sum;
-      }, 0))
+      map((leads: any[]) => 
+        leads
+          .filter(lead => lead.status !== 'Pending' && lead.status !== 'Cancelled') 
+          .reduce((sum, lead) => sum + lead.totalpurchasevalue, 0)
+      )
     );
+    
+    
 
     // new firebase.firestore.Timestamp(
     //   element['purchasedate']['_seconds'], 

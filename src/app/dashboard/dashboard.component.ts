@@ -49,7 +49,6 @@ export class DashboardComponent implements OnInit {
   startOfLastLastMonths: Date;
   endOfLastLastMonths: Date;
 
-
   constructor( private firestore: AngularFirestore, private dialog: MatDialog) {}
   dataSource = new MatTableDataSource< { date: string,currentweek: number,lastweek: number,lastlastweek:number,currentmonth: number,lastmonth: number,lastlastmonth:number,currentweeklead: number,lastlastweeklead:number, currentmonthlead: number,lastlastmonthlead:number, lastweeklead: number, lastmonthlead: number, currentweektpv: number, lastweektpv: number,lastlastweektpv: number,lastlastmonthtpv:number, currentmonthtpv: number, lastmonthtpv: number, currentweekecosystem:number,lastlastweekecosystem:number,lastlastmonthecosystem:number, lastweekecosystem: number, currentmonthecosystem: number, lastmonthecosystem: number, currentweekemiecosystem: number,lastlastweekemiecosystem:number,lastlastmonthemiecosystem: number, lastweekemiecosystem: number, currentmonthemiecosystem: number, lastmonthemiecosystem: number, currentweekparticipant: number,lastlastweekparticipant: number,lastlastmonthparticipant:number, lastweekparticipant: number, currentmonthparticipant:number, lastmonthparticipant: number, currentweekfreetopaid: number,lastlastweekfreetopaid: number,lastlastmonthfreetopaid: number, lastweekfreetopaid: number, currentmonthfreetopaid: number, lastmonthfreetopaid: number, lastmonthltv: number,lastlastmonthltv: number,lastlastweekltv: number, currentmonthltv: number, lastweekltv:number,currentweekltv:number, currentweekwou:number,lastlastweekwou:number,currentmonthwou:number,lastlastmonthwou:number, lastweekwou:number,lastmonthwou:number }>(); 
   displayedColumns: string[] = ['no', 'currentweek', 'lastweek','metrics'];
@@ -507,47 +506,52 @@ weekfreetopaid() {
     const campaigns = [
       { campaignname: 'entries', startdate: sundayDate, enddate: saturdayDate, label: 'currentweeklead' ,tag: 'week'},
       { campaignname: 'lylregistration', startdate: sundayDate, enddate: saturdayDate, label: 'currentweeklead',tag: 'week' },
-      { campaignname: 'leads', startdate: sundayDate, enddate: saturdayDate, label: 'currentweek',tag: 'week' },
+      { campaignname: 'convertedleads', startdate: sundayDate, enddate: saturdayDate, label: 'currentweek',tag: 'week' },
       { campaignname: 'funnelmc', startdate: sundayDate, enddate: saturdayDate, label: 'currentweek',tag: 'week' },
 
       { campaignname: 'entries', startdate: lastSundayDate, enddate: lastSaturdayDate, label: 'lastweeklead',tag: 'week' },
       { campaignname: 'lylregistration', startdate: lastSundayDate, enddate: lastSaturdayDate, label: 'lastweeklead',tag: 'week' },
-      { campaignname: 'leads', startdate: lastSundayDate, enddate: lastSaturdayDate, label: 'lastweek',tag: 'week' },
+      { campaignname: 'convertedleads', startdate: lastSundayDate, enddate: lastSaturdayDate, label: 'lastweek',tag: 'week' },
       { campaignname: 'funnelmc', startdate: lastSundayDate, enddate: lastSaturdayDate, label: 'lastweek',tag: 'week' },
 
       { campaignname: 'entries', startdate: lastlastSundayDate, enddate: lastlastSaturdayDate, label: 'lastlastweeklead',tag: 'week' },
       { campaignname: 'lylregistration', startdate: lastlastSundayDate, enddate: lastlastSaturdayDate, label: 'lastlastweeklead',tag: 'week' },
-      { campaignname: 'leads', startdate: lastlastSundayDate, enddate: lastlastSaturdayDate, label: 'lastlastweek',tag: 'week' },
+      { campaignname: 'convertedleads', startdate: lastlastSundayDate, enddate: lastlastSaturdayDate, label: 'lastlastweek',tag: 'week' },
       { campaignname: 'funnelmc', startdate: lastlastSundayDate, enddate: lastlastSaturdayDate, label: 'lastlastweek',tag: 'week' },
 
       { campaignname: 'entries', startdate: startOfCurrentMonth, enddate: endOfCurrentMonth, label: 'currentmonthlead',tag: 'month' },
       { campaignname: 'lylregistration', startdate: startOfCurrentMonth, enddate: endOfCurrentMonth, label: 'currentmonthlead',tag: 'month' },
-      { campaignname: 'leads', startdate: startOfCurrentMonth, enddate: endOfCurrentMonth, label: 'currentmonth',tag: 'month' },
+      { campaignname: 'convertedleads', startdate: startOfCurrentMonth, enddate: endOfCurrentMonth, label: 'currentmonth',tag: 'month' },
       { campaignname: 'funnelmc', startdate: startOfCurrentMonth, enddate: endOfCurrentMonth, label: 'currentmonth',tag: 'month' },
 
       { campaignname: 'entries', startdate: startOfLastMonth, enddate: endOfLastMonth, label: 'lastmonthlead',tag: 'month' },
       { campaignname: 'lylregistration', startdate: startOfLastMonth, enddate: endOfLastMonth, label: 'lastmonthlead',tag: 'month' },
-      { campaignname: 'leads', startdate: startOfLastMonth, enddate: endOfLastMonth, label: 'lastmonth',tag: 'month' },
+      { campaignname: 'convertedleads', startdate: startOfLastMonth, enddate: endOfLastMonth, label: 'lastmonth',tag: 'month' },
       { campaignname: 'funnelmc', startdate: startOfLastMonth, enddate: endOfLastMonth, label: 'lastmonth',tag: 'month' },
 
       { campaignname: 'entries', startdate: startOflastlasttMonth, enddate: endOflastlastMonth, label: 'lastlastmonthlead',tag: 'month' },
       { campaignname: 'lylregistration', startdate: startOflastlasttMonth, enddate: endOflastlastMonth, label: 'lastlastmonthlead',tag: 'month' },
-      { campaignname: 'leads', startdate: startOflastlasttMonth, enddate: endOflastlastMonth, label: 'lastlastmonth',tag: 'month' },
+      { campaignname: 'convertedleads', startdate: startOflastlasttMonth, enddate: endOflastlastMonth, label: 'lastlastmonth',tag: 'month' },
       { campaignname: 'funnelmc', startdate: startOflastlasttMonth, enddate: endOflastlastMonth, label: 'lastlastmonth',tag: 'month' },
     ];
 
     campaigns.forEach(campaign => {
       this.firestore.collection<any>(campaign.campaignname, ref =>
-        ref.where((campaign.campaignname === 'leads' ? 'converteddate' : '') || (campaign.campaignname === 'lylregistration' ? 'entrydata' : 'createddate') , '>=',firebase.firestore.Timestamp.fromDate(campaign.startdate))
-           .where((campaign.campaignname === 'leads' ? 'converteddate' : '') || (campaign.campaignname === 'lylregistration' ? 'entrydata' : 'createddate') , '<=',firebase.firestore.Timestamp.fromDate(campaign.enddate))
+        ref.where((campaign.campaignname === 'convertedleads' ? 'purchasedate' : '') || (campaign.campaignname === 'lylregistration' ? 'entrydata' : 'createddate') , '>=',firebase.firestore.Timestamp.fromDate(campaign.startdate))
+           .where((campaign.campaignname === 'convertedleads' ? 'purchasedate' : '') || (campaign.campaignname === 'lylregistration' ? 'entrydata' : 'createddate') , '<=',firebase.firestore.Timestamp.fromDate(campaign.enddate))
       ).valueChanges().pipe(takeUntil(this.unsubscribe$),
         map(entries => {
           const countsByDate: { [key: string]: number } = {};
           entries.forEach(entry => {
-            const dateField = (campaign.campaignname === 'leads' ? 'converteddate' : '') || (campaign.campaignname === 'lylregistration' ? 'entrydata' : 'createddate') ;
-            const date = entry[dateField].toDate();
-            const dateString = this.formatDate(date);
-            countsByDate[dateString] = (countsByDate[dateString] || 0) + 1;
+            const dateField = (campaign.campaignname === 'convertedleads' ? 'purchasedate' : '') || (campaign.campaignname === 'lylregistration' ? 'entrydata' : 'createddate') ;
+            if (entry.status !== 'Pending' && entry.status !== 'Cancelled') {
+              const date = entry[dateField].toDate();
+              const dateString = this.formatDate(date);
+              countsByDate[dateString] = (countsByDate[dateString] || 0) + 1;
+            }
+            // const date = entry[dateField].toDate();
+            // const dateString = this.formatDate(date);
+            // countsByDate[dateString] = (countsByDate[dateString] || 0) + 1;
           });
           return { countsByDate, campaignName: campaign.campaignname, label: campaign.label,tag: campaign.tag };
         })
@@ -637,7 +641,7 @@ weekfreetopaid() {
           this.dataSource.data[existingDataIndex]['lastlastmonthfreetopaid'] = this.dataSource.data[existingDataIndex]['lastlastmonthfreetopaid'] + totalfreetopaid;
          }
 
-    if (label === 'currentweek' && (campaignName === 'leads') )  {
+    if (label === 'currentweek' && (campaignName === 'convertedleads') )  {
      this.dataSource.data[existingDataIndex]['currentweek'] = totalsales ;
      this.dataSource.data[existingDataIndex]['currentweektpv'] = totalPurchaseValue;
      this.dataSource.data[existingDataIndex]['currentweekwou'] = totalsalewou ;
@@ -655,7 +659,7 @@ weekfreetopaid() {
       this.dataSource.data[existingDataIndex]['currentweekltv'] = this.dataSource.data[existingDataIndex]['currentweekltv']  + totalltpurchasevalue + 967665115 +1311268;
       this.dataSource.data[existingDataIndex]['currentweekfreetopaid'] = this.dataSource.data[existingDataIndex]['currentweekfreetopaid'] + totalfreetopaid ;
      }
-    if (campaignName === 'leads' && label === 'lastweek') {
+    if (campaignName === 'convertedleads' && label === 'lastweek') {
     this.dataSource.data[existingDataIndex]['lastweek'] = totalsales ;
     this.dataSource.data[existingDataIndex]['lastweekwou'] = totalsalewou ;
     this.dataSource.data[existingDataIndex]['lastweektpv'] = totalPurchaseValue ;
@@ -674,7 +678,7 @@ weekfreetopaid() {
       this.dataSource.data[existingDataIndex]['lastweekfreetopaid'] = this.dataSource.data[existingDataIndex]['lastweekfreetopaid'] + totalfreetopaid ;
      }
 
-     if (campaignName === 'leads' && label === 'lastlastweek') {
+     if (campaignName === 'convertedleads' && label === 'lastlastweek') {
       this.dataSource.data[existingDataIndex]['lastlastweek'] = totalsales ;
       this.dataSource.data[existingDataIndex]['lastlastweekwou'] = totalsalewou ;
       this.dataSource.data[existingDataIndex]['lastlastweektpv'] = totalPurchaseValue ;
@@ -693,7 +697,7 @@ weekfreetopaid() {
         this.dataSource.data[existingDataIndex]['lastlastweekfreetopaid'] = this.dataSource.data[existingDataIndex]['lastlastweekfreetopaid'] + totalfreetopaid ;
        }
 
-    if (campaignName === 'leads' && label === 'currentmonth') {
+    if (campaignName === 'convertedleads' && label === 'currentmonth') {
     this.dataSource.data[existingDataIndex]['currentmonth'] = totalsales;
     this.dataSource.data[existingDataIndex]['currentmonthwou'] = totalsalewou;
     this.dataSource.data[existingDataIndex]['currentmonthecosystem'] = totalemisubsale;
@@ -711,7 +715,7 @@ weekfreetopaid() {
       this.dataSource.data[existingDataIndex]['currentmonthparticipant'] =this.dataSource.data[existingDataIndex]['currentmonthparticipant'] + totalparticipant +2212 +765;
       this.dataSource.data[existingDataIndex]['currentmonthfreetopaid'] =this.dataSource.data[existingDataIndex]['currentmonthfreetopaid'] + totalfreetopaid;
      }
-    if (campaignName === 'leads' && label === 'lastmonth') {
+    if (campaignName === 'convertedleads' && label === 'lastmonth') {
     this.dataSource.data[existingDataIndex]['lastmonth'] = totalsales;
     this.dataSource.data[existingDataIndex]['lastmonthwou'] = totalsalewou;
     this.dataSource.data[existingDataIndex]['lastmonthtpv'] = totalPurchaseValue;
@@ -730,7 +734,7 @@ weekfreetopaid() {
       this.dataSource.data[existingDataIndex]['lastmonthfreetopaid'] = this.dataSource.data[existingDataIndex]['lastmonthfreetopaid'] + totalfreetopaid;
      }
 
-     if (campaignName === 'leads' && label === 'lastlastmonth') {
+     if (campaignName === 'convertedleads' && label === 'lastlastmonth') {
       this.dataSource.data[existingDataIndex]['lastlastmonth'] = totalsales;
       this.dataSource.data[existingDataIndex]['lastlastmonthwou'] = totalsalewou;
       this.dataSource.data[existingDataIndex]['lastlastmonthtpv'] = totalPurchaseValue;
@@ -753,60 +757,60 @@ weekfreetopaid() {
    else {
     const newDataItem = {
       date: 'data',
-      currentweek: campaignName === 'leads' ? totalsales : 0,
-      lastweek: campaignName === 'leads' ? totalsales : 0,
-      lastlastweek: campaignName === 'leads' ? totalsales : 0,
-      currentmonth: campaignName === 'leads' ? totalsales : 0,
-      lastmonth: campaignName === 'leads' ? totalsales : 0,
-      lastlastmonth: campaignName === 'leads' ? totalsales : 0,
+      currentweek: campaignName === 'convertedleads' ? totalsales : 0,
+      lastweek: campaignName === 'convertedleads' ? totalsales : 0,
+      lastlastweek: campaignName === 'convertedleads' ? totalsales : 0,
+      currentmonth: campaignName === 'convertedleads' ? totalsales : 0,
+      lastmonth: campaignName === 'convertedleads' ? totalsales : 0,
+      lastlastmonth: campaignName === 'convertedleads' ? totalsales : 0,
       currentweeklead: campaignName === 'entries' ? totalcount : 0,
       lastlastweeklead: campaignName === 'entries' ? totalcount : 0,
       currentmonthlead: campaignName === 'entries' ? totalcount : 0,
       lastlastmonthlead: campaignName === 'entries' ? totalcount : 0,
       lastweeklead: campaignName === 'entries' ? totalcount : 0,
       lastmonthlead: campaignName === 'entries' ? totalcount : 0,
-      currentweektpv: campaignName === 'leads' ? tpv : 0,
-      lastweektpv: campaignName === 'leads' ? tpv : 0,
-      lastlastweektpv: campaignName === 'leads' ? tpv : 0,
-      currentmonthtpv: campaignName === 'leads' ? tpv : 0,
-      lastmonthtpv: campaignName === 'leads' ? tpv : 0,
-      lastlastmonthtpv: campaignName === 'leads' ? tpv : 0,
-      currentweekecosystem: campaignName === 'leads' ? totalemisubsale : 0,
-      lastweekecosystem: campaignName === 'leads' ? totalemisubsale : 0,
-      lastlastweekecosystem: campaignName === 'leads' ? totalemisubsale : 0,
-      currentmonthecosystem: campaignName === 'leads' ? totalemisubsale : 0,
-      lastmonthecosystem: campaignName === 'leads' ? totalemisubsale : 0,
-      lastlastmonthecosystem: campaignName === 'leads' ? totalemisubsale : 0,
-      currentweekemiecosystem: campaignName === 'leads' ? totalsubsale : 0,
-      lastweekemiecosystem: campaignName === 'leads' ? totalsubsale : 0,
-      lastlastweekemiecosystem: campaignName === 'leads' ? totalsubsale : 0,
-      currentmonthemiecosystem: campaignName === 'leads' ? totalsubsale : 0,
-      lastmonthemiecosystem: campaignName === 'leads' ? totalsubsale : 0,
-      lastlastmonthemiecosystem: campaignName === 'leads' ? totalsubsale : 0,
-      currentweekparticipant: campaignName === 'leads' ? totalparticipant : 0,
-      lastweekparticipant: campaignName === 'leads' ? totalparticipant : 0,
-      lastlastweekparticipant: campaignName === 'leads' ? totalparticipant : 0,
-      currentmonthparticipant: campaignName === 'leads' ? totalparticipant : 0,
-      lastmonthparticipant: campaignName === 'leads' ? totalparticipant : 0,
-      lastlastmonthparticipant: campaignName === 'leads' ? totalparticipant : 0,
-      currentweekfreetopaid: campaignName === 'leads' ? totalfreetopaid : 0,
-      lastweekfreetopaid: campaignName === 'leads' ? totalfreetopaid : 0,
-      lastlastweekfreetopaid: campaignName === 'leads' ? totalfreetopaid : 0,
-      currentmonthfreetopaid: campaignName === 'leads' ? totalfreetopaid : 0,
-      lastmonthfreetopaid: campaignName === 'leads' ? totalfreetopaid : 0,
-      lastlastmonthfreetopaid: campaignName === 'leads' ? totalfreetopaid : 0,
-      currentweekltv: campaignName === 'leads' ? totalltpurchasevalue : 0,
-      lastweekltv: campaignName === 'leads' ? totalltpurchasevalue : 0,
-      lastlastweekltv: campaignName === 'leads' ? totalltpurchasevalue : 0,
-      currentmonthltv: campaignName === 'leads' ? totalltpurchasevalue : 0,
-      lastmonthltv: campaignName === 'leads' ? totalltpurchasevalue : 0,
-      lastlastmonthltv: campaignName === 'leads' ? totalltpurchasevalue : 0,
-      currentweekwou: campaignName === 'leads' ? totalsalewou : 0,
-      lastweekwou: campaignName === 'leads' ? totalsalewou : 0,
-      lastlastweekwou: campaignName === 'leads' ? totalsalewou : 0,
-      currentmonthwou: campaignName === 'leads' ? totalsalewou : 0,
-      lastmonthwou: campaignName === 'leads' ? totalsalewou : 0,
-      lastlastmonthwou: campaignName === 'leads' ? totalsalewou : 0,
+      currentweektpv: campaignName === 'convertedleads' ? tpv : 0,
+      lastweektpv: campaignName === 'convertedleads' ? tpv : 0,
+      lastlastweektpv: campaignName === 'convertedleads' ? tpv : 0,
+      currentmonthtpv: campaignName === 'convertedleads' ? tpv : 0,
+      lastmonthtpv: campaignName === 'convertedleads' ? tpv : 0,
+      lastlastmonthtpv: campaignName === 'convertedleads' ? tpv : 0,
+      currentweekecosystem: campaignName === 'convertedleads' ? totalemisubsale : 0,
+      lastweekecosystem: campaignName === 'convertedleads' ? totalemisubsale : 0,
+      lastlastweekecosystem: campaignName === 'convertedleads' ? totalemisubsale : 0,
+      currentmonthecosystem: campaignName === 'convertedleads' ? totalemisubsale : 0,
+      lastmonthecosystem: campaignName === 'convertedleads' ? totalemisubsale : 0,
+      lastlastmonthecosystem: campaignName === 'convertedleads' ? totalemisubsale : 0,
+      currentweekemiecosystem: campaignName === 'convertedleads' ? totalsubsale : 0,
+      lastweekemiecosystem: campaignName === 'convertedleads' ? totalsubsale : 0,
+      lastlastweekemiecosystem: campaignName === 'convertedleads' ? totalsubsale : 0,
+      currentmonthemiecosystem: campaignName === 'convertedleads' ? totalsubsale : 0,
+      lastmonthemiecosystem: campaignName === 'convertedleads' ? totalsubsale : 0,
+      lastlastmonthemiecosystem: campaignName === 'convertedleads' ? totalsubsale : 0,
+      currentweekparticipant: campaignName === 'convertedleads' ? totalparticipant : 0,
+      lastweekparticipant: campaignName === 'convertedleads' ? totalparticipant : 0,
+      lastlastweekparticipant: campaignName === 'convertedleads' ? totalparticipant : 0,
+      currentmonthparticipant: campaignName === 'convertedleads' ? totalparticipant : 0,
+      lastmonthparticipant: campaignName === 'convertedleads' ? totalparticipant : 0,
+      lastlastmonthparticipant: campaignName === 'convertedleads' ? totalparticipant : 0,
+      currentweekfreetopaid: campaignName === 'convertedleads' ? totalfreetopaid : 0,
+      lastweekfreetopaid: campaignName === 'convertedleads' ? totalfreetopaid : 0,
+      lastlastweekfreetopaid: campaignName === 'convertedleads' ? totalfreetopaid : 0,
+      currentmonthfreetopaid: campaignName === 'convertedleads' ? totalfreetopaid : 0,
+      lastmonthfreetopaid: campaignName === 'convertedleads' ? totalfreetopaid : 0,
+      lastlastmonthfreetopaid: campaignName === 'convertedleads' ? totalfreetopaid : 0,
+      currentweekltv: campaignName === 'convertedleads' ? totalltpurchasevalue : 0,
+      lastweekltv: campaignName === 'convertedleads' ? totalltpurchasevalue : 0,
+      lastlastweekltv: campaignName === 'convertedleads' ? totalltpurchasevalue : 0,
+      currentmonthltv: campaignName === 'convertedleads' ? totalltpurchasevalue : 0,
+      lastmonthltv: campaignName === 'convertedleads' ? totalltpurchasevalue : 0,
+      lastlastmonthltv: campaignName === 'convertedleads' ? totalltpurchasevalue : 0,
+      currentweekwou: campaignName === 'convertedleads' ? totalsalewou : 0,
+      lastweekwou: campaignName === 'convertedleads' ? totalsalewou : 0,
+      lastlastweekwou: campaignName === 'convertedleads' ? totalsalewou : 0,
+      currentmonthwou: campaignName === 'convertedleads' ? totalsalewou : 0,
+      lastmonthwou: campaignName === 'convertedleads' ? totalsalewou : 0,
+      lastlastmonthwou: campaignName === 'convertedleads' ? totalsalewou : 0,
     };
     
     this.dataSource.data.push(newDataItem);
@@ -820,14 +824,14 @@ weekfreetopaid() {
 async getTotalPurchaseValueForDate(startDate: Date, endDate: Date, label: string, campaignName: string): Promise<number> {
   return new Promise<number>((resolve, reject) => {
     let totalPurchaseValue = 0;
-    const dateField = campaignName === 'leads' ? 'converteddate' : 'createddate';
+    const dateField = campaignName === 'convertedleads' ? 'purchasedate' : 'createddate';
 
     this.firestore.collection<any>(campaignName, ref =>
       ref.where(dateField, '>=', firebase.firestore.Timestamp.fromDate(startDate))
          .where(dateField, '<=', firebase.firestore.Timestamp.fromDate(endDate))
     ).valueChanges().pipe(takeUntil(this.unsubscribe$)).subscribe(entries => {
       entries.forEach(entry => {
-        if (campaignName === 'leads') {
+        if (campaignName === 'convertedleads' && (entry.status !== 'Pending' && entry.status !== 'Cancelled')) {
           totalPurchaseValue += (entry.totalpurchasevalue || 0);
         } else if (campaignName === 'funnelmc') {
           totalPurchaseValue += (entry.ordertotal || 0);
@@ -843,29 +847,29 @@ async getTotalPurchaseValueForDate(startDate: Date, endDate: Date, label: string
 async getltpurchasevalue(startDate: Date, endDate: Date, label: string, campaignName: string): Promise<number> {
   return new Promise<number>((resolve, reject) => {
     let totalPurchaseValue = 0;
-    const dateField = campaignName === 'leads' ? 'converteddate' : 'createddate';
+    const dateField = campaignName === 'convertedleads' ? 'purchasedate' : 'createddate';
 
     this.firestore.collection<any>(campaignName, ref =>
       ref.where(dateField, '>=', firebase.firestore.Timestamp.fromDate(startDate))
          .where(dateField, '<=', firebase.firestore.Timestamp.fromDate(endDate))
     ).valueChanges().pipe(takeUntil(this.unsubscribe$)).subscribe(entries => {
       entries.forEach(entry => {
-        if (campaignName === 'leads' && label === 'currentweek') {
+        if (campaignName === 'convertedleads' && label === 'currentweek' && (entry.status !== 'Pending' && entry.status !== 'Cancelled')) {
           totalPurchaseValue += (entry.totalpurchasevalue  || 0) ;
         } else if (campaignName === 'funnelmc') {
           totalPurchaseValue += entry.ordertotal || 0;
         }
-        if (campaignName === 'leads' && label === 'lastweek') {
+        if (campaignName === 'convertedleads' && label === 'lastweek' && (entry.status !== 'Pending' && entry.status !== 'Cancelled')) {
           totalPurchaseValue += (entry.totalpurchasevalue || 0) ;
         } else if (campaignName === 'funnelmc') {
           totalPurchaseValue += (entry.ordertotal || 0) ;
         }
-        if (campaignName === 'leads' && label === 'lastmonth') {
+        if (campaignName === 'convertedleads' && label === 'lastmonth' && (entry.status !== 'Pending' && entry.status !== 'Cancelled')) {
           totalPurchaseValue += (entry.totalpurchasevalue  || 0);
         } else if (campaignName === 'funnelmc') {
           totalPurchaseValue += entry.ordertotal || 0;
         }
-        if (campaignName === 'leads' && label === 'currentmonth') {
+        if (campaignName === 'convertedleads' && label === 'currentmonth' && (entry.status !== 'Pending' && entry.status !== 'Cancelled')) {
           totalPurchaseValue += (entry.totalpurchasevalue  || 0) ;
         } else if (campaignName === 'funnelmc') {
           totalPurchaseValue += (entry.ordertotal) || 0;
@@ -881,14 +885,14 @@ async getltpurchasevalue(startDate: Date, endDate: Date, label: string, campaign
 async gettotalsales(startDate: Date, endDate: Date, label: string, campaignName: string): Promise<number> {
   return new Promise<number>((resolve, reject) => {
     let count = 0;
-    const dateField = campaignName === 'leads' ? 'converteddate' : 'createddate';
+    const dateField = campaignName === 'convertedleads' ? 'purchasedate' : 'createddate';
 
     this.firestore.collection<any>(campaignName, ref =>
       ref.where(dateField, '>=', firebase.firestore.Timestamp.fromDate(startDate))
          .where(dateField, '<=', firebase.firestore.Timestamp.fromDate(endDate))
     ).valueChanges().pipe(takeUntil(this.unsubscribe$)).subscribe(entries => {
       entries.forEach(entry => {
-        if (campaignName === 'leads' && (entry.journeyname !== 'FTO' && entry.journeyname !== 'Research') ) {
+        if (campaignName === 'convertedleads' && (entry.journeyname !== 'FTO' && entry.journeyname !== 'Research') && (entry.status !== 'Pending' && entry.status !== 'Cancelled') ) {
           count += 1 || 0;
           //console.log(entry.email)
         } else if (campaignName === 'funnelmc') {
@@ -905,14 +909,14 @@ async gettotalsales(startDate: Date, endDate: Date, label: string, campaignName:
 async gettotalpurchase(startDate: Date, endDate: Date, label: string, campaignName: string): Promise<number> {
   return new Promise<number>((resolve, reject) => {
     let count = 0;
-    const dateField = campaignName === 'leads' ? 'converteddate' : 'createddate';
+    const dateField = campaignName === 'convertedleads' ? 'purchasedate' : 'createddate';
 
     this.firestore.collection<any>(campaignName, ref =>
       ref.where(dateField, '>=', firebase.firestore.Timestamp.fromDate(startDate))
          .where(dateField, '<=', firebase.firestore.Timestamp.fromDate(endDate))
     ).valueChanges().pipe(takeUntil(this.unsubscribe$)).subscribe(entries => {
       entries.forEach(entry => {
-        if (campaignName === 'leads' && entry.journeyname !== 'FTO' && entry.saletype !== 'upgrade' && entry.journeyname !== 'Research') {
+        if (campaignName === 'convertedleads' && entry.journeyname !== 'FTO' && entry.saletype !== 'upgrade' && entry.journeyname !== 'Research' && (entry.status !== 'Pending' && entry.status !== 'Cancelled')) {
           count += 1 ;
         } else if (campaignName === 'funnelmc') {
           count += 1 ;
@@ -928,14 +932,14 @@ async gettotalpurchase(startDate: Date, endDate: Date, label: string, campaignNa
 async getecosystem(startDate: Date, endDate: Date, label: string, campaignName: string): Promise<number> {
   return new Promise<number>((resolve, reject) => {
     let count = 0;
-    const dateField = campaignName === 'leads' ? 'converteddate' : 'createddate';
+    const dateField = campaignName === 'convertedleads' ? 'purchasedate' : 'createddate';
 
     this.firestore.collection<any>(campaignName, ref =>
       ref.where(dateField, '>=', firebase.firestore.Timestamp.fromDate(startDate))
          .where(dateField, '<=', firebase.firestore.Timestamp.fromDate(endDate))
     ).valueChanges().pipe(takeUntil(this.unsubscribe$)).subscribe(entries => {
       entries.forEach(entry => {
-        if ( entry.journeyname === 'uP!' || entry.journeyname === 'BiG' || entry.journeyname === 'FTM' || entry.journeyname === 'CPM upgrade' || entry.journeyname === 'CPM' || entry.journeyname === 'FastTrack Membership' || entry.journeyname === 'Launch Your Legacy L2' || entry.journeyname === 'FTM with SLD CI'|| entry.journeyname === 'BiG with SLD CI') {
+        if ( entry.journeyname === 'uP!' || entry.journeyname === 'BiG' || entry.journeyname === 'FTM' || entry.journeyname === 'CPM upgrade' || entry.journeyname === 'CPM' || entry.journeyname === 'FastTrack Membership' || entry.journeyname === 'Launch Your Legacy L2' || entry.journeyname === 'FTM with SLD CI'|| entry.journeyname === 'BiG with SLD CI' && (entry.status !== 'Pending' && entry.status !== 'Cancelled')) {
           count += 1;
         }
       });
@@ -987,7 +991,7 @@ async getecosystem(startDate: Date, endDate: Date, label: string, campaignName: 
 async getfreetopaid(startDate: Date, endDate: Date, label: string, campaignName: string): Promise<number> {
   return new Promise<number>((resolve, reject) => {
 
-    const dateField = (campaignName === 'leads' ? 'converteddate' : '') || (campaignName === 'lylregistration' ? 'entrydata' : 'createddate');
+    const dateField = (campaignName === 'convertedleads' ? 'purchasedate' : '') || (campaignName === 'lylregistration' ? 'entrydata' : 'createddate');
     let count = 0;
 
     this.firestore.collection<any>(campaignName, ref =>
@@ -1012,25 +1016,25 @@ async getfreetopaid(startDate: Date, endDate: Date, label: string, campaignName:
           this.currentmonthlylRegOrEntriesEmails.add(email);
         } else if ( label === 'lastmonthlead' && ( campaignName === 'entries')) {
           this.lastmonthlylRegOrEntriesEmails.add(email);
-        } else if (campaignName === 'leads' && label === 'currentweek') {
+        } else if (campaignName === 'convertedleads' && label === 'currentweek' && (entry.status !== 'Pending' && entry.status !== 'Cancelled')) {
           this.currentweekleadsEmails.add(email);
-        } else if (campaignName === 'leads' && label === 'lastweek') {
+        } else if (campaignName === 'convertedleads' && label === 'lastweek' && (entry.status !== 'Pending' && entry.status !== 'Cancelled')) {
           this.lastweekleadsEmails.add(email);
-        } else if (campaignName === 'leads' && label === 'currentmonth') {
+        } else if (campaignName === 'convertedleads' && label === 'currentmonth' && (entry.status !== 'Pending' && entry.status !== 'Cancelled')) {
           this.currentmonthleadsEmails.add(email);
-        } else if (campaignName === 'leads' && label === 'lastmonth') {
+        } else if (campaignName === 'convertedleads' && label === 'lastmonth' && (entry.status !== 'Pending' && entry.status !== 'Cancelled')) {
           this.lastmonthleadsEmails.add(email);
-        } else if (campaignName === 'funnelmc' && label === 'currentweek'){
+        } else if (campaignName === 'funnelmc' && label === 'currentweek' && (entry.status !== 'Pending' && entry.status !== 'Cancelled')){
           this.currentweekFunnelMCEmails.add(email);
-        } else if (campaignName === 'funnelmc' && label === 'lastweek'){
+        } else if (campaignName === 'funnelmc' && label === 'lastweek' && (entry.status !== 'Pending' && entry.status !== 'Cancelled')){
           this.lastweekFunnelMCEmails.add(email);
-        } else if (campaignName === 'funnelmc' && label === 'currentmonth'){
+        } else if (campaignName === 'funnelmc' && label === 'currentmonth' && (entry.status !== 'Pending' && entry.status !== 'Cancelled')){
           this.currentmonthFunnelMCEmails.add(email);
-        } else if (campaignName === 'funnelmc' && label === 'lastmonth'){
+        } else if (campaignName === 'funnelmc' && label === 'lastmonth' && (entry.status !== 'Pending' && entry.status !== 'Cancelled')){
           this.lastmonthFunnelMCEmails.add(email);
         } 
       });
-     if(campaignName === 'leads' && label === 'currentweek'){
+     if(campaignName === 'convertedleads' && label === 'currentweek' ){
       this.currentweekleadsEmails.forEach(email => {
         if (this.currrentweeklylRegOrEntriesEmails.has(email)) {
          // console.log(email)
@@ -1044,7 +1048,7 @@ async getfreetopaid(startDate: Date, endDate: Date, label: string, campaignName:
         }
       });
     }
-    else if(campaignName === 'leads' && label === 'lastweek'){
+    else if(campaignName === 'convertedleads' && label === 'lastweek'){
       this.lastweekleadsEmails.forEach(email => {
         if (this.lastweeklylRegOrEntriesEmails.has(email)) {
           count +=1;
@@ -1057,7 +1061,7 @@ async getfreetopaid(startDate: Date, endDate: Date, label: string, campaignName:
         }
       });
     }
-    else if(campaignName === 'leads' && label === 'currentmonth'){
+    else if(campaignName === 'convertedleads' && label === 'currentmonth'){
       this.currentmonthleadsEmails.forEach(email => {
         if (this.currentmonthlylRegOrEntriesEmails.has(email)) {
           //console.log(email)
@@ -1071,7 +1075,7 @@ async getfreetopaid(startDate: Date, endDate: Date, label: string, campaignName:
         }
       });
     }
-    else if(campaignName === 'leads' && label === 'lastmonth'){
+    else if(campaignName === 'convertedleads' && label === 'lastmonth'){
       this.lastmonthleadsEmails.forEach(email => {
         if (this.lastmonthlylRegOrEntriesEmails.has(email)) {
           count +=1;
@@ -1095,7 +1099,7 @@ async getfreetopaid(startDate: Date, endDate: Date, label: string, campaignName:
 async getparticipant(startDate: Date, endDate: Date, label: string, campaignName: string): Promise<number> {
   return new Promise<number>((resolve, reject) => {
     const uniqueEmails = new Set<string>(); 
-    const dateField = campaignName === 'leads' ? 'converteddate' : 'createddate';
+    const dateField = campaignName === 'convertedleads' ? 'purchasedate' : 'createddate';
     let count =0;
 
     this.firestore.collection<any>(campaignName, ref =>
@@ -1106,7 +1110,7 @@ async getparticipant(startDate: Date, endDate: Date, label: string, campaignName
         const email = entry.email; 
         if (!uniqueEmails.has(email) && label === 'currentweek') { 
           uniqueEmails.add(email);
-          if(campaignName === 'leads'){
+          if(campaignName === 'convertedleads' && (entry.status !== 'Pending' && entry.status !== 'Cancelled')){
           count += 1;
           }
           else if ( campaignName === 'funnelmc'){
@@ -1115,7 +1119,7 @@ async getparticipant(startDate: Date, endDate: Date, label: string, campaignName
         }
         if (!uniqueEmails.has(email) && label === 'lastweek') { 
           uniqueEmails.add(email);
-          if(campaignName === 'leads'){
+          if(campaignName === 'convertedleads' && (entry.status !== 'Pending' && entry.status !== 'Cancelled')){
           count += 1;
           }
           else if ( campaignName === 'funnelmc' && label === 'lastweek'){
@@ -1124,7 +1128,7 @@ async getparticipant(startDate: Date, endDate: Date, label: string, campaignName
         }
         if (!uniqueEmails.has(email) && label === 'currentmonth') { 
           uniqueEmails.add(email);
-          if(campaignName === 'leads'){
+          if(campaignName === 'convertedleads' && (entry.status !== 'Pending' && entry.status !== 'Cancelled')){
           count +=1;
           }
           else if ( campaignName === 'funnelmc'){
@@ -1133,7 +1137,7 @@ async getparticipant(startDate: Date, endDate: Date, label: string, campaignName
         }
         if (!uniqueEmails.has(email) && label === 'lastmonth') { 
           uniqueEmails.add(email);
-          if(campaignName === 'leads'){
+          if(campaignName === 'convertedleads' && (entry.status !== 'Pending' && entry.status !== 'Cancelled')){
           count += 1;
           }
           else if (label === 'lastmonth' && campaignName === 'funnelmc'){
@@ -1151,14 +1155,14 @@ async getparticipant(startDate: Date, endDate: Date, label: string, campaignName
 async getemiecosystem(startDate: Date, endDate: Date, label: string, campaignName: string): Promise<number> {
   return new Promise<number>((resolve, reject) => {
     let count = 0;
-    const dateField = campaignName === 'leads' ? 'converteddate' : 'createddate';
+    const dateField = campaignName === 'convertedleads' ? 'purchasedate' : 'createddate';
 
     this.firestore.collection<any>(campaignName, ref =>
       ref.where(dateField, '>=', firebase.firestore.Timestamp.fromDate(startDate))
          .where(dateField, '<=', firebase.firestore.Timestamp.fromDate(endDate))
     ).valueChanges().pipe(takeUntil(this.unsubscribe$)).subscribe(entries => {
       entries.forEach(entry => {
-        if ( (entry.totalpurchasevalue > entry.initialpayment) && ( entry.emiagreed !== ""  ) && ( entry.journeyname === 'uP!' || entry.journeyname === 'BiG' || entry.journeyname === 'FTM' || entry.journeyname === 'CPM upgrade' || entry.journeyname === 'FastTrack Membership' || entry.journeyname === 'CPM' || entry.journeyname === 'Launch Your Legacy L2' || entry.journeyname === 'FTM with SLD CI' || entry.journeyname === 'BiG with SLD CI')) {
+        if ( (entry.totalpurchasevalue > entry.initialpayment) && ( entry.emiagreed !== ""  ) && ( entry.journeyname === 'uP!' || entry.journeyname === 'BiG' || entry.journeyname === 'FTM' || entry.journeyname === 'CPM upgrade' || entry.journeyname === 'FastTrack Membership' || entry.journeyname === 'CPM' || entry.journeyname === 'Launch Your Legacy L2' || entry.journeyname === 'FTM with SLD CI' || entry.journeyname === 'BiG with SLD CI') && (entry.status !== 'Pending' && entry.status !== 'Cancelled')) {
           count += 1;
         }
       });

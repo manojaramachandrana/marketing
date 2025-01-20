@@ -91,18 +91,22 @@ export class WebinaranalyticsComponent implements OnInit {
   }
 
   fetchData(start: firebase.firestore.Timestamp, end: firebase.firestore.Timestamp): void {
+
+    const enddate = end.toDate();
+    enddate.setDate(enddate.getDate() + 1);
+    const adjustedenddate = firebase.firestore.Timestamp.fromDate(enddate);
     this.firestore
       .collection('entries', ref =>
         ref
           .where('createddate', '>=', start)
-          .where('createddate', '<=', end)
+          .where('createddate', '<=', adjustedenddate)
       )
       .valueChanges()
       .subscribe((data: any[]) => {
         console.log(`hplylregistration Data:`, data);
   
         const uniqueData = this.removeDuplicates(data, 'email');
-  
+
         this.eventData['hplylregistration'].count = uniqueData.length;
         this.eventData['hplylregistration'].leads = uniqueData.map(item => ({
           name: item.name,
@@ -132,7 +136,7 @@ export class WebinaranalyticsComponent implements OnInit {
       .valueChanges()
       .subscribe((data: any[]) => {
         console.log(`${eventName} Data:`, data);
-  
+
         const uniqueData = this.removeDuplicates(data, 'email');
   
         this.eventData[eventName].count = uniqueData.length;
