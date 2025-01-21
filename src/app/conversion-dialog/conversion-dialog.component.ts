@@ -16,10 +16,24 @@ export class ConversionDialogComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  extractUTMParam(url: string, param: string): string {
-    const urlParams = new URLSearchParams(new URL(url).search);
-    return urlParams.get(param) || 'N/A'; 
+  // extractUTMParam(url: string, param: string): string {
+  //   const urlParams = new URLSearchParams(new URL(url).search);
+  //   return urlParams.get(param) || 'N/A'; 
+  // }
+
+  extractUTMParam(url: string | undefined, paramName: string): string {
+    try {
+      if (!url) {
+        return 'N/A'; 
+      }
+      const parsedUrl = new URL(url);
+      return parsedUrl.searchParams.get(paramName) || 'N/A'; 
+    } catch (error) {
+      console.error(`Invalid URL: ${url}`, error);
+      return 'Invalid URL'; 
+    }
   }
+  
   
   
   onClose(): void {
