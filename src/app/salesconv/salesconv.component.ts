@@ -95,7 +95,7 @@ export class SalesconvComponent implements OnInit {
 
   async processLeadsCollection(): Promise<void> {
     try {
-      const snap = await this.firestore.collection('leads').get().toPromise();
+      // const snap = await this.firestore.collection('convertedleads').get().toPromise();
       const entriesMap = new Map<string, { createddate: Date, url: string }>();
   
       const entriesSnapshot = await this.firestore.collection('entries').get().toPromise();
@@ -109,10 +109,20 @@ export class SalesconvComponent implements OnInit {
           entriesMap.set(email, { createddate: createdDate, url });
         }
       });
-  
+
+      const snap = await this.firestore.collection('convertedleads').get().toPromise();
+
       snap.docs.forEach((doc: any) => {
         const element = doc.data();
-        const convertedDate = this.convertToDate(element['converteddate']);
+        if (element['status'] === 'Pending' || element['status'] === 'Cancelled' || element['journeyname'] === 'FTO' || element['journeyname'] === 'Research') {
+          return; 
+        }
+        const convertedDate = this.convertToDate(element['purchasedate']);
+        const january2024 = new Date('2024-01-01');
+
+        if (convertedDate && convertedDate < january2024) {
+          return;
+        }
         const email = element['email'];
   
         if (convertedDate) {
@@ -282,7 +292,7 @@ export class SalesconvComponent implements OnInit {
 
   async calculateConversions(): Promise<void> {
     try {
-      const leadsSnapshot = await this.firestore.collection('leads').get().toPromise();
+      const leadsSnapshot = await this.firestore.collection('convertedleads').get().toPromise();
       const entriesSnapshot = await this.firestore.collection('entries').get().toPromise();
       const lylregistrationSnapshot = await this.firestore.collection('lylregistration').get().toPromise();
       
@@ -311,33 +321,41 @@ export class SalesconvComponent implements OnInit {
           }
         });
       });
-  
+
       const processedConversions = new Map<string, Set<string>>(); 
-  
+
       leadsSnapshot.docs.forEach((doc: any) => {
         const element = doc.data();
+        if (element['status'] === 'Pending' || element['status'] === 'Cancelled' || element['journeyname'] === 'FTO' || element['journeyname'] === 'Research') {
+          return; 
+        }
         const email = element['email'];
         const name = element['name'] || ''; 
         const phone = element['mobile'] || '';
         const product = element['journeyname'] || '';
-        const convertedDate: Date | null = this.convertToDate(element['converteddate']);
-  
+        const convertedDate: Date | null = this.convertToDate(element['purchasedate']);
+        const january2024 = new Date('2024-02-01');
+
+        if (convertedDate && convertedDate < january2024) {
+          return;
+        }
+
         if (convertedDate) {
           const monthYear = this.formatDateToMonthYear(convertedDate);
           const entryInfo = entriesMap.get(email);
           const dates = entryInfo ? entryInfo.dates : new Set<Date>();
           const url = entryInfo ? entryInfo.url : ''; 
-  
+
           if (!processedConversions.has(email)) {
             processedConversions.set(email, new Set());
           }
           const processedMonths = processedConversions.get(email);
-  
+
           dates.forEach(entryDate => {
             if (convertedDate > entryDate) {
               const diffDays = Math.floor((convertedDate.getTime() - entryDate.getTime()) / (1000 * 60 * 60 * 24));
               const entryMonthYear = this.formatDateToMonthYear(entryDate);
-  
+
               if (!processedMonths.has(entryMonthYear)) {
                 if (!this.outputTableStructure[entryMonthYear]) {
                   this.outputTableStructure[entryMonthYear] = {
