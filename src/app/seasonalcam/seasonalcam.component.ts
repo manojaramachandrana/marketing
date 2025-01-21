@@ -123,14 +123,23 @@ this.firestore.collection('seasonalcampaign').get().toPromise().then(async (snap
       }
 
       let leadsSnap = await this.firestore
-        .collection('leads', (ref) => ref.where('email', '==', seasonCampaignElement['email']))
+        .collection('convertedleads', (ref) => ref.where('email', '==', seasonCampaignElement['email']))
         .get()
         .toPromise();
 
       leadsSnap.docs.forEach((leadDoc) => {
         const leadElement = leadDoc.data();
 
-        let purchaseDate = new firebase.firestore.Timestamp(leadElement['purchasedate']['_seconds'], leadElement['purchasedate']['_nanoseconds']).toDate();
+        if (
+          leadElement['status'] === 'Cancelled' ||
+          leadElement['status'] === 'Pending' ||
+          leadElement['journeyname'] === 'FTO' ||
+          leadElement['journeyname'] === 'Research'
+        ) {
+          return; 
+        }
+
+        let purchaseDate = leadElement['purchasedate'].toDate();
         let campaignCreatedDate = seasonCampaignElement['createddate'].toDate();
 
         if (purchaseDate > campaignCreatedDate) {
