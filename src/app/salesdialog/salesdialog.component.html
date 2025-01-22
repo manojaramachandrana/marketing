@@ -33,7 +33,7 @@
 
     <ng-container matColumnDef="purchaseDate">
       <th mat-header-cell *matHeaderCellDef> Purchase Date </th>
-      <td mat-cell *matCellDef="let lead"> {{ lead.purchaseDate | date:'shortDate' || 'N/A' }} </td>
+      <td mat-cell *matCellDef="let lead"> {{ lead.purchaseDate | date: 'dd-MM-yyyy' || 'N/A'  }} </td>
     </ng-container>
 
     <ng-container matColumnDef="totalPurchaseValue">

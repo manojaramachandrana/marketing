@@ -147,8 +147,14 @@
       </ng-container>
   
       <ng-container matColumnDef="converteddate">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Convrted Date </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Converted Date </th>
         <td mat-cell *matCellDef="let element"> {{element.converteddate.toDate() | date:'dd/MM/yyyy' }} </td>
+        <td mat-footer-cell *matFooterCellDef="let element"> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="saletype">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Sale Type </th>
+        <td mat-cell *matCellDef="let element"> {{element.saletype }} </td>
         <td mat-footer-cell *matFooterCellDef="let element"> </td>
       </ng-container>
   

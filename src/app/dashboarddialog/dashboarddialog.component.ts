@@ -734,8 +734,9 @@ export interface DialogData {
   mobile: string;
   email: string;
   totalpurchasevalue: number;
-  converteddate: firebase.firestore.Timestamp; 
+  purchasedate: firebase.firestore.Timestamp; 
   journeyname: string;
+  status: string;
 }
 
 @Component({
@@ -743,11 +744,12 @@ export interface DialogData {
   templateUrl: './dashboarddialog.component.html',
   styleUrls: ['./dashboarddialog.component.css']
 })
+
 export class DashboarddialogComponent implements OnInit, OnDestroy {
   fileName = 'ExportExcel.xlsx';
   private unsubscribe$ = new Subject<void>();
   dataSourceopportunities = new MatTableDataSource<DialogData>();
-  displayedColumns: string[] = ['no','name', 'email', 'mobile', 'journeyname', 'totalpurchasevalue', 'converteddate'];
+  displayedColumns: string[] = ['no','name', 'email', 'mobile', 'journeyname', 'totalpurchasevalue', 'converteddate','saletype'];
   dataforfilter = [];
   totalPurchaseValue: number = 0;
   journeyNames: string[] = [];
@@ -764,20 +766,21 @@ export class DashboarddialogComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(private firestore: AngularFirestore) {
-    this.firestore.collection<DialogData>('leads').valueChanges().pipe(
+    this.firestore.collection<DialogData>('convertedleads').valueChanges().pipe(
       takeUntil(this.unsubscribe$)
     ).subscribe(data => {
-      const filteredData = data.filter(item => item.journeyname !== 'FTO' && item.totalpurchasevalue !== 0);
+      const filteredData = data.filter(item => (item.journeyname !== 'FTO' && item.journeyname !== 'Research' && item.status !== 'pending' && item.status !== 'Cancelled')  && item.totalpurchasevalue !== 0);
 
       filteredData.sort((a, b) => {
-        const dateA = a.converteddate.toDate().getTime();
-        const dateB = b.converteddate.toDate().getTime();
+        const dateA = a.purchasedate.toDate().getTime();
+        const dateB = b.purchasedate.toDate().getTime();
         return dateB - dateA;
       });
       this.dataSourceopportunities.data = filteredData;
       this.dataforfilter = this.dataSourceopportunities.data
       this.applyCurrentMonthFilter()
       this.extractJourneyNames();
+      this.onDateRangeChange()
      // console.log(this.dataforfilter,this.dataSourceopportunities.data)
     });
   }
@@ -791,6 +794,7 @@ export class DashboarddialogComponent implements OnInit, OnDestroy {
       .filter((value, index, self) => self.indexOf(value) === index); 
 
     this.journeyNames = journeyNames;
+    // this.applyCurrentMonthFilter()
   }
 
   ngOnDestroy(): void {
@@ -808,20 +812,19 @@ export class DashboarddialogComponent implements OnInit, OnDestroy {
       this.dataSourceopportunities.data = this.dataforfilter;
   
       this.dataSourceopportunities.data = this.dataSourceopportunities.data.filter(item => {
-        const itemDateTime = item.converteddate.toDate().getTime();
+        const itemDateTime = item.purchasedate.toDate().getTime();
         
         const journeyMatches = !journeyName.length || journeyName.includes(item.journeyname) || journeyName.includes(''); 
   
         return itemDateTime >= fromDateTime && itemDateTime <= toDateTime && journeyMatches;
       });
-  
       this.calculateTotalPurchaseValue();
       this.extractJourneyNames();
     } else {
       this.dataSourceopportunities.data = this.dataforfilter;
   
       this.dataSourceopportunities.data = this.dataSourceopportunities.data.filter(item => {
-        const itemDateTime = item.converteddate.toDate();
+        const itemDateTime = item.purchasedate.toDate();
 
         
         const journeyMatches = !journeyName.length || journeyName.includes(item.journeyname) || journeyName.includes(''); 
@@ -832,7 +835,6 @@ export class DashboarddialogComponent implements OnInit, OnDestroy {
     }
   }
   
-
   // onDateRangeChange(): void {
   //   const { start, end, journeyName } = this.dateRangeForm.value;
   
@@ -852,7 +854,6 @@ export class DashboarddialogComponent implements OnInit, OnDestroy {
   //   }
   // }
   
-
   // onDateRangeChange(): void {
   //   const { start, end } = this.dateRangeForm.value;
   //   if (start && end) {
@@ -889,7 +890,6 @@ calculateTotalPurchaseValue(): number {
     .reduce((acc, value) => acc + value, 0);
 }
 
-
 // getamountSpend(): number {
 //   if ( !this.tableData.length) {
 //     return 0;
@@ -898,20 +898,46 @@ calculateTotalPurchaseValue(): number {
 //   return (this.data).map(date => this.outputTableStructure[date]?.amountSpend || 0).reduce((acc, value) => acc + value, 0);
 // }
 
+applyCurrentMonthFilter(): void {
+  this.dateRangeForm.reset({
+    start: null,
+    end: null,
+    journeyName: [] 
+  });
 
-  applyCurrentMonthFilter(): void {
-    this.dateRangeForm.reset({
-      start: null,
-      end: null,
-      journeyName: [] 
-    });
-    this.dataSourceopportunities.data = this.dataforfilter
-    this.dataSourceopportunities.data = this.dataSourceopportunities.data.filter(item => {
-      const itemDate = item.converteddate.toDate();
-      return itemDate >= this.startOfMonth && itemDate <= this.endOfMonth;
-    });
-    this.calculateTotalPurchaseValue();
+  this.dataSourceopportunities.data = this.dataforfilter;
+
+  this.dataSourceopportunities.data = this.dataSourceopportunities.data.filter(item => {
+    const itemDate = item.purchasedate.toDate();
+    return itemDate >= this.startOfMonth && itemDate <= this.endOfMonth;
+  });
+
+  if (
+    !this.dateRangeForm.value.journeyName?.length &&
+    !this.dateRangeForm.value.start &&
+    !this.dateRangeForm.value.end
+  ) {
+    this.dataSourceopportunities.data = this.dataforfilter; 
+    this.extractJourneyNames();
   }
+
+  this.calculateTotalPurchaseValue();
+  this.onDateRangeChange()
+}
+
+  // applyCurrentMonthFilter(): void {
+  //   this.dateRangeForm.reset({
+  //     start: null,
+  //     end: null,
+  //     journeyName: [] 
+  //   });
+  //   this.dataSourceopportunities.data = this.dataforfilter
+  //   this.dataSourceopportunities.data = this.dataSourceopportunities.data.filter(item => {
+  //     const itemDate = item.converteddate.toDate();
+  //     return itemDate >= this.startOfMonth && itemDate <= this.endOfMonth;
+  //   });
+  //   this.calculateTotalPurchaseValue();
+  // }
 
   exportexcel(): void {
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.dataSourceopportunities.data);
