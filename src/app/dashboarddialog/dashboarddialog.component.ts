@@ -753,10 +753,10 @@ export class DashboarddialogComponent implements OnInit, OnDestroy {
   dataforfilter = [];
   totalPurchaseValue: number = 0;
   journeyNames: string[] = [];
-  
+
   startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
   endOfMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
- 
+
   dateRangeForm = new FormGroup({
     start: new FormControl(),
     end: new FormControl(),
@@ -804,56 +804,56 @@ export class DashboarddialogComponent implements OnInit, OnDestroy {
 
   onDateRangeChange(): void {
     const { start, end, journeyName } = this.dateRangeForm.value;
-  
+
     if (start && end) {
       const fromDateTime = start.getTime();
       const toDateTime = end.getTime();
-  
+
       this.dataSourceopportunities.data = this.dataforfilter;
-  
+
       this.dataSourceopportunities.data = this.dataSourceopportunities.data.filter(item => {
         const itemDateTime = item.purchasedate.toDate().getTime();
-        
+
         const journeyMatches = !journeyName.length || journeyName.includes(item.journeyname) || journeyName.includes(''); 
-  
+
         return itemDateTime >= fromDateTime && itemDateTime <= toDateTime && journeyMatches;
       });
       this.calculateTotalPurchaseValue();
       this.extractJourneyNames();
     } else {
       this.dataSourceopportunities.data = this.dataforfilter;
-  
+
       this.dataSourceopportunities.data = this.dataSourceopportunities.data.filter(item => {
         const itemDateTime = item.purchasedate.toDate();
 
-        
+
         const journeyMatches = !journeyName.length || journeyName.includes(item.journeyname) || journeyName.includes(''); 
-  
+
        return itemDateTime >= this.startOfMonth && itemDateTime <= this.endOfMonth && journeyMatches;
       });
       this.extractJourneyNames();
     }
   }
-  
+
   // onDateRangeChange(): void {
   //   const { start, end, journeyName } = this.dateRangeForm.value;
-  
+
   //   if (start && end) {
   //     const fromDateTime = start.getTime();
   //     const toDateTime = end.getTime();
-  
+
   //     this.dataSourceopportunities.data = this.dataforfilter;
-  
+
   //     this.dataSourceopportunities.data = this.dataSourceopportunities.data.filter(item => {
   //       const itemDateTime = item.converteddate.toDate().getTime();
   //       const journeyMatches = !journeyName.length || journeyName.includes(item.journeyname) || journeyName.includes(''); 
   //       return itemDateTime >= fromDateTime && itemDateTime <= toDateTime && journeyMatches;
   //     });
-  
+
   //     this.calculateTotalPurchaseValue();
   //   }
   // }
-  
+
   // onDateRangeChange(): void {
   //   const { start, end } = this.dateRangeForm.value;
   //   if (start && end) {
@@ -861,7 +861,7 @@ export class DashboarddialogComponent implements OnInit, OnDestroy {
   //     const toDateTime = end.getTime();
 
   //     this.dataSourceopportunities.data = this.dataforfilter
-     
+
   //      this.dataSourceopportunities.data = this.dataSourceopportunities.data.filter(item => {
   //       const itemDateTime = item.converteddate.toDate().getTime();
   //       return itemDateTime >= fromDateTime && itemDateTime <= toDateTime;
@@ -946,6 +946,4 @@ applyCurrentMonthFilter(): void {
     XLSX.writeFile(wb, this.fileName);
   }
 }
-
-
  

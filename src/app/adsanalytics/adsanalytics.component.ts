@@ -19,7 +19,7 @@ import {
 
 interface Lead {
   totalpurchasevalue?: number;
-  purchasedate?: { _seconds: number; _nanoseconds: number }; 
+  purchasedate 
 }
 
 interface Spend {
@@ -275,7 +275,7 @@ export class AdsanalyticsComponent implements OnInit {
       ).get().toPromise();
       const lylregistrationCount = lylRegistrationSnapshot?.size || 0;
 
-      const leadsSnapshot = await this.firestore.collection('leads').get().toPromise();
+      const leadsSnapshot = await this.firestore.collection('convertedleads').get().toPromise();
 
       let totalPurchaseValue = 0;
       let totalPurchaseValue20 = 0;
@@ -287,13 +287,19 @@ export class AdsanalyticsComponent implements OnInit {
       leadsSnapshot?.forEach(doc => {
         const data = doc.data() as Lead;
 
-        if (data.purchasedate && data.purchasedate._seconds !== undefined) {
-          const purchasedate = new firebase.firestore.Timestamp(
-            data.purchasedate._seconds,
-            data.purchasedate._nanoseconds
-          );
+        if (data.purchasedate ) {
 
-          let purchaseDate = purchasedate.toDate();
+          if (
+            data['status'] === 'Cancelled' ||
+            data['status'] === 'Pending' ||
+            data['journeyname'] === 'FTO' ||
+            data['journeyname'] === 'Research'
+          ) {
+            return; 
+          }
+
+          let purchaseDate = data.purchasedate.toDate();
+
           purchaseDate = new Date(purchaseDate.getTime() + (5 * 60 + 30) * 60 * 1000);
 
           if (purchaseDate >= sevenDaysAgo && purchaseDate <= currentDate) {
