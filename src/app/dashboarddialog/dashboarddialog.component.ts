@@ -809,6 +809,13 @@ export class DashboarddialogComponent implements OnInit, OnDestroy {
       const fromDateTime = start.getTime();
       const toDateTime = end.getTime();
 
+      // const toDateTime = end.getTime();
+      // dataSourceopportunities.data = this.dataforfilter;
+      // dataSourceopportunities.data = this.dataSourceopportunities.data.filter(item => {
+      // const itemDataTime = item.purchasedate.toDate().getTime();
+      // itemDateTime >= fromDateTime && itemDateTime <= toDateTime && journeyMatches; })
+      
+
       this.dataSourceopportunities.data = this.dataforfilter;
 
       this.dataSourceopportunities.data = this.dataSourceopportunities.data.filter(item => {
